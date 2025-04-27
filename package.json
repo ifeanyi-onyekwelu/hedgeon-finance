@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "dev": "concurrently --kill-others \"cd hedgeonApi && npm run dev\" \"cd hedgeon && npm run dev\""
+    }
+}

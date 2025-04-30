@@ -60,7 +60,6 @@ const PlanDetailsPage = () => {
                             {plan.riskLevel} Risk
                         </span>
                     </div>
-                    <p className="text-gray-700 leading-relaxed mb-6">{plan.description || 'Detailed description of the investment plan will go here.'}</p>
 
                     <div className="py-4 border-t border-b border-gray-200 mb-6">
                         <div className="flex items-center justify-between mb-2">

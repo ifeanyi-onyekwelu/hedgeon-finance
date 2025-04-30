@@ -167,7 +167,7 @@ const PaymentPage = () => {
                                 />
                                 <span className="absolute right-4 top-3.5 text-gray-400">USD</span>
                             </div>
-                            {(investmentAmount < plan.minAmount || investmentAmount > plan.maxAmount) && (
+                            {(typeof investmentAmount === 'number' && (investmentAmount < plan.minAmount || investmentAmount > plan.maxAmount)) && (
                                 <p className="mt-2 text-sm text-red-600 flex items-center">
                                     <FiAlertCircle className="mr-1.5" />
                                     Amount must be between ${formatNumberWithCommas(plan.minAmount)} and ${formatNumberWithCommas(plan.maxAmount)}
@@ -196,7 +196,7 @@ const PaymentPage = () => {
                         </div>
 
                         {/* Investment Summary */}
-                        {investmentAmount > 0 && (
+                        {typeof investmentAmount === 'number' && investmentAmount > 0 && (
                             <div className="bg-gray-50 p-6 rounded-xl">
                                 <h4 className="text-lg font-semibold text-gray-900 mb-4">Investment Summary</h4>
                                 <dl className="space-y-3">
@@ -250,7 +250,7 @@ const PaymentPage = () => {
                 </div>
 
                 <p className="text-gray-700 mb-4">
-                    Send exactly <span className="font-semibold text-blue-600">${formatNumberWithCommas(investmentAmount)}</span> worth of{' '}
+                    Send exactly <span className="font-semibold text-blue-600">${formatNumberWithCommas(investmentAmount as number)}</span> worth of{' '}
                     <span className="font-semibold">{selectedCurrency}</span> to:
                 </p>
 
@@ -300,7 +300,7 @@ const PaymentPage = () => {
                     </div>
                     <div className="flex justify-between">
                         <dt className="text-gray-600">Investment Amount</dt>
-                        <dd className="font-medium">${formatNumberWithCommas(investmentAmount)}</dd>
+                        <dd className="font-medium">${formatNumberWithCommas(investmentAmount as number)}</dd>
                     </div>
                     <div className="flex justify-between">
                         <dt className="text-gray-600">Payment Currency</dt>

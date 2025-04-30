@@ -88,12 +88,12 @@ const currencies = [
     {
         name: 'USDT (TRC-20)',
         address: 'Bo47XfDUKcb31Bbq6661NoVZjZuW26s9Af7BK1mhn4ut', // Replace with your actual USDT address
-        qrCodeUrl: 'CLOUDINARY_USDT_QR_CODE_URL', // Replace with your Cloudinary USDT QR code URL
+        qrCodeUrl: 'https://asset.cloudinary.com/dfeoowyra/e1f9fb872dde2ba06aacff9312445857', // Replace with your Cloudinary USDT QR code URL
     },
     {
         name: 'BTC',
         address: 'bc1q6ujvvxafu4td0wpfm4eujyyrxec45wvu8m95lf',     // Replace with your actual BTC address
-        qrCodeUrl: 'CLOUDINARY_BTC_QR_CODE_URL',     // Replace with your Cloudinary BTC QR code URL
+        qrCodeUrl: 'https://asset.cloudinary.com/dfeoowyra/e97a959e93c3f59847edc911fc68472a',     // Replace with your Cloudinary BTC QR code URL
     },
     {
         name: 'ETH',
@@ -103,7 +103,7 @@ const currencies = [
     {
         name: 'SOL',
         address: '0x27F9165b31036D254E449325ef70c6bB4a998eAB',     // Replace with your actual TRX address
-        qrCodeUrl: 'CLOUDINARY_TRX_QR_CODE_URL',     // Replace with your Cloudinary TRX QR code URL
+        qrCodeUrl: 'https://asset.cloudinary.com/dfeoowyra/d526073a9d77dbbaf302ab837ed1b361',     // Replace with your Cloudinary TRX QR code URL
     },
 ]
 

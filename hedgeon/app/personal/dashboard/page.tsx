@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     FiDollarSign, FiActivity, FiTrendingUp,
     FiChevronRight, FiList, FiGift, FiRepeat, FiStar, FiArrowUpRight
@@ -7,7 +7,9 @@ import {
 import dynamic from 'next/dynamic';
 import { useUser } from '@/context/UserContext';
 import TransactionAndWithdrawalSection from './TransactionAndWithdrawSection';
+import { getPlansApi } from '@/app/api/planApi';
 import MarketInsightSection from './MarketInsightSection';
+import Link from 'next/link';
 
 // Lazy load charts for better performance
 const PortfolioChart = dynamic(() => import('./PortfolioChart'), { ssr: false });
@@ -34,6 +36,20 @@ const PersonalDashboard = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [activeView, setActiveView] = useState('overview');
     const { user } = useUser();
+    const [plans, setPlans] = useState<any[]>([])
+
+    const fetchData = async () => {
+        try {
+            const response = await getPlansApi()
+            setPlans(response.data['plans']);
+        } catch (err) {
+            console.error("Error fetching plans:", err);
+        }
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     return (
         <div className="bg-gray-50 py-8 px-6 rounded-lg shadow-md">
@@ -79,10 +95,9 @@ const PersonalDashboard = () => {
                     </div>
                 </div>
 
-                <MarketInsightSection />
+                {/* <MarketInsightSection /> */}
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Upcoming Payouts & Dividends */}
+                {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
                         <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center space-x-2">
                             <FiGift className="text-xl text-gray-500" />
@@ -105,7 +120,6 @@ const PersonalDashboard = () => {
                         )}
                     </div>
 
-                    {/* Recent Transactions */}
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
                         <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center space-x-2">
                             <FiRepeat className="text-xl text-gray-500" />
@@ -128,7 +142,7 @@ const PersonalDashboard = () => {
                             <p className="text-gray-500">No recent transactions to display.</p>
                         )}
                     </div>
-                </div>
+                </div> */}
 
                 {/* Recommended Funds */}
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
@@ -136,21 +150,24 @@ const PersonalDashboard = () => {
                         <FiStar className="text-xl text-yellow-500" />
                         <span>Recommended Funds</span>
                     </h2>
-                    {recommendedFunds.length > 0 ? (
+                    {plans.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {recommendedFunds.map((fund, index) => (
-                                <div key={index} className="border rounded-xl p-4 hover:shadow-md transition-shadow">
-                                    <h3 className="font-semibold text-gray-800">{fund.name}</h3>
-                                    <p className="text-sm text-gray-500">Risk: <span className="font-medium">{fund.risk}</span></p>
-                                    <p className="text-sm text-green-600">Returns: <span className="font-medium">{fund.returns}</span></p>
-                                    <a href={fund.link} className="inline-flex items-center text-blue-500 hover:underline mt-2 text-sm">
-                                        View Details <FiArrowUpRight className="ml-1" />
-                                    </a>
-                                </div>
-                            ))}
+                            {plans
+                                .sort(() => 0.5 - Math.random()) // Shuffle the array
+                                .slice(0, 3).map((plan, index) => (
+                                    <div key={index} className="border rounded-xl p-4 hover:shadow-md transition-shadow">
+                                        <h3 className="font-semibold text-gray-800">{plan.name}</h3>
+                                        <p className="text-sm text-gray-500">Risk: <span className="font-medium">{plan.riskLevel}</span></p>
+                                        <p className="text-sm text-green-600">Returns: <span className="font-medium">{plan.estimatedROI}%</span></p>
+                                        <a href={`explore/${plan._id}`} className="inline-flex items-center text-blue-500 hover:underline mt-2 text-sm">
+                                            View Details <FiArrowUpRight className="ml-1" />
+                                        </a>
+                                    </div>
+
+                                ))}
                         </div>
                     ) : (
-                        <p className="text-gray-500">No fund recommendations available based on your risk profile.</p>
+                        <p className="text-gray-500">No plan recommendations available based on your risk profile.</p>
                     )}
                 </div>
 
@@ -161,9 +178,9 @@ const PersonalDashboard = () => {
                         <span>Explore More Funds</span>
                     </h2>
                     <p className="text-gray-600 mb-4">Browse available investment opportunities and manage your portfolio.</p>
-                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors">
+                    <Link href="/personal/explore" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors">
                         View All Funds
-                    </button>
+                    </Link>
                 </div>
 
                 <TransactionAndWithdrawalSection walletBalance={user?.walletBalance} />

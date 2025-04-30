@@ -6,12 +6,44 @@ import { getProfileApi } from '@/app/api/userApi'
 type User = {
     id: string
     email: string
-    role: string
+    name: string
+    phone: string
+    password: string
+    role: 'user' | 'admin'
+    kyc: string
+    twoFactorSecret: string
+    currentPlan?: {
+        planId: string
+        name: string
+        startDate: Date
+        endDate: Date
+        daysGone: number
+        investedAmount: number
+        roiAccumulated: number
+    }[]
+    walletBalance: number
+    totalInvested: number
+    netReturns: number
+    referrals?: {
+        userId: string
+        name: string
+        email: string
+    }[]
+    referredBy?: {
+        userId: string
+        name: string
+        email: string
+    }
+    lastLogin: string
+    refreshToken: string | null
+    passwordResetToken: string | null
+    emailVerificationToken: number | null
     isVerified: boolean
-    name?: string  // Optional, if you need it occasionally
-    walletBalance?: number
-    netReturns?: number  // New field for net profit
-    totalInvested?: number
+    active: boolean
+    suspended: boolean
+    referralCode: string | null
+    referralLink: string | null
+    profilePicture: string
 }
 
 
@@ -19,12 +51,14 @@ type UserContextType = {
     user: User | null
     loading: boolean
     refreshUser: () => Promise<void>
+    updateUser: (userData: Partial<User>) => void
 }
 
 const UserContext = createContext<UserContextType>({
     user: null,
     loading: true,
-    refreshUser: async () => { }
+    refreshUser: async () => { },
+    updateUser: (userData: Partial<User>) => { }
 })
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -46,12 +80,23 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    const updateUser = (userData: Partial<User>) => {
+        setUser((prevUser) => {
+            if (prevUser) {
+                const updatedUser = { ...prevUser, ...userData };
+                setUser(updatedUser);
+                return updatedUser;
+            }
+            throw new Error("No user logged in to update");
+        });
+    };
+
     useEffect(() => {
         fetchUser()
     }, [])
 
     return (
-        <UserContext.Provider value={{ user, loading, refreshUser: fetchUser }}>
+        <UserContext.Provider value={{ user, loading, refreshUser: fetchUser, updateUser }}>
             {children}
         </UserContext.Provider>
     )

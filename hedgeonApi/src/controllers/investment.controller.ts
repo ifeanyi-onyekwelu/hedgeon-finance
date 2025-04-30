@@ -33,6 +33,11 @@ export const createInvestment = asyncHandler(
             );
         }
 
+        const startDate = new Date();
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + plan.durationMonths);
+
+
         // Create investment
         const investment = await Investment.create({
             user: user._id,
@@ -42,24 +47,33 @@ export const createInvestment = asyncHandler(
             },
             currency,
             amount,
-            startDate: new Date(),
-            endDate: new Date(Date.now() + plan.duration * 86400000), // Convert days to ms
+            startDate,
+            endDate,
         });
 
-        // Update user's current plan
-        // user.currentPlan = {
-        //     planId: plan._id,
-        //     name: plan.name,
-        //     startDate: new Date(),
-        //     endDate: investment.endDate,
-        //     investedAmount: amount,
-        // };
-        // await user.save();
+        const planData = {
+            planId: plan._id,
+            name: plan.name,
+            startDate: new Date(),
+            endDate: investment.endDate,
+            investedAmount: amount,
+            daysGone: 0,
+            roiAccumulated: 0,
+        };
+
+        // Ensure currentPlan exists and is an array
+        if (!Array.isArray(user.currentPlan)) {
+            user.currentPlan = [];
+        }
+
+        user.currentPlan.push(planData);
+        await user.save();
 
         // Create transaction record
         await Transaction.create({
             userId: user._id,
             amount,
+            investment,
             type: "INVESTMENT",
             status: "COMPLETED",
             currency
@@ -130,4 +144,21 @@ export const reinvestEarnings = asyncHandler(
     }
 );
 
-// Add other necessary controllers (getInvestments, calculateROI, etc.)
+export const getUserInvestments = asyncHandler(async (req: Request, res: Response) => {
+    const user = await getUserById(req.session.user.id);
+    if (!user) throw new BadRequestError("User not found");
+
+    const investments = await Investment.find({ user: user._id }).sort({ startDate: -1 });
+    logData(res, 200, { success: true, investments });
+});
+
+/**
+ * Get a single investment by ID
+ */
+export const getInvestmentById = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const investment = await Investment.findById(id);
+    if (!investment) throw new NotFoundError("Investment not found");
+
+    logData(res, 200, { success: true, investment });
+});

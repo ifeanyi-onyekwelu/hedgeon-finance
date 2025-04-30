@@ -1,12 +1,12 @@
 import React from 'react';
 
-const UserStats = ({ total, active, pending, failed }: any) => {
+const UserStats = ({ total, active, verified, suspended }: any) => {
 
     const stats = [
         { title: 'Total Users', value: total, icon: '👤' },
         { title: 'Active Users', value: active, icon: '💼' },
-        { title: 'Verified Users', value: failed, icon: '💰' },
-        { title: 'Suspended Users', value: pending, icon: '📑' },
+        { title: 'Verified Users', value: verified, icon: '💰' },
+        { title: 'Suspended Users', value: suspended, icon: '📑' },
     ];
 
     return (

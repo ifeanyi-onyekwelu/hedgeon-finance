@@ -64,10 +64,10 @@ const InvestmentsPage = () => {
                     {plans.map((plan) => (
                         <div
                             key={plan._id}
-                            className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg border border-gray-200"
+                            className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow hover:shadow-lg border border-gray-200 relative"
                         >
-                            {plan.name === "Premium Package" && (
-                                <div className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+                            {plan.name === "Standard Package" && (
+                                <div className="absolute top-4 right-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
                                     Popular
                                 </div>
                             )}

@@ -92,7 +92,7 @@ function Home() {
                             {/* CTA Buttons */}
                             <div className="flex flex-col sm:flex-row gap-6 mt-10">
                                 <Link
-                                    href="#"
+                                    href="/auth/signup"
                                     className="relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
                                 >
                                     Sign Up
@@ -200,7 +200,7 @@ function Home() {
                             asChild
                             className="rounded-full px-8 py-6 bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary hover:shadow-lg transition-all duration-300"
                         >
-                            <Link href="#" className="font-semibold text-white uppercase tracking-wide">
+                            <Link href="/auth/signup" className="font-semibold text-white uppercase tracking-wide">
                                 Start Your Journey <ArrowRight className="ml-2 w-4 h-4" />
                             </Link>
                         </Button>

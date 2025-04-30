@@ -1,12 +1,19 @@
-// components/admin/DashboardStats.tsx
+import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
 import React from 'react';
 
-const DashboardStats = () => {
+
+interface StatsProps {
+    totalUsers: number;
+    activeInvestments: number;
+    pendingKYC: number;
+}
+
+const DashboardStats = ({ totalUsers, activeInvestments, pendingKYC }: StatsProps) => {
     // Fetch stats from API
     const stats = [
-        { title: 'Total Users', value: '1,234', icon: '👤' },
-        { title: 'Active Investments', value: '$452k', icon: '💼' },
-        { title: 'Pending KYC', value: '23', icon: '📑' },
+        { title: 'Total Users', value: formatNumberWithCommas(totalUsers), icon: '👤' },
+        { title: 'Active Investments', value: `$${formatNumberWithCommas(activeInvestments)}`, icon: '💼' },
+        { title: 'Pending KYC', value: formatNumberWithCommas(pendingKYC), icon: '📑' },
         { title: 'Total Profit', value: '$152k', icon: '💰' },
     ];
 

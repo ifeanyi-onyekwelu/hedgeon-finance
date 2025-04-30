@@ -5,6 +5,7 @@ import investmentRoutes from "./investment.routes";
 import userRoutes from "./user.routes";
 import planRoutes from "./plan.routes";
 import adminRoutes from "./admin.routes";
+import transactionRoutes from "./transaction.routes";
 // import cronRoutes from "./cron.routes";
 import authGuard from "../middlewares/authGuard";
 import adminOnly from "../middlewares/adminOnly";
@@ -21,6 +22,7 @@ router.use("/withdrawals", authGuard, withdrawalRoutes);
 router.use("/user", authGuard, userRoutes);
 router.use("/plans", planRoutes);
 router.use("/admin", authGuard, adminOnly, adminRoutes);
+router.use("/transactions", authGuard, transactionRoutes);
 // router.use("/cron", cronRoutes);
 
 router.get("/currencies", async (req, res) => {

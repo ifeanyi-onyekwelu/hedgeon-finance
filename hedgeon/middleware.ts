@@ -1,4 +1,3 @@
-// middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
@@ -12,35 +11,33 @@ export async function middleware(req: NextRequest) {
     console.log('Refresh Token:', refreshToken);
 
     if (!accessToken) {
-        console.log('No access token found, checking refresh token.');
-        if (refreshToken) {
-            try {
-                const refreshResponse = await refreshApi();
-                console.log('Refresh Response:', refreshResponse);
-
-                if (refreshResponse.status === 200) {
-                    const response = NextResponse.next();
-                    console.log('New Access Token:', refreshResponse);
-                    return response;
-                } else {
-                    return NextResponse.redirect(new URL('/auth/login', req.url));
-                }
-            } catch (error) {
-                console.error('Error during refresh attempt in middleware:', error);
-                return NextResponse.redirect(new URL('/auth/login', req.url));
-            }
-        }
+        console.log('No access token found.');
         return NextResponse.redirect(new URL('/auth/login', req.url));
     }
 
     try {
         const secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
-        await jwtVerify(accessToken, secret);
+        const { payload }: any = await jwtVerify(accessToken, secret);
+
+        console.log("Payload", payload)
+
+        const role = payload.user.role;
+        console.log("User Role", role)
+
+        const urlPath = req.nextUrl.pathname;
+
+        // ✅ Role-based checks
+        if (urlPath.startsWith('/admin') && role !== 'admin') {
+            return NextResponse.redirect(new URL('/unauthorized', req.url)); // or /auth/login
+        }
+
+        if (urlPath.startsWith('/personal') && role !== 'user') {
+            return NextResponse.redirect(new URL('/unauthorized', req.url)); // or /auth/login
+        }
+
         return NextResponse.next();
     } catch (error) {
-        if (refreshToken) {
-            console.log('Access token invalid, redirecting to login.');
-        }
+        console.log('Token invalid or expired.');
         return NextResponse.redirect(new URL('/auth/login', req.url));
     }
 }

@@ -21,6 +21,7 @@ export interface ITransaction {
     amount: number;
     currency: Currency;
     type: TransactionType;
+    investment?: Schema.Types.ObjectId;
     proofUrl?: string;
     txHash?: string;
     status: string;
@@ -47,6 +48,10 @@ const TransactionSchema = new Schema<ITransaction>(
             type: String,
             enum: Object.values(TransactionType),
             required: true,
+        },
+        investment: {
+            type: Schema.Types.ObjectId,
+            ref: 'Investment',
         },
         proofUrl: {
             type: String,

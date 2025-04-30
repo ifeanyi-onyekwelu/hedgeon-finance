@@ -1,168 +1,291 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Table, Tag, Space, Button, notification } from 'antd';
-import { approveWithdrawalRequestAdminApi, getAllWithdrawalRequestsAdminApi, rejectWithdrawalRequestAdminApi } from '@/app/api/adminApi';
+import React, { useEffect, useState } from 'react';
+import { Table, Button, Input, notification, Card, Descriptions, Badge, Space, Select } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import {
+    ArrowLeftOutlined,
+    SaveOutlined,
+    CloseOutlined,
+    EditOutlined,
+} from '@ant-design/icons';
+import { getAllWithdrawalRequestsAdminApi } from '@/app/api/adminApi';
+
+
+const updateWithdrawal = async (id: string, updatedData: any) => {
+    // Simulate API call delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    console.log('Updating withdrawal', id, 'with', updatedData);
+    // In a real application, you would make an API call here
+    return { success: true, message: 'Withdrawal updated successfully' };
+};
 
 interface Withdrawal {
     _id: string;
-    userId: {
-        _id: string;
-        name: string;
-        email: string;
-    };
+    userId: { _id: string; name: string; email: string };
     amount: number;
-    currency: any;
+    currency: string;
     walletAddress: string;
-    status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'FAILED';
+    status: 'PENDING' | 'APPOVED' | 'FAILED' | 'DECLINED';
     createdAt: Date;
 }
 
-// Define status colors
-const statusColor: { [key: string]: string } = {
-    PENDING: 'blue',
-    APPROVED: 'green',
-    DECLINED: 'red',
-    FAILED: 'orange'
-};
-
-const WithdrawalRequests = () => {
-    const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+const WithdrawalDetails: React.FC<{
+    withdrawal: Withdrawal;
+    onBack: () => void;
+    onUpdate: () => void;
+}> = ({ withdrawal, onBack, onUpdate }) => {
     const [loading, setLoading] = useState(false);
-    const [pagination, setPagination] = useState({ pageSize: 5, current: 1 });
+    const [editMode, setEditMode] = useState(false);
+    const [localWithdrawal, setLocalWithdrawal] = useState<Withdrawal>(withdrawal);
+    const initialWithdrawal = React.useRef<Withdrawal>(withdrawal);
 
     useEffect(() => {
-        fetchWithdrawals();
-    }, []);
+        setLocalWithdrawal(withdrawal);
+        initialWithdrawal.current = withdrawal;
+    }, [withdrawal]);
 
-    const fetchWithdrawals = async () => {
+    const handleEdit = () => {
+        setEditMode(true);
+    };
+
+    const handleSave = async () => {
         try {
             setLoading(true);
-            const response = await getAllWithdrawalRequestsAdminApi();
-            console.log('Fetched withdrawals:', response.data);
-            // setWithdrawals(response.data);
-        } catch (error) {
+            const updatedData = {
+                status: localWithdrawal.status,
+            };
+            const response = await updateWithdrawal(withdrawal._id, updatedData);
+            if (response.success) {
+                notification.success({
+                    message: 'Success',
+                    description: response.message,
+                });
+                setEditMode(false);
+                onUpdate(); // Refresh
+            } else {
+                notification.error({
+                    message: 'Error',
+                    description: 'Failed to update withdrawal',
+                });
+            }
+        } catch (error: any) {
             notification.error({
                 message: 'Error',
-                description: 'Failed to fetch withdrawal requests'
+                description: `Failed to update withdrawal: ${error.message}`,
             });
         } finally {
             setLoading(false);
         }
     };
 
-    const handleApprove = async (withdrawalId: string) => {
-        try {
-            const response = await approveWithdrawalRequestAdminApi(withdrawalId);
-            console.log('Approved withdrawal:', response.data);
+    const handleCancel = () => {
+        setEditMode(false);
+        setLocalWithdrawal(initialWithdrawal.current);
+    };
 
-            notification.success({
-                message: 'Approved',
-                description: 'Withdrawal request approved successfully'
-            });
-            fetchWithdrawals();
-        } catch (error) {
-            notification.error({
-                message: 'Error',
-                description: 'Failed to approve withdrawal request'
-            });
+    const getStatusBadge = (status: Withdrawal['status']) => {
+        switch (status) {
+            case 'PENDING':
+                return <Badge status="processing" text="Pending" />;
+            case 'APPOVED':
+                return <Badge status="success" text="Approved" />;
+            case 'FAILED':
+                return <Badge status="error" text="Failed" />;
+            case 'DECLINED':
+                return <Badge status="error" text="Declined" />;
+            default:
+                return <Badge text="Unknown" />;
         }
     };
 
-    const handleDecline = async (withdrawalId: string) => {
-        try {
-            const response = await rejectWithdrawalRequestAdminApi(withdrawalId, 'Declined by admin');
-            console.log('Declined withdrawal:', response.data);
+    const statusOptions: Withdrawal['status'][] = ['PENDING', 'APPOVED', 'FAILED', 'DECLINED'];
 
-            notification.success({
-                message: 'Declined',
-                description: 'Withdrawal request declined successfully'
-            });
-            fetchWithdrawals();
-        } catch (error) {
-            notification.error({
-                message: 'Error',
-                description: 'Failed to decline withdrawal request'
-            });
-        }
+    return (
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+            <Button onClick={onBack} className="mb-4">
+                <ArrowLeftOutlined /> Back to List
+            </Button>
+
+            <Card title="Withdrawal Details">
+                <Descriptions bordered>
+                    <Descriptions.Item label="User">
+                        {withdrawal.userId.name} ({withdrawal.userId.email})
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Amount">{withdrawal.amount}</Descriptions.Item>
+                    <Descriptions.Item label="Currency">{withdrawal.currency}</Descriptions.Item>
+                    <Descriptions.Item label="Wallet Address">{withdrawal.walletAddress}</Descriptions.Item>
+                    <Descriptions.Item label="Status">
+                        {editMode ? (
+                            <Select
+                                value={localWithdrawal.status}
+                                onChange={(value) =>
+                                    setLocalWithdrawal({ ...localWithdrawal, status: value as Withdrawal['status'] })
+                                }
+                                options={statusOptions.map((option) => ({
+                                    label: option,
+                                    value: option,
+                                }))}
+                            />
+                        ) : (
+                            getStatusBadge(withdrawal.status)
+                        )}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Created At">
+                        {new Date(withdrawal.createdAt).toLocaleString()}
+                    </Descriptions.Item>
+                </Descriptions>
+                <div className="mt-4 flex gap-4">
+                    {editMode ? (
+                        <>
+                            <Button
+                                type="primary"
+                                onClick={handleSave}
+                                disabled={loading}
+                            >
+                                {loading ? 'Saving...' : <><SaveOutlined /> Save</>}
+                            </Button>
+                            <Button
+                                onClick={handleCancel}
+                                disabled={loading}
+                            >
+                                {loading ? 'Cancelling...' : <><CloseOutlined /> Cancel</>}
+                            </Button>
+                        </>
+                    ) : (
+                        <Button onClick={handleEdit}>
+                            <EditOutlined /> Edit
+                        </Button>
+                    )}
+                </div>
+            </Card>
+        </div>
+    );
+};
+
+const WithdrawalManager = ({ withdrawals, fetchData }: any) => {
+    const [searchText, setSearchText] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [paginationInfo, setPaginationInfo] = useState<any>({
+        pageSize: 10,
+        current: 1,
+    });
+    const [selectedWithdrawal, setSelectedWithdrawal] = useState<Withdrawal | null>(null);
+
+    const handleTableChange = (newPagination: any) => {
+        setPaginationInfo(newPagination);
     };
 
-    const columns = [
+    const handleViewDetails = (withdrawal: Withdrawal) => {
+        setSelectedWithdrawal(withdrawal);
+    };
+
+    const handleBackToList = () => {
+        setSelectedWithdrawal(null);
+    };
+
+    const handleWithdrawalUpdate = () => {
+        // Refresh the withdrawal list after an update
+        fetchData();
+    };
+
+    const columns: ColumnsType<Withdrawal> = [
         {
             title: 'User',
-            dataIndex: 'userId',
-            render: (userId: { name: string; email: string }) => (
-                <div>
-                    <div>{userId.name}</div>
-                    <div className="text-gray-500 text-sm">{userId.email}</div>
-                </div>
-            )
+            dataIndex: ['userId', 'name'],
+            render: (_, record) => record.userId.name,
+            sorter: (a, b) => a.userId.name.localeCompare(b.userId.name),
         },
         {
             title: 'Amount',
             dataIndex: 'amount',
-            render: (amount: number, record: Withdrawal) => (
-                <div>
-                    {amount} {record.currency}
-                </div>
-            )
+            sorter: (a, b) => a.amount - b.amount,
         },
         {
             title: 'Currency',
             dataIndex: 'currency',
-            render: (currency: any) => currency.toUpperCase()
+            sorter: (a, b) => a.currency.localeCompare(b.currency),
         },
-        { title: 'Wallet Address', dataIndex: 'walletAddress' },
+        {
+            title: 'Wallet Address',
+            dataIndex: 'walletAddress',
+        },
         {
             title: 'Status',
             dataIndex: 'status',
-            render: (status: string) => (
-                <Tag color={statusColor[status]} className="capitalize">
-                    {status.toLowerCase()}
-                </Tag>
-            )
+            render: (status: Withdrawal['status']) => {
+                switch (status) {
+                    case 'PENDING':
+                        return <Badge status="processing" text="Pending" />;
+                    case 'APPOVED':
+                        return <Badge status="success" text="Approved" />;
+                    case 'FAILED':
+                        return <Badge status="error" text="Failed" />;
+                    case 'DECLINED':
+                        return <Badge status="error" text="Declined" />;
+                    default:
+                        return <Badge text="Unknown" />;
+                }
+            },
+            sorter: (a, b) => a.status.localeCompare(b.status),
+        },
+        {
+            title: 'Created At',
+            dataIndex: 'createdAt',
+            render: (text) => new Date(text).toLocaleString(),
+            sorter: (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
         },
         {
             title: 'Actions',
-            render: (_: any, record: Withdrawal) => (
+            render: (_, record) => (
                 <Space>
-                    {record.status === 'PENDING' && (
-                        <>
-                            <Button
-                                onClick={() => handleApprove(record._id)}
-                                type="primary"
-                                disabled={loading}
-                            >
-                                Approve
-                            </Button>
-                            <Button
-                                onClick={() => handleDecline(record._id)}
-                                danger
-                                disabled={loading}
-                            >
-                                Decline
-                            </Button>
-                        </>
-                    )}
+                    <Button size="small" onClick={() => handleViewDetails(record)}>
+                        View
+                    </Button>
                 </Space>
-            )
-        }
+            ),
+        },
     ];
+
+    const filteredWithdrawals = React.useMemo(() => {
+        return withdrawals.filter((withdrawal: any) => {
+            const searchTermLower = searchText.toLowerCase();
+            return (
+                withdrawal.userId.name.toLowerCase().includes(searchTermLower) ||
+                withdrawal.userId.email.toLowerCase().includes(searchTermLower) ||
+                withdrawal.currency.toLowerCase().includes(searchTermLower) ||
+                withdrawal.walletAddress.toLowerCase().includes(searchTermLower) ||
+                withdrawal.status.toLowerCase().includes(searchTermLower) ||
+                String(withdrawal.amount).includes(searchTermLower)
+            );
+        });
+    }, [withdrawals, searchText]);
+
+    if (selectedWithdrawal) {
+        return (
+            <WithdrawalDetails
+                withdrawal={selectedWithdrawal}
+                onBack={handleBackToList}
+                onUpdate={handleWithdrawalUpdate}
+            />
+        );
+    }
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Withdrawal Requests</h2>
+            <div className="flex justify-between mb-4">
+                <h2 className="text-xl font-semibold">Withdrawal Management</h2>
+            </div>
             <Table
                 columns={columns}
-                dataSource={withdrawals}
+                dataSource={filteredWithdrawals}
                 rowKey="_id"
-                pagination={pagination}
                 loading={loading}
-                onChange={setPagination}
-                scroll={{ x: true }}
+                pagination={paginationInfo}
+                onChange={handleTableChange}
             />
         </div>
     );
 };
 
-export default WithdrawalRequests;
+export default WithdrawalManager;

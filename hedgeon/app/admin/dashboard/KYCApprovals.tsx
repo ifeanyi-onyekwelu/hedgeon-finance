@@ -3,14 +3,13 @@
 import React from 'react';
 import { Card, Button, Image, List } from 'antd';
 
-const KYCApprovals = () => {
-    const [kycRequests, setKycRequests] = React.useState<any>([]);
+const KYCApprovals = ({ kycs }: any) => {
 
     return (
         <Card title="KYC Approvals" className="mb-6">
             <List
                 itemLayout="vertical"
-                dataSource={kycRequests}
+                dataSource={kycs}
                 renderItem={item => (
                     <List.Item
                         actions={[

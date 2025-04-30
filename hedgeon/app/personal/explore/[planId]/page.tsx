@@ -7,6 +7,7 @@ import {
     FiClock, FiTrendingUp, FiShield, FiGift, FiTag
 } from 'react-icons/fi';
 import { InvestmentPlan } from '../page';
+import Link from 'next/link';
 
 interface InvestmentPlanDetails extends InvestmentPlan {
 }
@@ -90,9 +91,9 @@ const PlanDetailsPage = () => {
                     </div>
                 </div>
                 <div className="bg-gray-50 p-6 border-t border-gray-200 flex justify-end">
-                    <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1">
+                    <Link href={`explore/invest/${plan._id}`} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1">
                         Invest Now
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>

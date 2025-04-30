@@ -137,11 +137,6 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
         <Section>
             <h1 className="text-3xl font-bold">User Management</h1>
 
-            <UserStats total={200}
-                active={200}
-                pending={200}
-                failed={200} />
-
             <div className="bg-white p-6 rounded-lg shadow-sm">
                 <Button onClick={onBack} className="mb-4">
                     &larr; Back to List
@@ -431,8 +426,16 @@ const UserManager = () => {
         );
     }
 
+    const user_stats = () => {
+        return (
+            <UserStats total={users.length} active={users.filter(user => user.active == true && user.suspended == false).length} verified={users.filter(user => user.isVerified).length} suspended={users.filter(user => user.active == false && user.suspended == true).length} />
+        );
+    }
+
     return (
         <Section>
+            {user_stats()}
+
             <div className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="flex justify-between mb-4">
                     <h2 className="text-xl font-semibold">User Management</h2>

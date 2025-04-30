@@ -11,6 +11,7 @@ import { FiAlertCircle, FiArrowLeft, FiArrowUpRight, FiCopy, FiInfo, FiLoader } 
 import { investApi } from '@/app/api/userApi';
 import { getAllCurrencies } from '@/app/api/utils';
 import { Wallet } from 'lucide-react';
+import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
 
 interface Fee {
     name: string;
@@ -207,7 +208,7 @@ const PaymentPage = () => {
                             {(investmentAmount < plan.minAmount || investmentAmount > plan.maxAmount) && (
                                 <p className="mt-2 text-sm text-red-600 flex items-center">
                                     <FiAlertCircle className="mr-1.5" />
-                                    Amount must be between ${plan.minAmount} and ${plan.maxAmount}
+                                    Amount must be between ${formatNumberWithCommas(plan.minAmount)} and ${formatNumberWithCommas(plan.maxAmount)}
                                 </p>
                             )}
                         </div>
@@ -241,7 +242,7 @@ const PaymentPage = () => {
                                 </div>
 
                                 <p className="text-gray-700 mb-4">
-                                    Deposit <span className="font-semibold text-blue-600">${investmentAmount}</span> equivalent in{' '}
+                                    Deposit <span className="font-semibold text-blue-600">${formatNumberWithCommas(investmentAmount)}</span> equivalent in{' '}
                                     <span className="font-semibold">{selectedCurrency}</span> to:
                                 </p>
 
@@ -285,7 +286,7 @@ const PaymentPage = () => {
                                     </div>
                                     <div className="flex justify-between pt-3 border-t border-gray-200">
                                         <dt className="text-green-700">Estimated Return</dt>
-                                        <dd className="font-semibold text-green-700">${estimatedReturn.toFixed(2)}</dd>
+                                        <dd className="font-semibold text-green-700">${formatNumberWithCommas(estimatedReturn)}</dd>
                                     </div>
                                 </dl>
                             </div>

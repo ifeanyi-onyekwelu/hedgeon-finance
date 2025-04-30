@@ -176,6 +176,9 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     if (!foundUser)
         return logError(res, new NotFoundError("Invalid credentials"));
 
+    if (!foundUser.active || foundUser.suspended)
+        return logError(res, new NotFoundError("Your account is suspended or inactive!"));
+
     if (!(await bcrypt.compare(password, foundUser?.password))) {
         console.log("Password does not match");
         return logError(res, new NotFoundError("Account not found"));

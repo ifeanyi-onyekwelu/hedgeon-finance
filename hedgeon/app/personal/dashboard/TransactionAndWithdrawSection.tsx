@@ -1,11 +1,14 @@
-import { IconFileBitcoin } from '@tabler/icons-react';
-import { Banknote, QrCode } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiArrowUpRight, FiCheckCircle, FiDollarSign, FiDownload, FiLoader, FiXCircle, FiZap } from 'react-icons/fi';
+import { withdrawApi, getUserTransactions } from '@/app/api/userApi';
+import { QrCode } from 'lucide-react';
+import { Table } from 'antd';
+import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
 
 const WithdrawalSection = ({ walletBalance }: any) => {
     const [withdrawalAmount, setWithdrawalAmount] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('bank');
+    const [selectedCurrency, setSelectedCurrency] = useState('USDT');
+    const [walletAddress, setWalletAddress] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [withdrawalSuccess, setWithdrawalSuccess] = useState(false);
     const [withdrawalError, setWithdrawalError] = useState('');
@@ -16,51 +19,54 @@ const WithdrawalSection = ({ walletBalance }: any) => {
         setWithdrawalSuccess(false);
         setWithdrawalError('');
 
-        // Simulate API call for withdrawal
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        if (parseFloat(withdrawalAmount) > 0) {
-            // Simulate successful withdrawal
-            setWithdrawalSuccess(true);
-            setWithdrawalAmount('');
-        } else {
-            // Simulate withdrawal error
-            setWithdrawalError('Please enter a valid withdrawal amount.');
+        try {
+            const response = await withdrawApi({ amount: withdrawalAmount, currency: selectedCurrency, walletAddress });
+            console.log(response)
+        } catch (err: any) {
+            console.log("Withdrawal error", err)
+            setWithdrawalError(`Withdrawal failed: ${err.response.data.message}`);
         }
 
+        if (!walletAddress || parseFloat(withdrawalAmount) <= 0) {
+            setWithdrawalError('Please provide a valid amount and wallet address.');
+            setIsSubmitting(false);
+            return;
+        }
+
+        setWithdrawalAmount('');
+        setWalletAddress('');
         setIsSubmitting(false);
     };
 
+    const currencies = ['USDT', 'BTC', 'SOL', 'ETH'];
+
     return (
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100/70 backdrop-blur-sm">
+        <div className="bg-white rounded-xl p-8 mb-8 border border-gray-100/70 backdrop-blur-sm">
             <div className="flex items-center gap-3 mb-6">
                 <FiDownload className="w-8 h-8 text-indigo-600" />
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Withdraw Funds
+                    Withdraw Crypto
                 </h2>
             </div>
 
-            {/* Animated Status Indicators */}
+            {/* Status Alerts */}
             {withdrawalSuccess && (
                 <div className="animate-fade-in-up mb-6">
                     <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex items-center gap-3">
                         <FiCheckCircle className="w-6 h-6 text-emerald-600 shrink-0" />
                         <div>
-                            <p className="font-semibold text-emerald-800">Withdrawal Processed!</p>
-                            <p className="text-sm text-emerald-700 mt-1">
-                                Funds should arrive within 1-3 business days
-                            </p>
+                            <p className="font-semibold text-emerald-800">Withdrawal Successful</p>
+                            <p className="text-sm text-emerald-700 mt-1">Check your wallet shortly.</p>
                         </div>
                     </div>
                 </div>
             )}
-
             {withdrawalError && (
                 <div className="animate-shake-x mb-6">
                     <div className="bg-rose-50 border border-rose-200 p-4 rounded-xl flex items-center gap-3">
                         <FiXCircle className="w-6 h-6 text-rose-600 shrink-0" />
                         <div>
-                            <p className="font-semibold text-rose-800">Transaction Failed</p>
+                            <p className="font-semibold text-rose-800">Withdrawal Failed</p>
                             <p className="text-sm text-rose-700 mt-1">{withdrawalError}</p>
                         </div>
                     </div>
@@ -81,31 +87,25 @@ const WithdrawalSection = ({ walletBalance }: any) => {
 
                 {/* Amount Input */}
                 <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                        <label htmlFor="withdrawalAmount" className="block text-sm font-medium text-gray-700">
-                            Withdrawal Amount
-                        </label>
+                    <label htmlFor="withdrawalAmount" className="text-sm font-medium text-gray-700 flex justify-between">
+                        Withdrawal Amount
                         <button
                             type="button"
-                            // onClick={() => setWithdrawalAmount(560.54)}
                             onClick={() => setWithdrawalAmount(walletBalance || 0)}
-                            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center gap-1 cursor-pointer"
+                            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center gap-1"
                         >
                             <FiZap className="w-4 h-4" />
                             Withdraw All
                         </button>
-                    </div>
-
+                    </label>
                     <div className="relative group">
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity" />
-                        <div className="relative flex items-center bg-white rounded-xl border border-gray-200 hover:border-indigo-300 transition-colors">
+                        <div className="relative flex items-center bg-white rounded-xl border border-gray-200 hover:border-indigo-300">
                             <span className="pl-4 pr-2 text-gray-400">
                                 <FiDollarSign className="w-5 h-5" />
                             </span>
                             <input
                                 type="number"
-                                id="withdrawalAmount"
-                                className="flex-1 py-4 pl-2 pr-4 border-0 bg-transparent text-lg font-medium focus:ring-0"
+                                className="flex-1 py-4 pl-2 pr-4 border-0 bg-transparent text-lg font-medium outline-none"
                                 placeholder="0.00"
                                 value={withdrawalAmount}
                                 onChange={(e) => setWithdrawalAmount(e.target.value)}
@@ -118,61 +118,48 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                     </div>
                 </div>
 
-                {/* Payment Method */}
-                <div className="space-y-4">
-                    <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700">
-                        Payment Method
-                    </label>
-
-                    <div className="grid gap-3">
-                        <RadioCard
-                            value="bank"
-                            selected={paymentMethod === 'bank'}
-                            onChange={() => setPaymentMethod('bank')}
-                            icon={<Banknote className="w-6 h-6" />}
-                            title="Bank Transfer"
-                            description="1-3 business days processing"
-                        />
-
-                        <RadioCard
-                            value="crypto"
-                            selected={paymentMethod === 'crypto'}
-                            onChange={() => setPaymentMethod('crypto')}
-                            icon={<IconFileBitcoin className="w-6 h-6" />}
-                            title="Crypto Wallet"
-                            description="Instant processing • 0.5% fee"
-                        />
-                    </div>
-
-                    {/* Dynamic Fields */}
-                    {paymentMethod === 'crypto' && (
-                        <div className="animate-fade-in">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Wallet Address
-                            </label>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    className="flex-1 py-3 px-4 border border-gray-200 rounded-xl focus:border-indigo-300 focus:ring-0"
-                                    placeholder="Enter crypto wallet address"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="px-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-colors"
-                                >
-                                    <QrCode className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                {/* Currency Selection */}
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">Select Cryptocurrency</label>
+                    <select
+                        className="w-full py-3 px-4 border border-gray-200 rounded-xl"
+                        value={selectedCurrency}
+                        onChange={(e) => setSelectedCurrency(e.target.value)}
+                    >
+                        {currencies.map((currency) => (
+                            <option key={currency} value={currency}>
+                                {currency}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
-                {/* CTA Button */}
+                {/* Wallet Address */}
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">Wallet Address</label>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            className="flex-1 py-3 px-4 border border-gray-200 rounded-xl"
+                            placeholder={`Enter your ${selectedCurrency} wallet address`}
+                            value={walletAddress}
+                            onChange={(e) => setWalletAddress(e.target.value)}
+                            required
+                        />
+                        <button
+                            type="button"
+                            className="px-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-colors"
+                        >
+                            <QrCode className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Submit Button */}
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all transform hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                    className="w-full py-5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all transform hover:shadow-lg active:scale-[0.98] disabled:opacity-50"
                 >
                     <div className="flex items-center justify-center gap-2">
                         {isSubmitting ? (
@@ -183,95 +170,89 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                         ) : (
                             <>
                                 <FiArrowUpRight className="w-5 h-5" />
-                                Initiate Withdrawal
+                                Withdraw {selectedCurrency}
                             </>
                         )}
                     </div>
                 </button>
 
                 <p className="text-center text-sm text-gray-500 mt-4">
-                    Typical processing time: {paymentMethod === 'bank' ? '1-3 business days' : 'Instant'}
+                    Processing time: Instant • Network fee may apply
                 </p>
             </form>
         </div>
     );
 };
 
-const RadioCard = ({ value, selected, onChange, icon, title, description }: any) => (
-    <label className={`relative cursor-pointer border rounded-xl p-4 transition-all ${selected ? 'border-indigo-300 bg-indigo-50/50' : 'border-gray-200 hover:border-indigo-200'}`}>
-        <input
-            type="radio"
-            value={value}
-            checked={selected}
-            onChange={onChange}
-            className="absolute opacity-0"
-        />
-        <div className="flex items-start gap-4">
-            <div className={`p-2 rounded-lg ${selected ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}>
-                {icon}
-            </div>
-            <div>
-                <p className="font-medium text-gray-900">{title}</p>
-                <p className="text-sm text-gray-500 mt-1">{description}</p>
-            </div>
-        </div>
-    </label>
-)
-
 
 const TransactionHistory = () => {
     // Sample transaction data
-    const transactions = [
-        { id: 1, type: 'Investment', fund: 'Growth Fund', amount: 1000, date: '2025-04-15' },
-        { id: 2, type: 'Withdrawal', amount: 200, date: '2025-04-10' },
-        { id: 3, type: 'Dividend', fund: 'Value Fund', amount: 50, date: '2025-04-01' },
+    const [transactions, setTransactions] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const fetchTransactions = async () => {
+        setIsLoading(true)
+        try {
+            const response = await getUserTransactions();
+            setTransactions(response.data.transactions)
+            setIsLoading(false)
+        } catch (error) {
+            setIsLoading(false)
+            console.error('Error fetching transactions:', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchTransactions()
+    }, [])
+
+
+    // Define columns for the Ant Design Table
+    const columns = [
+        {
+            title: 'Type',
+            dataIndex: 'type',
+            key: 'type',
+        },
+        {
+            title: 'Plan',
+            render: (record: any) => {
+                return record.investment?.plan?.planId?.name || "-";
+            },
+            sorter: (a, b) => {
+                const planA = a.investment?.plan?.planId?.name || "";
+                const planB = b.investment?.plan?.planId?.name || "";
+                return planA.localeCompare(planB);
+            },
+        },
+        {
+            title: 'Amount',
+            dataIndex: 'amount',
+            key: 'amount',
+            render: (amount: any) => `$${formatNumberWithCommas(amount)}`, // Use render to format currency
+        },
+        {
+            title: 'Date',
+            dataIndex: 'createdAt',
+            key: 'date',
+            render: (createdAt: any) => new Date(createdAt).toLocaleDateString(), // Format date
+        },
     ];
 
     return (
+        // Keep the outer styling div
         <div className="bg-white shadow rounded-md p-6 mb-6">
+            {/* Keep the header */}
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Transaction History</h2>
-            {transactions.length === 0 ? (
-                <p className="text-gray-500">No transactions yet.</p>
-            ) : (
-                <div className="overflow-x-auto">
-                    <table className="min-w-full leading-normal">
-                        <thead>
-                            <tr>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Type
-                                </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Fund/Details
-                                </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Amount
-                                </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Date
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {transactions.map((transaction) => (
-                                <tr key={transaction.id}>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{transaction.type}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{transaction.fund || '-'}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">${transaction.amount.toFixed(2)}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{transaction.date}</p>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+
+            {/* Use Ant Design Table component */}
+            {/* Ant Design Table automatically handles empty data when dataSource is an empty array */}
+            <Table
+                dataSource={transactions} // Pass your data array here
+                columns={columns}       // Pass your column definitions here
+                rowKey="id"             // Specify the unique key for each row
+                loading={isLoading}      // Add loading={true} if fetching data asyncally
+            />
         </div>
     );
 };
@@ -314,74 +295,11 @@ const AutoReinvestOption = () => {
     );
 };
 
-const Trades = () => {
-    // Sample trades data
-    const tradesData = [
-        { id: 1, symbol: 'AAPL', type: 'Buy', quantity: 10, price: 170.50, date: '2025-04-18' },
-        { id: 2, symbol: 'GOOGL', type: 'Sell', quantity: 5, price: 2500.20, date: '2025-04-17' },
-    ];
-
-    return (
-        <div className="bg-white shadow rounded-md p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Recent Trades</h2>
-            {tradesData.length === 0 ? (
-                <p className="text-gray-500">No recent trades.</p>
-            ) : (
-                <div className="overflow-x-auto">
-                    <table className="min-w-full leading-normal">
-                        <thead>
-                            <tr>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Symbol
-                                </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Type
-                                </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Quantity
-                                </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Price
-                                </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Date
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tradesData.map((trade) => (
-                                <tr key={trade.id}>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{trade.symbol}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{trade.type}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{trade.quantity}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">${trade.price.toFixed(2)}</p>
-                                    </td>
-                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{trade.date}</p>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-        </div>
-    );
-};
-
 const TransactionAndWithdrawalSection = ({ walletBalance }: any) => {
     return (
         <div className="mt-8">
             <WithdrawalSection walletBalance={walletBalance} />
             <TransactionHistory />
-            <Trades />
             <AutoReinvestOption />
         </div>
     );

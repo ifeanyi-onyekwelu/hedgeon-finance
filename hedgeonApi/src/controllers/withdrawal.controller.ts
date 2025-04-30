@@ -2,7 +2,7 @@ import { Request, Response } from "../utils/Types";
 import withdrawalModel from "../models/withdrawal.model";
 import asynchHandler from "express-async-handler";
 import { emailService } from "..";
-import { logData } from "../utils/logger";
+import { logData, logError } from "../utils/logger";
 import { getUserById } from "../services/user.service";
 import { BadRequestError } from "../utils/errors";
 
@@ -15,9 +15,7 @@ export const withdrawalHandler = asynchHandler(
 
         // Validate that the user has sufficient funds for the withdrawal
         if (user.walletBalance < amount) {
-            throw new BadRequestError(
-                `Insufficient wallet balance to withdraw`
-            );
+            return logError(res, new BadRequestError("Insufficient wallet balance to withdraw"));
         }
 
         // Create withdrawal record

@@ -10,15 +10,15 @@ interface IUser {
     role: 'user' | 'admin',
     kyc: string,
     twoFactorSecret: string,
-    currentPlan?: {
-        id: mongoose.Types.ObjectId;
+    currentPlan?: [{
+        planId: mongoose.Types.ObjectId;
         name: string;
         startDate: Date;
         endDate: Date;
         daysGone: number;
         investedAmount: number;
         roiAccumulated: number;
-    };
+    }];
     walletBalance: number
     totalInvested: number;   // Track the total amount invested
     netReturns: number;      // Track the net returns
@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     kyc: String,
     twoFactorSecret: String,
-    currentPlan: {
+    currentPlan: [{
         planId: {
             type: mongoose.Types.ObjectId,
             ref: "Plan",
@@ -83,7 +83,7 @@ const userSchema = new mongoose.Schema<IUser>({
         daysGone: { type: Number, default: 0 },
         investedAmount: { type: Number, default: 0 },
         roiAccumulated: { type: Number, default: 0 },
-    },
+    }],
     walletBalance: {
         type: Number,
         default: 0,
@@ -136,5 +136,9 @@ userSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, 10);
     next();
 });
+
+userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+    return await bcrypt.compare(candidatePassword, this.password);
+};
 
 export default mongoose.models.Investment || mongoose.model<IUser>('User', userSchema);

@@ -346,7 +346,7 @@ const UserManager = () => {
         {
             title: 'Phone',
             dataIndex: 'phone',
-            sorter: (a, b) => a.phone?.localeCompare(b.phone ?? ''),
+            sorter: (a, b) => (a.phone ?? '').localeCompare(b.phone ?? ''),
         },
         {
             title: 'Verified',

@@ -27,7 +27,7 @@ export default function Login() {
 
         try {
             const response = await loginApi(formData)
-            console.log(response.data)
+            console.log("LOGIN DATA:", response.data)
             const role = response?.data?.role
 
             if (response?.status === 200) {
@@ -43,6 +43,7 @@ export default function Login() {
                 setError("Login failed. Please try again.")
             }
         } catch (error: any) {
+            console.log(error)
             setError(error.response['data']['message'])
         } finally {
             setLoading(false)

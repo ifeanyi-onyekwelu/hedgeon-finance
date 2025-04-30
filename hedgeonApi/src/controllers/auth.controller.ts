@@ -230,8 +230,6 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     res.cookie('access_token', accessToken, {
         httpOnly: true,
         secure: true, // ❗ Set to false if testing over HTTP
-        sameSite: 'lax', // or 'none' if you're using different domains + https
-        domain: 'localhost', // or your production domain
         maxAge: 15 * 60 * 1000,
     });
 

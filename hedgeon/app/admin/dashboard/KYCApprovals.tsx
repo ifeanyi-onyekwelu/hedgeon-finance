@@ -10,17 +10,8 @@ const KYCApprovals = ({ kycs }: any) => {
             <List
                 itemLayout="vertical"
                 dataSource={kycs}
-                renderItem={item => (
-                    <List.Item
-                        actions={[
-                            <Button type="primary" onClick={() => handleApprove(item._id)}>
-                                Approve
-                            </Button>,
-                            <Button danger onClick={() => handleReject(item._id)}>
-                                Reject
-                            </Button>,
-                        ]}
-                    >
+                renderItem={(item: any) => (
+                    <List.Item>
                         <List.Item.Meta
                             title={item.userId.name}
                             description={

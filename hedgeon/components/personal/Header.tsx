@@ -47,11 +47,10 @@ function DashboardHeader() {
         try {
             const response = await logoutApi();
             console.log(response);
+            localStorage.removeItem('access_token')
             router.push('/auth/login');
-            // Handle successful logout (e.g., redirect to login page)
         } catch (error) {
             console.error('Logout failed:', error);
-            // Handle error (e.g., show a notification)
         }
     }
 

@@ -148,17 +148,11 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.cookie('access_token', accessToken, {
-        httpOnly: true,
-        secure: true, // ❗ Set to false if testing over HTTP
-        sameSite: 'lax', // or 'none' if you're using different domains + https
-        domain: 'localhost', // or your production domain
-        maxAge: 15 * 60 * 1000,
-    });
-
     return logData(res, 201, {
         message: "Registration successful",
         user,
+        accessToken,
+        role: user.role,
     });
 });
 
@@ -227,23 +221,17 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
         maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.cookie('access_token', accessToken, {
-        httpOnly: true,
-        secure: true, // ❗ Set to false if testing over HTTP
-        maxAge: 15 * 60 * 1000,
-    });
-
     return logData(res, 200, {
         role: foundUser.role,
         isVerified: foundUser.isVerified,
+        accessToken
     });
 });
 
 export const logout = asyncHandler(async (req: Request, res: Response) => {
-    const cookies = req.cookies;
-    const user = await userModel.findOne({
-        refreshToken: cookies.jwt,
-    });
+
+    const user = await userModel.findById(req.session.user.id);
+    console.log(user)
 
     if (!user) return logError(res, new UnauthorizedError("Not logged in"));
 
@@ -251,11 +239,6 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
     await user?.save();
 
     res.clearCookie("jwt", {
-        httpOnly: true,
-        sameSite: true,
-        secure: true,
-    });
-    res.clearCookie("access_token", {
         httpOnly: true,
         sameSite: true,
         secure: true,

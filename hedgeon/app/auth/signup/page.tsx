@@ -70,6 +70,12 @@ const SignupForm = () => {
             const response = await (await signupApi(formData)).data
             console.log(response);
 
+
+            const { accessToken, role } = response?.data
+
+            localStorage.setItem('access_token', accessToken)
+            localStorage.setItem('user_role', role)
+
             setLoading(false);
         } catch (err: any) {
             setError(`${err['response']['data']['message']}`);

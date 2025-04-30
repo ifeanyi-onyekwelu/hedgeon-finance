@@ -12,6 +12,7 @@ import {
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
 import { useRouter } from 'next/navigation'; // Import useRouter
+import ProtectedLayout from '../ProtectedLayout';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -54,35 +55,37 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <Layout style={{ minHeight: '100vh' }}>
-            <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                <div className="demo-logo-vertical" />
-                <Menu
-                    theme="dark"
-                    defaultSelectedKeys={['/admin/dashboard']} // Set the initial selected key to a route
-                    mode="inline"
-                    items={items}
-                    onClick={handleMenuClick} // Add the onClick handler
-                />
-            </Sider>
-            <Layout>
-                <Content style={{ margin: '0 16px' }}>
-                    <div
-                        style={{
-                            padding: 24,
-                            minHeight: 360,
-                            background: colorBgContainer,
-                            borderRadius: borderRadiusLG,
-                        }}
-                    >
-                        {children}
-                    </div>
-                </Content>
-                <Footer style={{ textAlign: 'center' }}>
-                    Hedgeon Finance ©{new Date().getFullYear()}
-                </Footer>
+        <ProtectedLayout allowedRoles={['admin']}>
+            <Layout style={{ minHeight: '100vh' }}>
+                <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+                    <div className="demo-logo-vertical" />
+                    <Menu
+                        theme="dark"
+                        defaultSelectedKeys={['/admin/dashboard']} // Set the initial selected key to a route
+                        mode="inline"
+                        items={items}
+                        onClick={handleMenuClick} // Add the onClick handler
+                    />
+                </Sider>
+                <Layout>
+                    <Content style={{ margin: '0 16px' }}>
+                        <div
+                            style={{
+                                padding: 24,
+                                minHeight: 360,
+                                background: colorBgContainer,
+                                borderRadius: borderRadiusLG,
+                            }}
+                        >
+                            {children}
+                        </div>
+                    </Content>
+                    <Footer style={{ textAlign: 'center' }}>
+                        Hedgeon Finance ©{new Date().getFullYear()}
+                    </Footer>
+                </Layout>
             </Layout>
-        </Layout>
+        </ProtectedLayout>
     );
 };
 

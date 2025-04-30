@@ -28,7 +28,10 @@ export default function Login() {
         try {
             const response = await loginApi(formData)
             console.log("LOGIN DATA:", response.data)
-            const role = response?.data?.role
+            const { accessToken, role } = response?.data
+
+            localStorage.setItem('access_token', accessToken)
+            localStorage.setItem('user_role', role)
 
             if (response?.status === 200) {
                 refreshUser();

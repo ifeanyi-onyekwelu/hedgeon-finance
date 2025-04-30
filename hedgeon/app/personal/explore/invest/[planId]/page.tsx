@@ -29,6 +29,7 @@ const PaymentPage = () => {
     const router = useRouter();
     const { user } = useUser();
 
+    const [currentStep, setCurrentStep] = useState<'form' | 'confirmation'>('form');
     const [plan, setPlan] = useState<InvestmentPlan | null>(null);
     const [investmentAmount, setInvestmentAmount] = useState<number | ''>('');
     const [selectedCurrency, setSelectedCurrency] = useState<'BTC' | 'USDT' | 'ETH' | 'TRX'>('USDT'); // Default to USDT
@@ -39,7 +40,7 @@ const PaymentPage = () => {
     const [processingPayment, setProcessingPayment] = useState(false);
     const [cryptoAddress, setCryptoAddress] = useState<CryptoAddress | null>(null);
 
-    const availableCurrencies = ['BTC', 'USDT', 'ETH', 'TRX'];
+    const availableCurrencies = ['BTC', 'USDT (Trc-20)', 'ETH', 'SOL'];
 
     useEffect(() => {
         const fetchPlanDetails = async () => {
@@ -71,34 +72,6 @@ const PaymentPage = () => {
         }
     }, [plan, investmentAmount]);
 
-    useEffect(() => {
-        // Fetch crypto address when the selected currency changes
-        const fetchCryptoAddress = async () => {
-            if (selectedCurrency) {
-                // Replace this with your actual API endpoint to fetch crypto addresses
-                try {
-                    const response = await getAllCurrencies(selectedCurrency);
-                    if (response.status === 200) {
-                        const data = await response.data;
-                        setCryptoAddress(data['currency'] as CryptoAddress); // Adjust based on your API response
-                    } else {
-                        console.error('Failed to fetch crypto address');
-                        setCryptoAddress(null);
-                        toast.error('Failed to load crypto address.');
-                    }
-                } catch (error) {
-                    console.error('Error fetching crypto address:', error);
-                    setCryptoAddress(null);
-                    toast.error('An unexpected error occurred while fetching crypto address.');
-                }
-            } else {
-                setCryptoAddress(null);
-            }
-        };
-
-        fetchCryptoAddress();
-    }, [selectedCurrency]);
-
     const handleInvestmentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const numberValue = value === '' ? '' : parseFloat(value);
@@ -123,25 +96,18 @@ const PaymentPage = () => {
             toast.error(`Amount must be between $${plan.minAmount} and $${plan.maxAmount}.`);
             return;
         }
-        if (!cryptoAddress?.address) {
-            toast.error('Please select a cryptocurrency to get the deposit address.');
-            return;
-        }
 
         setProcessingPayment(true);
         try {
-
-            toast.info(`Please deposit ${investmentAmount} ${selectedCurrency} to the address: ${cryptoAddress.address}`);
-            // router.push('/dashboard'); // Or a page with deposit instructions
-            const response = await investApi({
-                planId: plan._id,
-                amount: investmentAmount,
-                currency: selectedCurrency,
-            });
-
-            const data = await response.data;
-
-            console.log(data);
+            // Fetch crypto address when proceeding to payment
+            const response = await getAllCurrencies(selectedCurrency);
+            if (response.status === 200) {
+                const data = await response.data;
+                setCryptoAddress(data['currency'] as CryptoAddress);
+                setCurrentStep('confirmation');
+            } else {
+                toast.error('Failed to load payment address');
+            }
         } catch (error) {
             console.error('Error during investment initiation:', error);
             toast.error('An unexpected error occurred while initiating investment.');
@@ -165,11 +131,7 @@ const PaymentPage = () => {
         );
     }
 
-    const totalAmount = investmentAmount; // Total amount is the investment amount in fiat equivalent (you might need to fetch this)
-
-    console.log("Selected currency", selectedCurrency)
-
-    return (
+    const renderFormStep = () => (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 transition-all duration-200 hover:shadow-xl">
                 <div className="p-8 space-y-6">
@@ -233,44 +195,6 @@ const PaymentPage = () => {
                             </div>
                         </div>
 
-                        {/* Deposit Instructions */}
-                        {cryptoAddress && (
-                            <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <FiInfo className="shrink-0 text-blue-600" />
-                                    <h3 className="text-lg font-semibold text-gray-900">Deposit Instructions</h3>
-                                </div>
-
-                                <p className="text-gray-700 mb-4">
-                                    Deposit <span className="font-semibold text-blue-600">${formatNumberWithCommas(investmentAmount)}</span> equivalent in{' '}
-                                    <span className="font-semibold">{selectedCurrency}</span> to:
-                                </p>
-
-                                <div className="bg-white p-4 rounded-lg border border-gray-200 mb-4">
-                                    <div className="flex items-center justify-between">
-                                        <p className="font-mono text-sm break-all pr-4">{cryptoAddress.address}</p>
-                                        <button
-                                            onClick={() => navigator.clipboard.writeText(cryptoAddress.address)}
-                                            className="shrink-0 text-blue-600 hover:text-blue-800 p-2 rounded-md"
-                                        >
-                                            <FiCopy className="w-5 h-5" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {cryptoAddress.qrCodeUrl && (
-                                    <div className="text-center border-t pt-4 mt-4">
-                                        <p className="text-sm text-gray-600 mb-3">Scan QR Code</p>
-                                        <img
-                                            src={cryptoAddress.qrCodeUrl}
-                                            alt="QR Code"
-                                            className="inline-block w-40 h-40 p-2 bg-white rounded-lg border border-gray-200"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
                         {/* Investment Summary */}
                         {investmentAmount > 0 && (
                             <div className="bg-gray-50 p-6 rounded-xl">
@@ -292,10 +216,9 @@ const PaymentPage = () => {
                             </div>
                         )}
 
-                        {/* CTA Button */}
                         <button
                             onClick={handleInvestNow}
-                            disabled={processingPayment || !cryptoAddress?.address}
+                            disabled={processingPayment}
                             className="w-full bg-gradient-to-br from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold py-4 px-6 rounded-xl transition-all transform hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
                         >
                             <div className="flex items-center justify-center">
@@ -307,12 +230,115 @@ const PaymentPage = () => {
                                 ) : (
                                     <>
                                         <FiArrowUpRight className="mr-3" />
-                                        Proceed to Deposit
+                                        Proceed to Payment
                                     </>
                                 )}
                             </div>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    )
+
+    const renderConfirmationStep = () => (
+        <div className="space-y-6">
+            <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100">
+                <div className="flex items-center gap-3 mb-4">
+                    <FiInfo className="shrink-0 text-blue-600" />
+                    <h3 className="text-lg font-semibold text-gray-900">Payment Instructions</h3>
+                </div>
+
+                <p className="text-gray-700 mb-4">
+                    Send exactly <span className="font-semibold text-blue-600">${formatNumberWithCommas(investmentAmount)}</span> worth of{' '}
+                    <span className="font-semibold">{selectedCurrency}</span> to:
+                </p>
+
+                <div className="bg-white p-4 rounded-lg border border-gray-200 mb-4">
+                    <div className="flex items-center justify-between">
+                        <p className="font-mono text-sm break-all pr-4">{cryptoAddress?.address}</p>
+                        <button
+                            onClick={() => navigator.clipboard.writeText(cryptoAddress?.address || '')}
+                            className="shrink-0 text-blue-600 hover:text-blue-800 p-2 rounded-md"
+                        >
+                            <FiCopy className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+
+                {cryptoAddress?.qrCodeUrl && (
+                    <div className="text-center border-t pt-4 mt-4">
+                        <p className="text-sm text-gray-600 mb-3">Scan QR Code</p>
+                        <img
+                            src={cryptoAddress.qrCodeUrl}
+                            alt="QR Code"
+                            className="inline-block w-40 h-40 p-2 bg-white rounded-lg border border-gray-200"
+                        />
+                    </div>
+                )}
+
+                <div className="mt-6 text-center">
+                    <button
+                        onClick={() => {
+                            setCurrentStep('form');
+                            setCryptoAddress(null);
+                        }}
+                        className="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center gap-2"
+                    >
+                        <FiArrowLeft className="mr-2" />
+                        Back to Amount Selection
+                    </button>
+                </div>
+            </div>
+
+            <div className="bg-gray-50 p-6 rounded-xl">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Investment Summary</h4>
+                <dl className="space-y-3">
+                    <div className="flex justify-between">
+                        <dt className="text-gray-600">Plan Name</dt>
+                        <dd className="font-medium">{plan.name}</dd>
+                    </div>
+                    <div className="flex justify-between">
+                        <dt className="text-gray-600">Investment Amount</dt>
+                        <dd className="font-medium">${formatNumberWithCommas(investmentAmount)}</dd>
+                    </div>
+                    <div className="flex justify-between">
+                        <dt className="text-gray-600">Payment Currency</dt>
+                        <dd className="font-medium">{selectedCurrency}</dd>
+                    </div>
+                    <div className="flex justify-between pt-3 border-t border-gray-200">
+                        <dt className="text-green-700">Estimated Return</dt>
+                        <dd className="font-semibold text-green-700">${formatNumberWithCommas(estimatedReturn)}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 transition-all duration-200 hover:shadow-xl">
+                <div className="p-8 space-y-6">
+                    <button
+                        onClick={() => router.back()}
+                        className="flex items-center text-blue-600 hover:text-blue-800 font-medium group transition-colors"
+                    >
+                        <FiArrowLeft className="mr-2 transform group-hover:-translate-x-1 transition-transform" />
+                        Back to Plan
+                    </button>
+
+                    <div className="space-y-2">
+                        <h1 className="text-3xl font-bold text-gray-900">
+                            {currentStep === 'form' ? 'Invest in' : 'Confirm Payment for'} {plan.name}
+                        </h1>
+                        <p className="text-gray-500">
+                            {currentStep === 'form'
+                                ? 'Choose your investment amount and preferred cryptocurrency'
+                                : 'Complete your investment by sending the payment'}
+                        </p>
+                    </div>
+
+                    {currentStep === 'form' ? renderFormStep() : renderConfirmationStep()}
                 </div>
             </div>
         </div>

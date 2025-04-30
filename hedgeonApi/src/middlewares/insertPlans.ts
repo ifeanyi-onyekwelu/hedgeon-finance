@@ -86,13 +86,13 @@ const investmentPlans = [
 
 const currencies = [
     {
-        name: 'USDT',
-        address: 'YOUR_USDT_WALLET_ADDRESS', // Replace with your actual USDT address
+        name: 'USDT (TRC-20)',
+        address: 'Bo47XfDUKcb31Bbq6661NoVZjZuW26s9Af7BK1mhn4ut', // Replace with your actual USDT address
         qrCodeUrl: 'CLOUDINARY_USDT_QR_CODE_URL', // Replace with your Cloudinary USDT QR code URL
     },
     {
         name: 'BTC',
-        address: 'YOUR_BTC_WALLET_ADDRESS',     // Replace with your actual BTC address
+        address: 'bc1q6ujvvxafu4td0wpfm4eujyyrxec45wvu8m95lf',     // Replace with your actual BTC address
         qrCodeUrl: 'CLOUDINARY_BTC_QR_CODE_URL',     // Replace with your Cloudinary BTC QR code URL
     },
     {
@@ -101,8 +101,8 @@ const currencies = [
         qrCodeUrl: 'CLOUDINARY_ETH_QR_CODE_URL',     // Replace with your Cloudinary ETH QR code URL
     },
     {
-        name: 'TRX',
-        address: 'YOUR_TRX_WALLET_ADDRESS',     // Replace with your actual TRX address
+        name: 'SOL',
+        address: '0x27F9165b31036D254E449325ef70c6bB4a998eAB',     // Replace with your actual TRX address
         qrCodeUrl: 'CLOUDINARY_TRX_QR_CODE_URL',     // Replace with your Cloudinary TRX QR code URL
     },
 ]

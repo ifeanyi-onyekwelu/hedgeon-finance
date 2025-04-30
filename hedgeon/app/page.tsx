@@ -11,8 +11,8 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import { getAllPlansAdminApi } from '../api/adminApi';
-import { getPlansApi } from '../api/planApi';
+import { getAllPlansAdminApi } from './api/adminApi';
+import { getPlansApi } from './api/planApi';
 import formatNumberWithCommas from '@/utils/formatNumbersWithCommas'
 
 

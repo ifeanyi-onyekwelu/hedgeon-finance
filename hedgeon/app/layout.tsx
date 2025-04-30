@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
+import { PathWrapper } from "./path-wrapper";
 
 export const metadata: Metadata = {
     title: "Hedgeon Finance",
@@ -16,7 +17,7 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <Providers>
-                    {children}
+                    <PathWrapper>{children}</PathWrapper>
                 </Providers>
             </body>
         </html>

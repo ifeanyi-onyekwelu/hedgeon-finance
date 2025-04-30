@@ -1,5 +1,7 @@
 import React from 'react'
 import type { Metadata } from "next";
+import Header from '@/components/public/Header';
+import Footer from '@/components/public/Footer';
 
 export const metadata: Metadata = {
     title: "Hedgeon Finance",
@@ -9,7 +11,9 @@ export const metadata: Metadata = {
 function AuthLayout({ children }: { children: React.ReactNode }) {
     return (
         <section>
+            <Header />
             {children}
+            <Footer />
         </section>
     )
 }

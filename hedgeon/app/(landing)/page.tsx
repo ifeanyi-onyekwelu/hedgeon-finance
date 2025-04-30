@@ -1,6 +1,8 @@
+'use client'
+
 import { ArrowRight, Check, PlayCircle } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button';
 import {
@@ -9,6 +11,9 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import { getAllPlansAdminApi } from '../api/adminApi';
+import { getPlansApi } from '../api/planApi';
+import formatNumberWithCommas from '@/utils/formatNumbersWithCommas'
 
 
 function Home() {
@@ -47,6 +52,17 @@ function Home() {
             offset: "md:-top-20",
         },
     ];
+
+    const [plans, setPlans] = useState<any[]>([])
+
+    const fetchPlans = async () => {
+        const response = await getPlansApi();
+        setPlans(response.data['plans']);
+    }
+
+    useEffect(() => {
+        fetchPlans();
+    }, [])
 
 
     return (
@@ -267,276 +283,98 @@ function Home() {
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 gap-4 p-5">
-                        <div className="group relative bg-gradient-to-br from-slate-800 to-slate-700 rounded-2xl">
-                            <div className="absolute inset-0.5 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl" />
+                        {plans.map((plan, index) => (
+                            <div className="group relative bg-gradient-to-br from-slate-800 to-slate-700 rounded-2xl" key={index}>
+                                <div className="absolute inset-0.5 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl" />
 
-                            <div className="relative p-8 space-y-6">
-                                <div className="flex justify-between items-start">
-                                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                                        Premium Plan
-                                    </h3>
-                                    <span className="flex items-center gap-2 bg-cyan-900/30 text-cyan-400 px-3 py-1 rounded-full text-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                <div className="relative p-8 space-y-6">
+                                    <div className="flex justify-between items-start">
+                                        <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                                            {plan?.name}
+                                        </h3>
+                                        <span className="flex items-center gap-2 bg-cyan-900/30 text-cyan-400 px-3 py-1 rounded-full text-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                            </svg>
+                                            Active
+                                        </span>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="pb-4 border-b border-slate-700">
+                                            <p className="text-5xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent">
+                                                {plan?.estimatedROI}%
+                                            </p>
+                                            <p className="text-sm text-slate-400">Monthly ROI</p>
+                                        </div>
+
+                                        <div className="space-y-4 text-slate-300">
+                                            <div className="flex justify-between items-center">
+                                                <span className="flex items-center gap-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 110-2V4zm3 1h2v2H7V5zm0 4h2v2H7V9zm0 4h2v2H7v-2z" clipRule="evenodd" />
+                                                    </svg>
+                                                    Range
+                                                </span>
+                                                <span className="font-mono">${formatNumberWithCommas(plan?.minAmount)} - ${formatNumberWithCommas(plan?.maxAmount)}</span>
+                                            </div>
+
+                                            <div className="flex justify-between items-center">
+                                                <span className="flex items-center gap-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                                                    </svg>
+                                                    Duration
+                                                </span>
+                                                <span className="font-mono">{plan?.durationMonths} Months</span>
+                                            </div>
+
+                                            <div className="flex justify-between items-center">
+                                                <span className="flex items-center gap-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 110-2V4zm3 1h2v2H7V5zm0 4h2v2H7V9zm0 4h2v2H7v-2z" clipRule="evenodd" />
+                                                    </svg>
+                                                    Tax
+                                                </span>
+                                                <span className="font-mono">{plan?.taxOnProfit}%</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-4 border-t border-slate-700">
+                                            <ul className="space-y-3 text-slate-400">
+                                                <li className="flex items-center gap-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                    </svg>
+                                                    Priority Support
+                                                </li>
+                                                <li className="flex items-center gap-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                    </svg>
+                                                    Exclusive Webinars
+                                                </li>
+                                                <li className="flex items-center gap-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                    </svg>
+                                                    Custom Portfolio
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="relative px-8 pb-8">
+                                    <Link href={`/personal/explore/invest/${plan._id}`} className="w-full group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-blue-500 bg-slate-700/50 hover:bg-slate-700/70 text-white py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
+                                        Invest Now
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                                         </svg>
-                                        Active
-                                    </span>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="pb-4 border-b border-slate-700">
-                                        <p className="text-5xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent">
-                                            12.5%
-                                        </p>
-                                        <p className="text-sm text-slate-400">Monthly ROI</p>
-                                    </div>
-
-                                    <div className="space-y-4 text-slate-300">
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 110-2V4zm3 1h2v2H7V5zm0 4h2v2H7V9zm0 4h2v2H7v-2z" clipRule="evenodd" />
-                                                </svg>
-                                                Range
-                                            </span>
-                                            <span className="font-mono">$50k - $500k</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                                                </svg>
-                                                Duration
-                                            </span>
-                                            <span className="font-mono">24 Months</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 110-2V4zm3 1h2v2H7V5zm0 4h2v2H7V9zm0 4h2v2H7v-2z" clipRule="evenodd" />
-                                                </svg>
-                                                Tax
-                                            </span>
-                                            <span className="font-mono">15%</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 border-t border-slate-700">
-                                        <ul className="space-y-3 text-slate-400">
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Priority Support
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Exclusive Webinars
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Custom Portfolio
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
-
-                            <div className="relative px-8 pb-8">
-                                <button className="w-full group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-blue-500 bg-slate-700/50 hover:bg-slate-700/70 text-white py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-                                    Invest Now
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="group relative md:-top-10 bg-gradient-to-br from-slate-800 to-slate-700 rounded-2xl">
-                            <div className="absolute inset-0.5 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl" />
-
-                            <div className="relative p-8 space-y-6">
-                                <div className="flex justify-between items-start">
-                                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                                        Premium Plan
-                                    </h3>
-                                    <span className="flex items-center gap-2 bg-cyan-900/30 text-cyan-400 px-3 py-1 rounded-full text-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
-                                        Active
-                                    </span>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="pb-4 border-b border-slate-700">
-                                        <p className="text-5xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent">
-                                            12.5%
-                                        </p>
-                                        <p className="text-sm text-slate-400">Monthly ROI</p>
-                                    </div>
-
-                                    <div className="space-y-4 text-slate-300">
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 110-2V4zm3 1h2v2H7V5zm0 4h2v2H7V9zm0 4h2v2H7v-2z" clipRule="evenodd" />
-                                                </svg>
-                                                Range
-                                            </span>
-                                            <span className="font-mono">$50k - $500k</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                                                </svg>
-                                                Duration
-                                            </span>
-                                            <span className="font-mono">24 Months</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 110-2V4zm3 1h2v2H7V5zm0 4h2v2H7V9zm0 4h2v2H7v-2z" clipRule="evenodd" />
-                                                </svg>
-                                                Tax
-                                            </span>
-                                            <span className="font-mono">15%</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 border-t border-slate-700">
-                                        <ul className="space-y-3 text-slate-400">
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Priority Support
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Exclusive Webinars
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Custom Portfolio
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="relative px-8 pb-8">
-                                <button className="w-full group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-blue-500 bg-slate-700/50 hover:bg-slate-700/70 text-white py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-                                    Invest Now
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="group relative bg-gradient-to-br from-slate-800 to-slate-700 rounded-2xl">
-                            <div className="absolute inset-0.5 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl" />
-
-                            <div className="relative p-8 space-y-6">
-                                <div className="flex justify-between items-start">
-                                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                                        Premium Plan
-                                    </h3>
-                                    <span className="flex items-center gap-2 bg-cyan-900/30 text-cyan-400 px-3 py-1 rounded-full text-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
-                                        Active
-                                    </span>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div className="pb-4 border-b border-slate-700">
-                                        <p className="text-5xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent">
-                                            12.5%
-                                        </p>
-                                        <p className="text-sm text-slate-400">Monthly ROI</p>
-                                    </div>
-
-                                    <div className="space-y-4 text-slate-300">
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 110-2V4zm3 1h2v2H7V5zm0 4h2v2H7V9zm0 4h2v2H7v-2z" clipRule="evenodd" />
-                                                </svg>
-                                                Range
-                                            </span>
-                                            <span className="font-mono">$50k - $500k</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                                                </svg>
-                                                Duration
-                                            </span>
-                                            <span className="font-mono">24 Months</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2H4a1 1 0 110-2V4zm3 1h2v2H7V5zm0 4h2v2H7V9zm0 4h2v2H7v-2z" clipRule="evenodd" />
-                                                </svg>
-                                                Tax
-                                            </span>
-                                            <span className="font-mono">15%</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 border-t border-slate-700">
-                                        <ul className="space-y-3 text-slate-400">
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Priority Support
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Exclusive Webinars
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                </svg>
-                                                Custom Portfolio
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="relative px-8 pb-8">
-                                <button className="w-full group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-blue-500 bg-slate-700/50 hover:bg-slate-700/70 text-white py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2">
-                                    Invest Now
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>

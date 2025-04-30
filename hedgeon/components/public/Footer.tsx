@@ -11,12 +11,12 @@ function Footer() {
         {
             icon: <Phone />,
             title: "Call Us",
-            value: "(+62) 81 314 239"
+            value: "+1 (580) 304-2990"
         },
         {
             icon: <Mail />,
             title: "Email Us",
-            value: "investmoon@domain.com"
+            value: "support@hedgeonfinance.com"
         },
         {
             icon: <MapPin />,

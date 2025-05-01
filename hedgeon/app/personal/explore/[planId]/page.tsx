@@ -90,7 +90,7 @@ const PlanDetailsPage = () => {
                     </div>
                 </div>
                 <div className="bg-gray-50 p-6 border-t border-gray-200 flex justify-end">
-                    <Link href={`explore/invest/${plan._id}`} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1">
+                    <Link href={`/personal/explore/invest/${plan._id}`} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1">
                         Invest Now
                     </Link>
                 </div>

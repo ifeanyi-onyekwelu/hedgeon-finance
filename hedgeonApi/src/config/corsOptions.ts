@@ -1,5 +1,4 @@
 const allowedOrigins: string[] = [
-    "http://localhost:3000",
     "https://hedgeonfinance.vercel.app/",
     "https://www.hedgeonfinance.vercel.app/",
 ];

@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { IconMail, IconPhone } from '@tabler/icons-react';
-import { Button } from '../ui/button';
+import { IconPhone } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { User2 } from 'lucide-react';
 

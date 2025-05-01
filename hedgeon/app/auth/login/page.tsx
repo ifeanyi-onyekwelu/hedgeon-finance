@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, CheckCircle } from "lucide-react"
 import Link from "next/link"
 
 export default function Login() {
@@ -154,6 +154,21 @@ export default function Login() {
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription>
                                         {loginError}
+                                    </AlertDescription>
+                                </Alert>
+                            </motion.div>
+                        )}
+                        {loginSuccess && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="p-4 bg-green-50 border border-green-100 rounded-sm flex items-center space-x-3 animate-shake"
+                            >
+                                <Alert variant="default">
+                                    <CheckCircle className="h-4 w-4" />
+                                    <AlertTitle>Success</AlertTitle>
+                                    <AlertDescription>
+                                        Login successful! Redirecting to your dashboard. Please Wait....
                                     </AlertDescription>
                                 </Alert>
                             </motion.div>

@@ -1,10 +1,9 @@
-// utils/axiosInstance.ts
 'use client'
 
-import axios, { AxiosInstance, AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-const baseURL = "http://localhost:3500/api/v1/";
-// const baseURL = "https://hedgeon-finance-1.onrender.com/api/v1/";
+// const baseURL = "http://localhost:3500/api/v1/";
+const baseURL = "https://hedgeon-finance-1.onrender.com/api/v1/";
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL,

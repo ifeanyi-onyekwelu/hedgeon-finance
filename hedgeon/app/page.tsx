@@ -57,6 +57,7 @@ function Home() {
 
     const fetchPlans = async () => {
         const response = await getPlansApi();
+        console.log("Plans Response from api", response)
         setPlans(response.data['plans']);
     }
 

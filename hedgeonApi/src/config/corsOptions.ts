@@ -1,6 +1,7 @@
 const allowedOrigins: string[] = [
     "http://localhost:3000",
-    "hedgeonfinance.vercel.app",
+    "https://hedgeonfinance.vercel.app/",
+    "https://www.hedgeonfinance.vercel.app/",
 ];
 
 const corsOptions = {

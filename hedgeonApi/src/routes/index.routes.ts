@@ -6,7 +6,7 @@ import userRoutes from "./user.routes";
 import planRoutes from "./plan.routes";
 import adminRoutes from "./admin.routes";
 import transactionRoutes from "./transaction.routes";
-// import cronRoutes from "./cron.routes";
+import cronRoutes from "./cron.routes";
 import authGuard from "../middlewares/authGuard";
 import adminOnly from "../middlewares/adminOnly";
 import currencyModel from "../models/currency";

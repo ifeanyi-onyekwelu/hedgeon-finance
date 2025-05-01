@@ -9,7 +9,6 @@ function About() {
         <div className="min-h-screen bg-gray-50">
             <BreadcrumbsSection
                 title="About Us"
-                description="Explore the latest advancements in web technologies and best practices for building scalable applications in 2024."
             />
 
             {/* Company Overview */}

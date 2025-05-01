@@ -7,7 +7,6 @@ function ContactUsPage() {
         <div className="min-h-screen bg-gray-50">
             <BreadcrumbsSection
                 title="Contact Us"
-                description="Explore the latest advancements in web technologies and best practices for building scalable applications in 2024."
             />
 
             <section className="min-h-screen bg-gradient-to-br from-slate-950 via-sky-950 to-indigo-950">

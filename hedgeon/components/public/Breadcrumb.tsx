@@ -1,15 +1,22 @@
-import Link from "next/link";
-import Image from "next/image";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Slash } from "lucide-react"
+import Image from 'next/image'
 
-interface BreadcrumbsProps {
-    title: string;
-    description?: string;
+interface BreadcrumbsSectionProps {
+    title: string
+    subtitle?: string
 }
 
-function BreadcrumbsSection({ title, description }: BreadcrumbsProps) {
+const BreadcrumbsSection = ({ title, subtitle }: BreadcrumbsSectionProps) => {
     return (
-        <section className="relative h-[50vh] w-full overflow-hidden">
-            {/* Background with overlay */}
+        <section className="relative py-16 md:py-28 overflow-hidden">
+
             <div className="absolute inset-0 z-0">
                 <Image
                     src="/images/hero-bg.jpg"
@@ -22,25 +29,37 @@ function BreadcrumbsSection({ title, description }: BreadcrumbsProps) {
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-primary/30" />
             </div>
 
-            <div className="relative z-10 h-full flex items-center">
-                <div className="max-w-6xl mx-auto px-4 xl:px-0 w-full flex items-center justify-end">
-                    <div className="max-w-2xl space-y-8 text-end flex flex-col items-end">
-                        {/* Subheading with decorative line */}
-                        <div className="flex items-center justify-end gap-4">
-                            <div className="w-12 h-0.5 bg-primary" />
-                            <p className="text-lg md:text-4xl font-semibold tracking-wide text-primary">
-                                {title}
-                            </p>
-                        </div>
+            <div className="relative container mx-auto px-4 text-center text-white">
+                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                    {title}
+                </h1>
+                {subtitle && (
+                    <p className="mt-2 text-lg opacity-90">
+                        {subtitle}
+                    </p>
+                )}
 
-                        <p className="text-xl md:text-2xl text-gray-200 leading-relaxed md:w-5/6">
-                            {description}
-                        </p>
-                    </div>
-                </div>
+                <nav
+                    aria-label="breadcrumb"
+                    className="mt-6 inline-flex items-center space-x-2 bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-5 py-2"
+                >
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator>
+                                <Slash />
+                            </BreadcrumbSeparator>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink>{title}</BreadcrumbLink>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </nav>
             </div>
         </section>
-    );
+    )
 }
 
 export default BreadcrumbsSection;

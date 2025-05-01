@@ -61,8 +61,7 @@ function page() {
     return (
         <div className="min-h-screen bg-gray-50">
             <BreadcrumbsSection
-                title="FAQ"
-                description="Explore the latest advancements in web technologies and best practices for building scalable applications in 2024."
+                title="FAQs"
             />
 
             <section className="min-h-screen bg-gradient-to-br from-slate-950 via-sky-950 to-indigo-950 py-28 px-6">

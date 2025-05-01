@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from "react"
-import BreadcrumbsSection from "@/components/auth/Breadcrumb"
 import { forgotPasswordApi } from "@/app/api/authApi"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +9,7 @@ import { motion } from 'framer-motion';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import Link from "next/link"
 import { InfoCircleOutlined } from "@ant-design/icons"
+import BreadcrumbsSection from "@/components/public/Breadcrumb";
 
 export default function ForgotPassword() {
     const [formData, setFormData] = useState({

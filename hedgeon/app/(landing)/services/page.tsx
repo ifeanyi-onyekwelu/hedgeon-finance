@@ -63,7 +63,6 @@ function page() {
         <div className="min-h-screen bg-gray-50">
             <BreadcrumbsSection
                 title="Services"
-                description="Explore the latest advancements in web technologies and best practices for building scalable applications in 2024."
             />
 
             <section className="space-y-24 py-20 bg-gradient-to-b from-slate-950 via-sky-950 to-indigo-950">
@@ -147,10 +146,6 @@ function page() {
                                 </div>
                             </div>
                         </div>
-
-                        <button className="bg-gradient-to-r from-purple-500 to-fuchsia-600 px-8 py-4 rounded-xl font-semibold hover:shadow-xl transition-all w-full lg:w-auto">
-                            Build Your Portfolio in Minutes
-                        </button>
                     </div>
 
                     {/* Merchant Program */}
@@ -173,11 +168,6 @@ function page() {
                                 ))}
                             </div>
                         </div>
-
-                        <button className="bg-emerald-500/20 px-8 py-4 rounded-xl border border-emerald-400/30 hover:bg-emerald-500/30 transition-all flex items-center gap-3">
-                            <UserPlus className="w-6 h-6 text-emerald-400" />
-                            Become a Merchant
-                        </button>
                     </div>
 
                     <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20 p-12 rounded-3xl border border-emerald-800/30">
@@ -199,11 +189,6 @@ function page() {
                                 ))}
                             </div>
                         </div>
-
-                        <button className="bg-emerald-500/20 px-8 py-4 rounded-xl border border-emerald-400/30 hover:bg-emerald-500/30 transition-all flex items-center gap-3">
-                            <UserPlus className="w-6 h-6 text-emerald-400" />
-                            Become a Merchant
-                        </button>
                     </div>
 
                     {/* Other Sections Similar Pattern */}
@@ -242,15 +227,6 @@ function page() {
                                 </div>
 
                                 {/* Add property image gallery component here */}
-                            </div>
-
-                            <div className="flex flex-wrap gap-4">
-                                <button className="bg-amber-500/20 px-8 py-4 rounded-xl border border-amber-400/30 hover:bg-amber-500/30 transition-all">
-                                    View REIT Opportunities
-                                </button>
-                                <button className="bg-slate-800/40 px-8 py-4 rounded-xl border border-slate-700/50 hover:border-amber-400/30 transition-all">
-                                    Performance History
-                                </button>
                             </div>
                         </div>
                     </div>

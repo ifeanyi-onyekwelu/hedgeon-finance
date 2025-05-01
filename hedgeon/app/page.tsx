@@ -197,9 +197,48 @@ function Home() {
                 </div>
             </section>
 
-            <section className="bg-[#D8E3E7] py-12">
-                <div className="max-w-6xl mx-auto px-4 flex items-center justify-center flex-col space-y-5 text-center">
-                    <h3 className="text-2xl md:text-3xl text-primary font-semibold">Trusted Over <sup>+1200</sup> Client in The World</h3>
+            <section className="relative bg-gradient-to-br from-[#D8E3E7] to-[#c5d6dc] py-16 md:py-24 overflow-hidden">
+                {/* Decorative elements */}
+                <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjAwJyBoZWlnaHQ9JzIwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48ZmlsdGVyIGlkPSduJyB4PScwJyB5PScwJz48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC43IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0ndXJsKCNuKScgb3BhY2l0eT0nMC4xJy8+PC9zdmc+')]"></div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center space-y-6 md:space-y-8">
+                        {/* Animated number */}
+                        <div className="inline-flex items-end font-bold text-6xl md:text-7xl text-primary mb-4">
+                            <span className="animate-float">+1200</span>
+                            <sup className="text-2xl md:text-3xl font-medium ml-2">and counting</sup>
+                        </div>
+
+                        {/* Main heading */}
+                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+                            Trusted by Global
+                            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                                Innovators
+                            </span>
+                        </h3>
+
+                        {/* Supporting text */}
+                        <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                            Join thousands of businesses worldwide who've transformed their financial strategies with our expertise
+                        </p>
+
+
+                        {/* Trust badges */}
+                        <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4 text-sm text-gray-600">
+                            <div className="flex items-center">
+                                <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                24/7 Customer Support
+                            </div>
+                            <div className="flex items-center">
+                                <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                ISO 27001 Certified
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -224,50 +263,84 @@ function Home() {
 
                     {/* Title Section */}
                     <div className="w-full md:w-4/5 space-y-4">
-                        <h3 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent leading-tight">
-                            Why Choose Hedgeon Finance?
-                        </h3>
-                        <p className="text-lg text-gray-600 md:w-3/4 leading-relaxed">
+                        <h2 className="text-3xl font-bold text-primary mb-6">Why Choose Hedgeon Finance?</h2>
+                        <p className="text-lg text-gray-700 leading-relaxed mb-8">
                             Empowering your financial future through innovative solutions and decades of market expertise.
                         </p>
                     </div>
 
-                    {/* Expertise Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-                        {expertise.map((card, index) => (
-                            <div
-                                key={index}
-                                className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
-                            >
-                                {/* Image Container */}
-                                <div className="relative h-72 overflow-hidden">
-                                    <Image
-                                        src={card.image}
-                                        alt={card.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                        width={400}
-                                        height={400}
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                    <span className="absolute top-4 right-4 bg-white text-primary px-4 py-2 rounded-full text-sm font-medium shadow-md">
-                                        0{index + 1}
-                                    </span>
-                                </div>
-
-                                {/* Content Container */}
-                                <div className="p-6 bg-white relative -mt-8 mx-4 rounded-xl shadow-md">
-                                    <h3 className="text-xl font-bold text-gray-800 mb-3">{card.title}</h3>
-                                    <p className="text-gray-600 mb-4 leading-relaxed">{card.desc}</p>
-                                    <a
-                                        href="#"
-                                        className="inline-flex items-center font-semibold text-primary hover:text-primary-dark transition-colors group-learn-more"
-                                    >
-                                        Discover More
-                                        <ArrowRight className="ml-2 w-4 h-4 stroke-2 transition-transform group-learn-more-hover:translate-x-1" />
-                                    </a>
-                                </div>
+                        <div
+                            className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+                        >
+                            {/* Content Container */}
+                            <div className="p-6 bg-white relative rounded-xl">
+                                <h3 className="text-xl font-bold text-gray-800 mb-3">Proven Investment Strategies</h3>
+                                <p className="text-gray-600 mb-4 leading-relaxed">
+                                    We combine fundamental and technical analysis to ensure high returns with controlled risk exposure.
+                                </p>
                             </div>
-                        ))}
+                        </div>
+
+                        <div
+                            className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+                        >
+                            {/* Content Container */}
+                            <div className="p-6 bg-white relative rounded-xl shadow-md">
+                                <h3 className="text-xl font-bold text-gray-800 mb-3">Expert Fund Management</h3>
+                                <p className="text-gray-600 mb-4 leading-relaxed">
+                                    Our team consists of top-tier financial analysts, hedge fund managers, and market strategists who navigate market volatility with precision.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+                        >
+                            {/* Content Container */}
+                            <div className="p-6 bg-white relative rounded-xl">
+                                <h3 className="text-xl font-bold text-gray-800 mb-3">Comprehensive Portfolio Management</h3>
+                                <p className="text-gray-600 mb-4 leading-relaxed">
+                                    We offer access to forex, stocks, hedge funds, real estate, and alternative investments all under one trusted firm.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+                        >
+                            {/* Content Container */}
+                            <div className="p-6 bg-white relative rounded-xl">
+                                <h3 className="text-xl font-bold text-gray-800 mb-3">Secure & Transparent Transactions</h3>
+                                <p className="text-gray-600 mb-4 leading-relaxed">
+                                    Our robust security measures, escrow systems, and smart contract integration ensure financial safety and transparency.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+                        >
+                            {/* Content Container */}
+                            <div className="p-6 bg-white relative rounded-xl">
+                                <h3 className="text-xl font-bold text-gray-800 mb-3">Tailored Investment Plans</h3>
+                                <p className="text-gray-600 mb-4 leading-relaxed">
+                                    We customize strategies to match our clients’ risk appetite, financial goals, and investment timeline.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
+                        >
+                            {/* Content Container */}
+                            <div className="p-6 bg-white relative rounded-xl shadow-md">
+                                <h3 className="text-xl font-bold text-gray-800 mb-3">Innovative Merchant Program</h3>
+                                <p className="text-gray-600 mb-4 leading-relaxed">
+                                    We provide unique earning opportunities by allowing verified merchants to facilitate crypto transactions while ensuring fund security.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -387,27 +460,61 @@ function Home() {
                 </div>
             </section>
 
-            <section className="bg-gray-100 py-12 pb-24">
-                <div className="max-w-6xl mx-auto px-4">
-                    <div className="flex md:flex-row flex-col gap-20 md:space-y-0">
-                        <Accordion type="single" collapsible className="w-full space-y-5">
-                            {faqs.map(({ trigger, content }, index) => (
-                                <AccordionItem value={trigger}>
-                                    <AccordionTrigger className='px-5 bg-primary-fade cursor-pointer rounded py-5 text-lg text-primary font-bold' style={{ textDecoration: 'none' }}>{trigger}</AccordionTrigger>
-                                    <AccordionContent className='py-10 px-2'>
-                                        {content}
-                                    </AccordionContent>
-                                </AccordionItem>
-                            ))}
-                        </Accordion>
+            <section className="bg-gradient-to-b from-gray-100/50 to-white py-16 lg:py-24 relative overflow-hidden">
+                {/* Decorative background elements */}
+                <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'6\' height=\'6\' viewBox=\'0 0 6 6\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.2\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M5 0h1L0 6V5zM6 5v1H5z\'/%3E%3C/g%3E%3C/svg%3E")' }}></div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-medium text-primary">How We Work</h3>
-                            <h2 className="w-full font-semibold text-2xl md:text-4xl">Leading The Best Invest manager Team</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                            <Button className='py-6 rounded-none uppercase font-semibold'>
-                                <Link href="">LEARN MORE</Link>
-                            </Button>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
+                        {/* Text Content */}
+                        <div className="relative space-y-6">
+                            <div className="absolute -left-8 -top-8 w-24 h-24 bg-primary/10 rounded-full blur-3xl"></div>
+
+                            <div className="space-y-4">
+                                <span className="inline-block text-sm font-semibold text-primary tracking-widest uppercase">
+                                    How We Work
+                                </span>
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+                                    Pioneering Investment Management Excellence
+                                </h2>
+                                <div className="w-16 h-1.5 bg-gradient-to-r from-primary to-secondary mb-6"></div>
+                                <p className="text-lg text-gray-600 leading-relaxed">
+                                    Leveraging cutting-edge strategies and decades of expertise, we deliver tailored financial solutions that drive sustainable growth and maximize returns.
+                                </p>
+                            </div>
+
+                            {/* Enhanced CTA Button */}
+                            <Link
+                                href="#"
+                                className="inline-flex items-center group font-semibold text-primary hover:text-primary-dark transition-colors duration-300"
+                            >
+                                <span className="mr-3">Explore Our Methodology</span>
+                                <span className="inline-block group-hover:translate-x-2 transition-transform duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
+                                </span>
+                            </Link>
+
+                            {/* Stats Grid */}
+                            <div className="grid grid-cols-2 gap-6 pt-8">
+                                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100/50">
+                                    <div className="text-2xl font-bold text-gray-900">15+</div>
+                                    <div className="text-sm text-gray-600 mt-1">Years Experience</div>
+                                </div>
+                                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100/50">
+                                    <div className="text-2xl font-bold text-gray-900">$4.2B+</div>
+                                    <div className="text-sm text-gray-600 mt-1">Assets Managed</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Image/Content Placeholder */}
+                        <div className="relative aspect-video bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl shadow-lg overflow-hidden">
+                            {/* Add your image here */}
+                            <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                                [Image placeholder]
+                            </div>
                         </div>
                     </div>
                 </div>

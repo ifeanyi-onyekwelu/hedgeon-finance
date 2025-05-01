@@ -1,57 +1,27 @@
 import { IconBrandFacebook, IconBrandInstagram, IconBrandX, IconBrandYoutube } from "@tabler/icons-react"
-import { AlarmClock, Mail, MapPin, Phone } from "lucide-react"
 import Link from "next/link"
-import { cloneElement } from "react"
+import { motion } from 'framer-motion';
+
+import Image from 'next/image';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 function Footer() {
-
-    const contactInfo = [
-        {
-            icon: <Phone />,
-            title: "Call Us",
-            value: "+1 (580) 304-2990"
-        },
-        {
-            icon: <Mail />,
-            title: "Email Us",
-            value: "support@hedgeonfinance.com"
-        },
-        {
-            icon: <MapPin />,
-            title: "Our Location",
-            value: "Jalan Sunset Road No. 20"
-        },
-        {
-            icon: <AlarmClock />,
-            title: "Work Hours",
-            value: "09:00 AM - 22:00 PM"
-        },
-    ]
     return (
         <footer className="bg-primary-fade pt-24 pb-12">
             <div className="max-w-7xl mx-auto px-4 xl:px-0">
-                {/* Contact Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-gradient-to-r from-primary to-primary-dark mx-auto p-8 rounded-2xl shadow-xl relative -top-32">
-                    {contactInfo.map(({ icon, title, value }, index) => (
-                        <div key={index} className="flex items-center p-4 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                            <div className="p-3 bg-white/20 rounded-lg">
-                                {cloneElement(icon, { className: 'w-8 h-8 stroke-2' })}
-                            </div>
-                            <div className="ml-4">
-                                <h4 className="text-sm font-medium text-white/80">{title}</h4>
-                                <p className="text-lg font-semibold text-white">{value}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Main Footer Content */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-base">
                     {/* Brand Section */}
                     <div className="space-y-6">
-                        <h3 className="text-3xl font-bold text-primary-dark">Hedgeon Finance</h3>
+                        <Link href="/" className="z-50">
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                className="flex items-center space-x-2"
+                            >
+                                <Image src="/images/logo.png" width={300} height={300} alt="Hedgeon Finance Logo" />
+                            </motion.div>
+                        </Link>
+
                         <p className="text-muted-foreground leading-relaxed">
                             Empowering your financial future with innovative solutions and expert guidance.
                         </p>

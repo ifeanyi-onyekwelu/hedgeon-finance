@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import BreadcrumbsSection from "@/components/auth/Breadcrumb"
+import BreadcrumbsSection from "@/components/public/Breadcrumb";
 import { loginApi } from "@/app/api/authApi"
 import { useUser } from "@/context/UserContext"
 import { Button } from '@/components/ui/button';

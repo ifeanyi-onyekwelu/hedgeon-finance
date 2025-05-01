@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 import { signupApi } from '@/app/api/authApi';
-import BreadcrumbsSection from '@/components/auth/Breadcrumb';
+import BreadcrumbsSection from "@/components/public/Breadcrumb";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle } from 'lucide-react';
 

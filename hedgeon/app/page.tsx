@@ -67,7 +67,7 @@ function Home() {
 
     return (
         <>
-            <section className="relative h-[80vh] min-h-[600px] w-full overflow-hidden">
+            <section className="relative h-[80vh] min-h-screen w-full overflow-hidden">
                 {/* Background with overlay */}
                 <div className="absolute inset-0 z-0">
                     <Image
@@ -93,8 +93,8 @@ function Home() {
                             </div>
 
                             {/* Main Heading */}
-                            <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tight">
-                                <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
+                            <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tight text-gray-600">
+                                <span className="text-white">
                                     Future-Focused
                                 </span>{' '}
                                 Wealth Management
@@ -109,7 +109,7 @@ function Home() {
                             <div className="flex flex-col sm:flex-row gap-6 mt-10">
                                 <Link
                                     href="/auth/signup"
-                                    className="relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
+                                    className="relative inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
                                 >
                                     Sign Up
                                     <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform">
@@ -119,7 +119,7 @@ function Home() {
 
                                 <Link
                                     href="#"
-                                    className="inline-flex items-center px-8 py-4 text-white font-medium hover:text-primary transition-colors group"
+                                    className="inline-flex items-center px-8 py-4 text-white font-medium hover:text-gray-500 transition-colors group"
                                 >
                                     <PlayCircle className="w-6 h-6 mr-2 text-primary group-hover:text-primary-dark" />
                                     Explore Funds

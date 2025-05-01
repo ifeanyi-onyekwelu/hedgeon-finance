@@ -33,7 +33,9 @@ axiosInstance.interceptors.response.use(
             data: response.data,
             status: response.status,
         };
-    },
+    }, (error) => {
+        console.log("Error in response interceptor", error);
+    }
 );
 
 export default axiosInstance;

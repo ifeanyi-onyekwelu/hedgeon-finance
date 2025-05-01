@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { IconPhone } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { User2 } from 'lucide-react';
+import Image from 'next/image';
 
 const navLinks = [
     { name: 'Home', path: '/' },
@@ -37,12 +38,7 @@ const Header = () => {
                         whileHover={{ scale: 1.05 }}
                         className="flex items-center space-x-2"
                     >
-                        <span className={`text-2xl font-bold ${isScrolled ? 'text-primary' : 'text-white'}`}>
-                            Hedgeon
-                        </span>
-                        <span className={`text-2xl font-light ${isScrolled ? 'text-gray-700' : 'text-gray-200'}`}>
-                            Finance
-                        </span>
+                        <Image src="/images/logo.png" width={200} height={200} alt="Hedgeon Finance Logo" />
                     </motion.div>
                 </Link>
 

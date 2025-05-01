@@ -319,8 +319,7 @@ export const forgotPassword = asyncHandler(
 
 export const resetPassword = asyncHandler(
     async (req: Request, res: Response) => {
-        const { password } = req.body;
-        const token = req.params.token;
+        const { newPassword, token } = req.body;
 
         const decoded = verifyToken(token, process.env.JWT_SECRET!);
         if (!decoded)
@@ -334,7 +333,7 @@ export const resetPassword = asyncHandler(
         });
         if (!user) return logError(res, new NotFoundError("User not found!"));
 
-        user.password = password;
+        user.password = newPassword;
         user.passwordResetToken = null;
 
         await user?.save();

@@ -3,63 +3,44 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import BreadcrumbsSection from "@/components/auth/Breadcrumb"
-import { loginApi } from "@/app/api/authApi"
-import { useUser } from "@/context/UserContext"
+import { resetPasswordApi } from "@/app/api/authApi"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
-import Link from "next/link"
+import { CheckCircleOutlined } from "@ant-design/icons"
+import { useSearchParams } from "next/navigation"
 
-export default function Login() {
+export default function ResetPassword() {
     const router = useRouter()
     const [formData, setFormData] = useState({
-        email: '',
-        password: ''
+        newPassword: '',
+        confirmPassword: ''
     })
     const [loading, setLoading] = useState(false)
-    const { refreshUser } = useUser()
+    const [passwordResetSuccess, setPasswordResetSuccess] = useState(false)
 
-    const [loginError, setLoginError] = useState('')
-    const [loginSuccess, setLoginSuccess] = useState(false)
-
-
-    async function handleLogin(e: React.FormEvent) {
+    async function handleResetPassword(e: React.FormEvent) {
         e.preventDefault()
         setLoading(true)
-        setLoginError('')
+        setPasswordResetSuccess(false)
 
         try {
-            const response = await loginApi(formData)
-            console.log("LOGIN DATA:", response.data)
-            const { accessToken, role } = response?.data
+            const searchParams = new URLSearchParams(window.location.search)
+            const token = searchParams.get("token")
 
-            localStorage.setItem('access_token', accessToken)
-            localStorage.setItem('user_role', role)
-
-            setLoginSuccess(true)
-
-            if (response?.status === 200) {
-                refreshUser();
-
-                await new Promise(resolve => setTimeout(resolve, 2000))
-
-                if (role === 'admin') {
-                    router.push('/admin/dashboard')
-                } else if (role === 'user') {
-                    router.push('/personal/dashboard')
-                } else {
-                    setLoginError("Invalid role. Please contact support.")
-                }
-            } else {
-                setLoginError("Login failed. Please try again.")
+            if (!token) {
+                throw new Error("Token not found in URL.")
             }
+
+            await resetPasswordApi(formData.newPassword, token)
+
+            setPasswordResetSuccess(true)
+            setLoading(false)
         } catch (error: any) {
-            if (error.status === 404) {
-                setLoginError("Account not found! Make sure your login information is correct.")
-            }
+            setPasswordResetSuccess(false)
+            console.log(error)
         } finally {
             setLoading(false)
         }
@@ -76,7 +57,7 @@ export default function Login() {
 
     return (
         <section className="bg-gradient-to-br from-gray-50 to-gray-100">
-            <BreadcrumbsSection title="Login" />
+            <BreadcrumbsSection title="Reset Password" />
 
             <div className="max-w-3xl mx-auto py-16 px-4 h-fit">
                 <div className="bg-white rounded-sm p-8 transition-all duration-300 hover:shadow-3xl">
@@ -86,47 +67,23 @@ export default function Login() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                             </svg>
                         </div>
-                        <h1 className="text-4xl font-extrabold  text-primary mb-2">
-                            Log in
+                        <h1 className="text-4xl font-extrabold text-primary mb-2">
+                            Reset Password
                         </h1>
-                        <p className="text-gray-500 font-medium">Resume your</p>
+                        <p className="text-gray-500 font-medium">Set a new password to secure your account</p>
                     </div>
 
-                    <form onSubmit={handleLogin} className="space-y-6">
+                    <form onSubmit={handleResetPassword} className="space-y-6">
                         <div className="group">
                             <Label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                                Email Address
+                                New Password
                             </Label>
                             <div className="relative">
                                 <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder-gray-400 peer"
-                                    placeholder="name@company.com"
-                                    required
-                                    autoComplete="email"
-                                />
-                                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 peer-focus:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="group">
-                            <Label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
-                                Password
-                            </Label>
-                            <div className="relative mb-2">
-                                <Input
                                     id="password"
                                     type="password"
-                                    name="password"
-                                    value={formData.password}
+                                    name="newPassword"
+                                    value={formData.newPassword}
                                     onChange={handleChange}
                                     className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder-gray-400 peer"
                                     placeholder="••••••••"
@@ -139,21 +96,44 @@ export default function Login() {
                                     </svg>
                                 </div>
                             </div>
-                            <Link href="/auth/forgot-password" className="text-right underline hover:text-blue-700">Forgot Password?</Link>
+                        </div>
+
+                        <div className="group">
+                            <Label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                                Confirm Password
+                            </Label>
+                            <div className="relative mb-2">
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder-gray-400 peer"
+                                    placeholder="••••••••"
+                                    required
+                                    autoComplete="confirm-password"
+                                />
+                                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                    <svg className="h-5 w-5 text-gray-400 peer-focus:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
 
 
-                        {loginError && (
+                        {passwordResetSuccess && (
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 className="p-4 bg-red-50 border border-red-100 rounded-sm flex items-center space-x-3 animate-shake"
                             >
-                                <Alert variant="destructive">
-                                    <AlertCircle className="h-4 w-4" />
-                                    <AlertTitle>Error</AlertTitle>
+                                <Alert variant="default">
+                                    <CheckCircleOutlined className="h-4 w-4" />
+                                    <AlertTitle>Success</AlertTitle>
                                     <AlertDescription>
-                                        {loginError}
+                                        Your password has been reset successfully. You can now log in with your new password.
                                     </AlertDescription>
                                 </Alert>
                             </motion.div>

@@ -5,6 +5,7 @@ import {
     DollarSign,
     UserPlus,
 } from "lucide-react"
+import Link from 'next/link'
 
 function page() {
     const whyPMSItems = [
@@ -92,12 +93,12 @@ function page() {
                                         </p>
                                     </div>
 
-                                    <button className="w-full bg-gradient-to-r from-sky-500 to-cyan-600 px-8 py-4 rounded-xl font-semibold hover:shadow-2xl transition-all group">
+                                    <Link href="/auth/signup" className="w-full bg-primary text-white">
                                         <span className="flex items-center justify-center gap-3">
                                             Open Live Account
                                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                         </span>
-                                    </button>
+                                    </Link>
                                 </div>
 
                                 <div className="bg-slate-900/40 p-8 rounded-2xl border border-sky-800/30">

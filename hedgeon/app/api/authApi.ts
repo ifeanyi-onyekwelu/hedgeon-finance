@@ -15,3 +15,11 @@ export const refreshApi = () => {
 export const logoutApi = () => {
     return axiosInstance.post("/auth/logout")
 }
+
+export const forgotPasswordApi = (email: string) => {
+    return axiosInstance.post("/auth/forgot-password", { email })
+}
+
+export const resetPasswordApi = (newPassword: string, token: string | null) => {
+    return axiosInstance.post("/auth/reset-password", { newPassword, token })
+}

@@ -1,37 +1,68 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from "@/components/ui/breadcrumb"
+import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Slash } from "lucide-react"
+import Image from 'next/image'
 
-const BreadcrumbsSection = ({ title, description }: { title: string, description: string }) => {
+interface BreadcrumbsSectionProps {
+    title: string
+    subtitle?: string
+}
+
+const BreadcrumbsSection = ({ title, subtitle }: BreadcrumbsSectionProps) => {
     return (
-        <section className="bg-gradient-to-r from-gray-900 to-blue-900 text-white py-16 md:py-24">
-            <div className="container mx-auto px-4">
-                <div className="text-center">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        {title}
-                    </h1>
-                    {description && (
-                        <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-                            {description}
-                        </p>
-                    )}
-                    <Breadcrumb className="mt-8 flex justify-center">
-                        <BreadcrumbList>
+        <section className="relative py-16 md:py-28 overflow-hidden">
 
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src="/images/hero-bg.jpg"
+                    alt="Investment landscape"
+                    layout="fill"
+                    objectFit="cover"
+                    className="brightness-90"
+                    priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-primary/30" />
+            </div>
+
+            <div className="relative container mx-auto px-4 text-center text-white">
+                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                    {title}
+                </h1>
+                {subtitle && (
+                    <p className="mt-2 text-lg opacity-90">
+                        {subtitle}
+                    </p>
+                )}
+
+                <nav
+                    aria-label="breadcrumb"
+                    className="mt-6 inline-flex items-center space-x-2 bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-5 py-2"
+                >
+                    <Breadcrumb>
+                        <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/" className="text-gray-300">
-                                    Home
-                                </BreadcrumbLink>
+                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
                             </BreadcrumbItem>
+                            <BreadcrumbSeparator>
+                                <Slash />
+                            </BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbLink className="text-white">
-                                    {title}
-                                </BreadcrumbLink>
+                                <BreadcrumbLink>{title}</BreadcrumbLink>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
-                </div>
+                </nav>
             </div>
         </section>
-    );
-};
+    )
+}
 
 export default BreadcrumbsSection;

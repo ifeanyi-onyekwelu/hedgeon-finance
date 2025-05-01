@@ -94,7 +94,7 @@ function Home() {
 
                             {/* Main Heading */}
                             <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tight">
-                                <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-r from-primary to-white bg-clip-text text-transparent">
                                     Future-Focused
                                 </span>{' '}
                                 Wealth Management

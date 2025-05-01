@@ -34,11 +34,11 @@ function ContactUsPage() {
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Phone className="w-5 h-5 text-sky-400" />
-                                    <p>+44 20 7946 0815</p>
+                                    <p>+1 (580) 304-2990</p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Mail className="w-5 h-5 text-sky-400" />
-                                    <p>contact@fundacionfinance.com</p>
+                                    <p>support@hedgeonfinance.com</p>
                                 </div>
                             </div>
                         </div>
@@ -82,8 +82,8 @@ function ContactUsPage() {
                                     <h4 className="text-xl font-semibold text-purple-200 mb-2">24/7 Support</h4>
                                     <p className="text-slate-300">
                                         Emergency line:<br />
-                                        +44 20 7946 0816<br />
-                                        support@fundacionfinance.com
+                                        +1 (580) 304-2990<br />
+                                        support@hedgeonfinance.com
                                     </p>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@ function ContactUsPage() {
                             <div className="text-slate-300 text-lg">
                                 or call directly:
                                 <span className="text-sky-300 ml-2 hover:text-sky-200 transition-colors">
-                                    +44 20 7946 0815
+                                    +1 (580) 304-2990
                                 </span>
                             </div>
                         </div>

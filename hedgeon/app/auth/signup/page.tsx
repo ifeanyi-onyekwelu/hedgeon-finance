@@ -7,6 +7,9 @@ import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 import { signupApi } from '@/app/api/authApi';
 import BreadcrumbsSection from '@/components/auth/Breadcrumb';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle, CheckCircle } from 'lucide-react';
+
 
 interface FormData {
     name: string;
@@ -24,6 +27,7 @@ const SignupForm = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [signupSuccess, setSignupSuccess] = useState<boolean>(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -34,6 +38,7 @@ const SignupForm = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        setSignupSuccess(false);
 
         // Basic validation
         if (!formData.name || !formData.email || !formData.phone || !formData.password) {
@@ -70,14 +75,19 @@ const SignupForm = () => {
             const response = await (await signupApi(formData)).data
             console.log(response);
 
+            const { accessToken, role } = response
 
-            const { accessToken, role } = response?.data
+            setSignupSuccess(true)
 
             localStorage.setItem('access_token', accessToken)
             localStorage.setItem('user_role', role)
 
             setLoading(false);
+
+            await new Promise(resolve => setTimeout(resolve, 2000))
+
         } catch (err: any) {
+            console.log(err)
             setError(`${err['response']['data']['message']}`);
             setLoading(false);
         }
@@ -85,17 +95,17 @@ const SignupForm = () => {
 
     return (
         <section className="space-y-6">
-            <BreadcrumbsSection title='Sign Up' description='Create a new account to get started' />
+            <BreadcrumbsSection title='Sign Up' />
 
             <div className="max-w-3xl mx-auto py-16 px-4 h-fit">
                 <div className="bg-white rounded-sm p-8 transition-all duration-300 hover:shadow-3xl">
                     <div className="text-center mb-10">
                         <div className="mb-6">
-                            <svg className="mx-auto h-12 w-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="mx-auto h-12 w-12  text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                             </svg>
                         </div>
-                        <h1 className="text-4xl font-extrabold text-gray-900 mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <h1 className="text-4xl font-extrabold  text-primary mb-2">
                             Create Account
                         </h1>
                         <p className="text-gray-500 font-medium">Start your secure journey with us</p>
@@ -205,17 +215,35 @@ const SignupForm = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="p-4 bg-red-50 border border-red-100 rounded-sm flex items-center space-x-3 animate-shake"
                             >
-                                <svg className="h-5 w-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                                <span className="text-red-600 text-sm font-medium">{error}</span>
+                                <Alert variant="destructive">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Error</AlertTitle>
+                                    <AlertDescription>
+                                        {error}
+                                    </AlertDescription>
+                                </Alert>
+                            </motion.div>
+                        )}
+                        {signupSuccess && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="p-4 bg-red-50 border border-red-100 rounded-sm flex items-center space-x-3 animate-shake"
+                            >
+                                <Alert variant="default">
+                                    <CheckCircle className="h-4 w-4" />
+                                    <AlertTitle>Success</AlertTitle>
+                                    <AlertDescription>
+                                        Signup successful! Please check your email to verify your account.
+                                    </AlertDescription>
+                                </Alert>
                             </motion.div>
                         )}
 
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 px-6 rounded-sm font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-blue-100 flex items-center justify-center"
+                            className="w-full bg-primary text-white py-4 px-6 rounded-sm font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-blue-100 flex items-center justify-center"
                         >
                             {loading ? (
                                 <div className="flex items-center space-x-2">

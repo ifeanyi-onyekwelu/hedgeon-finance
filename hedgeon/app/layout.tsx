@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { PathWrapper } from "./path-wrapper";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
     title: "Hedgeon Finance",
@@ -17,6 +18,7 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <Providers>
+                    <SpeedInsights />
                     <PathWrapper>{children}</PathWrapper>
                 </Providers>
             </body>

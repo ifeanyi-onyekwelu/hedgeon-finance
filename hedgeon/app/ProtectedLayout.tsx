@@ -17,6 +17,9 @@ export default function ProtectedLayout({
         const token = localStorage.getItem('access_token');
         const role = localStorage.getItem('user_role');
 
+        console.log('Token:', token);
+        console.log('Role:', role);
+
         if (!token || !role) {
             router.push('/auth/login');
             return;

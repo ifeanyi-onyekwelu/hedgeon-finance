@@ -141,7 +141,7 @@ const PaymentPage = () => {
     const renderFormStep = () => (
         <div className="min-h-fit py-12 px-4 sm:px-6 lg:px-8">
             <div className="w-fullax-w-xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 transition-all duration-200 hover:shadow-xl">
-                <div className="p-3 space-y-6">
+                <div className="p-8 space-y-6">
                     <button
                         onClick={() => router.back()}
                         className="flex items-center text-blue-600 hover:text-blue-800 font-medium group transition-colors"
@@ -325,7 +325,7 @@ const PaymentPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-xl mx-auto bg-white rounded-xl overflow-hidden border border-gray-200 transition-all duration-200 hover:shadow-xl">
-                <div className="p-8 space-y-6">
+                <div className="p-3 space-y-6">
                     <button
                         onClick={() => router.back()}
                         className="flex items-center text-blue-600 hover:text-blue-800 font-medium group transition-colors"

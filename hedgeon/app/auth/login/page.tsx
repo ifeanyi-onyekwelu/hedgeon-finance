@@ -33,28 +33,24 @@ export default function Login() {
 
         try {
             const response = await loginApi(formData)
-            console.log("LOGIN DATA:", response.data)
-            const { accessToken, role } = response?.data
+            const { accessToken, role, isVerified } = response?.data
 
             localStorage.setItem('access_token', accessToken)
             localStorage.setItem('user_role', role)
 
+            console.log("Is verified", isVerified);
             setLoginSuccess(true)
+            refreshUser();
 
-            if (response?.status === 200) {
-                refreshUser();
+            await new Promise(resolve => setTimeout(resolve, 2000))
 
-                await new Promise(resolve => setTimeout(resolve, 2000))
-
-                if (role === 'admin') {
-                    router.push('/admin/dashboard')
-                } else if (role === 'user') {
-                    router.push('/personal/dashboard')
-                } else {
-                    setLoginError("Invalid role. Please contact support.")
-                }
+            if (role === 'admin') {
+                router.push('/admin/dashboard')
+            } else if (role === 'user') {
+                if (isVerified) router.push('/personal/dashboard')
+                else router.push('/auth/email/verify')
             } else {
-                setLoginError("Login failed. Please try again.")
+                setLoginError("Invalid role. Please contact support.")
             }
         } catch (error: any) {
             if (error.status === 404) {

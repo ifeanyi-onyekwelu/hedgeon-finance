@@ -9,6 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle } from "lucide-react"
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
 import { verifyEmail, resendEmail } from "@/app/api/authApi"
+import { useUser } from "@/context/UserContext"
 
 export default function VerifyEmail() {
     const router = useRouter()
@@ -18,6 +19,7 @@ export default function VerifyEmail() {
     const [verifySuccess, setVerifySuccess] = useState(false)
     const [resendTimer, setResendTimer] = useState(30)
     const [resending, setResending] = useState(false)
+    const { user } = useUser()
 
     useEffect(() => {
         let timer: NodeJS.Timeout
@@ -43,7 +45,7 @@ export default function VerifyEmail() {
             router.push('/auth/login')
 
         } catch (err) {
-            console.log(err)
+            console.log("ERROR OCCURRED IN VERIFY EMAIL:", err)
             setVerifyError('Something went wrong. Please try again.')
         } finally {
             setLoading(false)
@@ -53,7 +55,7 @@ export default function VerifyEmail() {
     const handleResendCode = async () => {
         setResending(true)
         try {
-            const response = await resendEmail();
+            const response = await resendEmail(user?.email!);
             console.log("RESPONSE FROM RESEND EMAIL", response); setResendTimer(30)
         } catch {
             setVerifyError('Unable to resend email. Please try again.')

@@ -346,15 +346,40 @@ export const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
     const { token } = req.body;
 
     const user = await userModel.findOne({ emailVerificationToken: token });
-    if (!user) return logError(res, new BadRequestError("Invalid Token!"));
+    if (!user) return logError(res, new BadRequestError("The verification code is invalid or has expired."));
 
     if (user.isVerified) {
-        return logError(res, new ConflictError("Email already verified"));
+        return logError(res, new ConflictError("Your email has already been verified."));
     }
 
     user.isVerified = true;
     user.emailVerificationToken = null;
     await user.save();
 
+    // await emailService.
+
     return logData(res, 200, { message: "Email verified successfully" });
+});
+
+export const resendVerificationEmail = asyncHandler(async (req: Request, res: Response) => {
+    const { email } = req.body;
+    if (!email) return logError(res, new BadRequestError("Email address is required"))
+
+    const user = await userModel.findOne({ email });
+    if (!user) return logError(res, new BadRequestError("No user found!"));
+
+    if (user.isVerified) {
+        return logError(res, new ConflictError("Your email has already been verified."));
+    }
+
+    const verificationtoken = generateVerificationToken();
+    user.emailVerificationToken = verificationtoken;
+    await user.save();
+
+    await emailService.sendRegistrationConfirmation(
+        user,
+        verificationtoken
+    );
+
+    return logData(res, 200, { message: "Verification Email Sent" });
 });

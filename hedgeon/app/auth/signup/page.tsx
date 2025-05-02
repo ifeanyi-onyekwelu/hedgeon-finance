@@ -10,6 +10,7 @@ import BreadcrumbsSection from "@/components/public/Breadcrumb";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/context/UserContext';
 
 
 interface FormData {
@@ -30,6 +31,7 @@ const SignupForm = () => {
     const [error, setError] = useState<string | null>(null);
     const [signupSuccess, setSignupSuccess] = useState<boolean>(false);
     const router = useRouter()
+    const { refreshUser } = useUser();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -75,21 +77,21 @@ const SignupForm = () => {
         try {
             // Include the passkey in the data sent
             const response = await (await signupApi(formData)).data
-            console.log(response);
-
             const { accessToken, role } = response
 
             localStorage.setItem('access_token', accessToken)
             localStorage.setItem('user_role', role)
 
             setSignupSuccess(true)
-            setLoading(false);
+            refreshUser();
+
+            await new Promise(resolve => setTimeout(resolve, 1000))
 
             router.push("/auth/email/verify")
 
         } catch (err: any) {
-            console.log("Error occurred during signup:", err)
             setError(`${err['response']['data']['message']}`);
+        } finally {
             setLoading(false);
         }
     };

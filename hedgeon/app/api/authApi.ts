@@ -20,8 +20,8 @@ export const verifyEmail = (code: string) => {
     return axiosInstance.post("/auth/verify-email", { token: code })
 }
 
-export const resendEmail = () => {
-    return axiosInstance.post("/auth/resend-email")
+export const resendEmail = (email: string) => {
+    return axiosInstance.post("/auth/resend-email", { email })
 }
 
 export const forgotPasswordApi = (email: string) => {

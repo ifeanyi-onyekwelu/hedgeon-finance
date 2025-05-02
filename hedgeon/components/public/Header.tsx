@@ -69,7 +69,7 @@ const Header = () => {
                         className="w-fit bg-primary text-white hover:bg-primary-dark flex items-center py-2 px-4 text-center rounded-sm hover:bg-primary-fade duration-300"
                     >
                         <User2 className="w-5 h-5 mr-2" />
-                        Get Started
+                        Login
                     </Link>
                 </div>
 

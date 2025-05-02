@@ -16,6 +16,14 @@ export const logoutApi = () => {
     return axiosInstance.post("/auth/logout")
 }
 
+export const verifyEmail = (code: string) => {
+    return axiosInstance.post("/auth/verify-email", { token: code })
+}
+
+export const resendEmail = () => {
+    return axiosInstance.post("/auth/resend-email")
+}
+
 export const forgotPasswordApi = (email: string) => {
     return axiosInstance.post("/auth/forgot-password", { email })
 }

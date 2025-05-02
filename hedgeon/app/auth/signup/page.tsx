@@ -9,6 +9,7 @@ import { signupApi } from '@/app/api/authApi';
 import BreadcrumbsSection from "@/components/public/Breadcrumb";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 
 interface FormData {
@@ -28,6 +29,7 @@ const SignupForm = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [signupSuccess, setSignupSuccess] = useState<boolean>(false);
+    const router = useRouter()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -69,7 +71,7 @@ const SignupForm = () => {
             setLoading(false);
             return;
         }
-        // Simulate an API call (replace with your actual signup logic)
+
         try {
             // Include the passkey in the data sent
             const response = await (await signupApi(formData)).data
@@ -77,17 +79,16 @@ const SignupForm = () => {
 
             const { accessToken, role } = response
 
-            setSignupSuccess(true)
-
             localStorage.setItem('access_token', accessToken)
             localStorage.setItem('user_role', role)
 
+            setSignupSuccess(true)
             setLoading(false);
 
-            await new Promise(resolve => setTimeout(resolve, 2000))
+            router.push("/auth/email/verify")
 
         } catch (err: any) {
-            console.log(err)
+            console.log("Error occurred during signup:", err)
             setError(`${err['response']['data']['message']}`);
             setLoading(false);
         }

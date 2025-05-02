@@ -15,26 +15,9 @@ import Link from 'next/link';
 const PortfolioChart = dynamic(() => import('./PortfolioChart'), { ssr: false });
 const RiskMeter = dynamic(() => import('./RiskMeter'), { ssr: false });
 
-// Dummy data for demonstration purposes
-const upcomingPayouts = [
-    { fund: 'Growth Fund Alpha', amount: '$150.00', date: 'May 5, 2025' },
-    { fund: 'Tech Innovation ETF', amount: '$75.50', date: 'May 12, 2025' },
-];
-
-const recentTransactions = [
-    { type: 'Investment', fund: 'Blue Chip Stocks', amount: '+$500.00', date: 'Apr 15, 2025' },
-    { type: 'Withdrawal', amount: '-$100.00', date: 'Apr 10, 2025' },
-    { type: 'Fee', description: 'Management Fee', amount: '-$2.50', date: 'Apr 5, 2025' },
-];
-
-const recommendedFunds = [
-    { name: 'Balanced Growth Portfolio', risk: 'Moderate', returns: '+8.7%', link: '#' },
-    { name: 'Emerging Tech Fund', risk: 'High', returns: '+12.5%', link: '#' },
-];
 
 const PersonalDashboard = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [activeView, setActiveView] = useState('overview');
+
     const { user } = useUser();
     const [plans, setPlans] = useState<any[]>([])
 
@@ -52,7 +35,7 @@ const PersonalDashboard = () => {
     }, [])
 
     return (
-        <div className="bg-gray-50 py-8 px-6 rounded-lg shadow-md">
+        <div className="bg-gray-50  rounded-lg ">
             <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Investment Dashboard</h1>
             <section className="space-y-6">
                 {/* Key Metrics Grid */}

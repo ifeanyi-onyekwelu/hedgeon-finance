@@ -38,7 +38,6 @@ export default function Login() {
             localStorage.setItem('access_token', accessToken)
             localStorage.setItem('user_role', role)
 
-            console.log("Is verified", isVerified);
             setLoginSuccess(true)
             refreshUser();
 
@@ -54,7 +53,7 @@ export default function Login() {
             }
         } catch (error: any) {
             if (error.status === 404) {
-                setLoginError("Account not found! Make sure your login information is correct.")
+                setLoginError("Account not found! Make sure your login information is correct")
             }
         } finally {
             setLoading(false)

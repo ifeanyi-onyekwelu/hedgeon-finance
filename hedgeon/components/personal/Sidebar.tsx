@@ -23,6 +23,7 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useUser } from "@/context/UserContext";
 import Image from "next/image";
+import Link from "next/link";
 
 export function DashboardSidebar() {
     const { user } = useUser()
@@ -82,13 +83,19 @@ export function DashboardSidebar() {
                                 className="w-[--radix-popper-anchor-width]"
                             >
                                 <DropdownMenuItem>
-                                    <span>Account</span>
+                                    <Link href="/personal/profile">
+                                        <span>Account</span>
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <span>Billing</span>
+                                    <Link href="/personal/profile/change-password">
+                                        <span>Settings</span>
+                                    </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <span>Sign out</span>
+                                    <Link href="/auth/logout">
+                                        <span>Sign out</span>
+                                    </Link>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

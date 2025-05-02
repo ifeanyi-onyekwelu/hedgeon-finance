@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { FiArrowUpRight, FiCheckCircle, FiDollarSign, FiDownload, FiLoader, FiXCircle, FiZap } from 'react-icons/fi';
+import { FiAlertCircle, FiArrowUpRight, FiCheckCircle, FiClock, FiDollarSign, FiDownload, FiInfo, FiLoader, FiLock, FiMaximize2, FiShield, FiXCircle, FiZap } from 'react-icons/fi';
 import { withdrawApi, getUserTransactions } from '@/app/api/userApi';
-import { QrCode } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle, CheckCircle } from "lucide-react"
 import { Table } from 'antd';
 import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
 
@@ -20,11 +22,12 @@ const WithdrawalSection = ({ walletBalance }: any) => {
         setWithdrawalError('');
 
         try {
-            const response = await withdrawApi({ amount: withdrawalAmount, currency: selectedCurrency, walletAddress });
-            console.log(response)
+            await withdrawApi({ amount: withdrawalAmount, currency: selectedCurrency, walletAddress });
+            setWithdrawalSuccess(true)
         } catch (err: any) {
-            console.log("Withdrawal error", err)
             setWithdrawalError(`Withdrawal failed: ${err.response.data.message}`);
+        } finally {
+            setIsSubmitting(false);
         }
 
         if (!walletAddress || parseFloat(withdrawalAmount) <= 0) {
@@ -41,71 +44,81 @@ const WithdrawalSection = ({ walletBalance }: any) => {
     const currencies = ['USDT', 'BTC', 'SOL', 'ETH'];
 
     return (
-        <div className="bg-white rounded-xl p-8 mb-8 border border-gray-100/70 backdrop-blur-sm">
-            <div className="flex items-center gap-3 mb-6">
-                <FiDownload className="w-8 h-8 text-indigo-600" />
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Withdraw Crypto
-                </h2>
+        <div className="bg-white/80 rounded-2xl p-8 mb-8 shadow-md border border-gray-100 backdrop-blur-lg">
+            {/* Header Section */}
+            <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-indigo-100 rounded-xl">
+                    <FiDownload className="w-7 h-7 text-indigo-600" />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Secure Funds Withdrawal</h2>
+                    <p className="text-gray-500 mt-1">Transfer funds to your external wallet</p>
+                </div>
             </div>
 
             {/* Status Alerts */}
             {withdrawalSuccess && (
                 <div className="animate-fade-in-up mb-6">
-                    <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex items-center gap-3">
+                    <div className="bg-emerald-50/90 border border-emerald-200 p-4 rounded-xl flex items-center gap-3 backdrop-blur-sm">
                         <FiCheckCircle className="w-6 h-6 text-emerald-600 shrink-0" />
                         <div>
-                            <p className="font-semibold text-emerald-800">Withdrawal Successful</p>
-                            <p className="text-sm text-emerald-700 mt-1">Check your wallet shortly.</p>
+                            <p className="font-semibold text-emerald-800">Transaction Completed</p>
+                            <p className="text-sm text-emerald-700 mt-1">Funds sent to your wallet (TXID: 0x...a43f)</p>
                         </div>
                     </div>
                 </div>
             )}
             {withdrawalError && (
                 <div className="animate-shake-x mb-6">
-                    <div className="bg-rose-50 border border-rose-200 p-4 rounded-xl flex items-center gap-3">
+                    <div className="bg-rose-50/90 border border-rose-200 p-4 rounded-xl flex items-center gap-3 backdrop-blur-sm">
                         <FiXCircle className="w-6 h-6 text-rose-600 shrink-0" />
                         <div>
-                            <p className="font-semibold text-rose-800">Withdrawal Failed</p>
+                            <p className="font-semibold text-rose-800">Transaction Failed</p>
                             <p className="text-sm text-rose-700 mt-1">{withdrawalError}</p>
                         </div>
                     </div>
                 </div>
             )}
 
-            <form onSubmit={handleWithdrawal} className="space-y-6">
-                {/* Balance Preview */}
-                <div className="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100">
+            <form onSubmit={handleWithdrawal} className="space-y-8">
+                {/* Balance Card */}
+                <div className="bg-gradient-to-br from-indigo-50 to-indigo-50/20 p-6 rounded-2xl border border-indigo-100/50">
                     <div className="flex justify-between items-center">
                         <div>
-                            <p className="text-sm text-indigo-700">Available Balance</p>
-                            <p className="text-2xl font-bold text-indigo-900">${walletBalance}</p>
+                            <p className="text-xs font-semibold text-indigo-600/80 uppercase tracking-wide">Available Balance</p>
+                            <p className="text-3xl font-bold text-indigo-900 mt-2">${walletBalance?.toLocaleString()}</p>
                         </div>
-                        <FiDollarSign className="w-10 h-10 text-indigo-400" />
+                        <div className="p-3 bg-white/50 rounded-xl border border-indigo-100">
+                            <FiLock className="w-6 h-6 text-indigo-500" />
+                        </div>
+                    </div>
+                    <div className="mt-4 flex items-center gap-2 text-indigo-600/80 text-sm">
+                        <FiInfo className="w-4 h-4" />
+                        <span>Funds become withdrawable after 24h security hold</span>
                     </div>
                 </div>
 
-                {/* Amount Input */}
-                <div className="space-y-2">
-                    <label htmlFor="withdrawalAmount" className="text-sm font-medium text-gray-700 flex justify-between">
-                        Withdrawal Amount
+                {/* Amount Input Section */}
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <label className="text-sm font-semibold text-gray-700">Withdrawal Amount</label>
                         <button
                             type="button"
                             onClick={() => setWithdrawalAmount(walletBalance || 0)}
-                            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center gap-1"
+                            className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                         >
                             <FiZap className="w-4 h-4" />
-                            Withdraw All
+                            Full Balance
                         </button>
-                    </label>
+                    </div>
                     <div className="relative group">
-                        <div className="relative flex items-center bg-white rounded-xl border border-gray-200 hover:border-indigo-300">
+                        <div className="relative flex items-center bg-white rounded-xl border-2 border-gray-200/80 hover:border-indigo-300 focus-within:border-indigo-400 focus-within:ring-4 ring-indigo-100/50 transition-all">
                             <span className="pl-4 pr-2 text-gray-400">
                                 <FiDollarSign className="w-5 h-5" />
                             </span>
                             <input
                                 type="number"
-                                className="flex-1 py-4 pl-2 pr-4 border-0 bg-transparent text-lg font-medium outline-none"
+                                className="flex-1 py-4 pl-2 pr-4 border-0 bg-transparent text-lg font-semibold outline-none placeholder:text-gray-300"
                                 placeholder="0.00"
                                 value={withdrawalAmount}
                                 onChange={(e) => setWithdrawalAmount(e.target.value)}
@@ -113,72 +126,123 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                                 step="0.01"
                                 required
                             />
-                            <span className="px-4 text-gray-400 font-medium">USD</span>
+                            <span className="px-4 text-gray-500 font-medium">USD</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Currency Selection */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Select Cryptocurrency</label>
-                    <select
-                        className="w-full py-3 px-4 border border-gray-200 rounded-xl"
-                        value={selectedCurrency}
-                        onChange={(e) => setSelectedCurrency(e.target.value)}
-                    >
-                        {currencies.map((currency) => (
-                            <option key={currency} value={currency}>
-                                {currency}
-                            </option>
-                        ))}
-                    </select>
+                <div className="space-y-4">
+                    <label className="text-sm font-semibold text-gray-700">Destination Currency</label>
+                    <div className="relative">
+                        <select
+                            className="w-full py-3.5 px-4 border-2 border-gray-200/80 rounded-xl appearance-none bg-white bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM2NzM3ZWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1jaGV2cm9uLWRvd24iPjxwYXRoIGQ9Im02IDkgNiA2IDYtNiIvPjwvc3ZnPg==')] bg-no-repeat bg-[center_right_1rem]"
+                            value={selectedCurrency}
+                            onChange={(e) => setSelectedCurrency(e.target.value)}
+                        >
+                            {currencies.map((currency) => (
+                                <option key={currency} value={currency}>
+                                    {currency}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
-                {/* Wallet Address */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Wallet Address</label>
-                    <div className="flex gap-2">
+                {/* Wallet Address Input */}
+                <div className="space-y-4">
+                    <label className="text-sm font-semibold text-gray-700">Recipient Wallet Address</label>
+                    <div className="flex gap-2 relative">
                         <input
                             type="text"
-                            className="flex-1 py-3 px-4 border border-gray-200 rounded-xl"
-                            placeholder={`Enter your ${selectedCurrency} wallet address`}
+                            className="flex-1 py-3.5 px-4 border-2 border-gray-200/80 rounded-xl placeholder:text-gray-400 focus:border-indigo-400 focus:ring-4 ring-indigo-100/50 transition-all"
+                            placeholder={`Paste ${selectedCurrency} address`}
                             value={walletAddress}
                             onChange={(e) => setWalletAddress(e.target.value)}
                             required
                         />
                         <button
                             type="button"
-                            className="px-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-colors"
+                            className="px-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-colors flex items-center justify-center"
+                            title="Scan QR Code"
                         >
-                            <QrCode className="w-5 h-5" />
+                            <FiMaximize2 className="w-5 h-5 rotate-45" />
                         </button>
                     </div>
+                    <p className="text-sm text-gray-400 mt-2 flex items-center gap-2">
+                        <FiAlertCircle className="w-4 h-4" />
+                        Triple-check wallet address - transactions are irreversible
+                    </p>
                 </div>
+
+                {/* Security Assurance */}
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 flex items-center gap-4">
+                    <div className="p-2 bg-white rounded-lg border border-gray-200">
+                        <FiShield className="w-6 h-6 text-emerald-600" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-semibold text-gray-800">Secure Transaction</p>
+                        <p className="text-sm text-gray-500 mt-1">256-bit SSL encryption protected</p>
+                    </div>
+                </div>
+
+                {withdrawalError && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-red-50 border border-red-100 rounded-sm flex items-center space-x-3 animate-shake"
+                    >
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>
+                                {withdrawalError}
+                            </AlertDescription>
+                        </Alert>
+                    </motion.div>
+                )}
+                {withdrawalSuccess && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-green-50 border border-green-100 rounded-sm flex items-center space-x-3 animate-shake"
+                    >
+                        <Alert variant="default">
+                            <CheckCircle className="h-4 w-4" />
+                            <AlertTitle>Success</AlertTitle>
+                            <AlertDescription>
+                                Your withdrawal request has been received and is pending verification. You will be notified once it is processed.
+                            </AlertDescription>
+                        </Alert>
+                    </motion.div>
+                )}
 
                 {/* Submit Button */}
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all transform hover:shadow-lg active:scale-[0.98] disabled:opacity-50"
+                    className="w-full py-4 bg-gradient-to-br from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-semibold rounded-xl transition-all disabled:opacity-50 disabled:pointer-events-none shadow-lg hover:shadow-indigo-200/50"
                 >
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-3">
                         {isSubmitting ? (
                             <>
                                 <FiLoader className="animate-spin w-5 h-5" />
-                                Processing Withdrawal...
+                                <span>Authorizing Transaction...</span>
                             </>
                         ) : (
                             <>
                                 <FiArrowUpRight className="w-5 h-5" />
-                                Withdraw {selectedCurrency}
+                                <span>Initiate Withdrawal →</span>
                             </>
                         )}
                     </div>
                 </button>
 
-                <p className="text-center text-sm text-gray-500 mt-4">
-                    Processing time: Instant • Network fee may apply
-                </p>
+                {/* Footer Note */}
+                <div className="text-center text-sm text-gray-400 mt-4 flex items-center justify-center gap-2">
+                    <FiClock className="w-4 h-4" />
+                    <span>Typically processed within 2-5 network confirmations</span>
+                </div>
             </form>
         </div>
     );
@@ -256,7 +320,6 @@ const TransactionHistory = () => {
         </div>
     );
 };
-
 const AutoReinvestOption = () => {
     const [isAutoReinvestEnabled, setIsAutoReinvestEnabled] = useState(false);
 

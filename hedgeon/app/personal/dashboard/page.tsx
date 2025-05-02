@@ -10,6 +10,7 @@ import TransactionAndWithdrawalSection from './TransactionAndWithdrawSection';
 import { getPlansApi } from '@/app/api/planApi';
 import MarketInsightSection from './MarketInsightSection';
 import Link from 'next/link';
+import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
 
 // Lazy load charts for better performance
 const PortfolioChart = dynamic(() => import('./PortfolioChart'), { ssr: false });
@@ -42,21 +43,21 @@ const PersonalDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <MetricCard
                         title="Total Invested"
-                        value={`$${user?.totalInvested}`}
+                        value={user?.totalInvested}
                         change="+2.4%"
                         icon={<FiDollarSign />}
                         color="bg-blue-100"
                     />
                     <MetricCard
                         title="Net Returns"
-                        value={`$${user?.netReturns}`}
+                        value={user?.netReturns}
                         change="+5.1%"
                         icon={<FiTrendingUp />}
                         color="bg-green-100"
                     />
                     <MetricCard
                         title="Withdrawable"
-                        value={`$${user?.walletBalance}`}
+                        value={user?.walletBalance}
                         change="+1.2%"
                         icon={<FiActivity />}
                         color="bg-purple-100"
@@ -177,7 +178,7 @@ const MetricCard = ({ title, value, change, icon, color }: any) => (
         <div className="flex justify-between items-start">
             <div>
                 <p className="text-sm text-gray-600 mb-2">{title}</p>
-                <p className="text-2xl font-bold text-gray-800 mb-2">{value}</p>
+                <p className="text-2xl font-bold text-gray-800 mb-2">{`$${formatNumberWithCommas(value)}`}</p>
                 <span className={`text-sm ${change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
                     {change} vs last month
                 </span>

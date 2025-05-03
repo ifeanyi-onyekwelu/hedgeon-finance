@@ -42,7 +42,7 @@ export default function VerifyEmail() {
 
             setVerifySuccess(true)
             await new Promise(res => setTimeout(res, 2000))
-            router.push('/auth/login')
+            router.push('/personal/dashboard')
 
         } catch (err) {
             console.log("ERROR OCCURRED IN VERIFY EMAIL:", err)

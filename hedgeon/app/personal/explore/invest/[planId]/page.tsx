@@ -9,6 +9,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FiAlertCircle, FiArrowLeft, FiArrowUpRight, FiCopy, FiInfo, FiLoader } from 'react-icons/fi';
 import { getAllCurrencies } from '@/app/api/utils';
 import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
+import { investApi } from '@/app/api/userApi';
+import { motion } from 'framer-motion';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle, CheckCircle } from "lucide-react"
 
 interface Fee {
     name: string;
@@ -25,18 +29,25 @@ const PaymentPage = () => {
     const { planId } = useParams();
     const router = useRouter();
 
-    const [currentStep, setCurrentStep] = useState<'form' | 'confirmation'>('form');
+    const [currentStep, setCurrentStep] = useState<'form' | 'confirmation' | 'verification'>('form');
     const [plan, setPlan] = useState<InvestmentPlan | null>(null);
-    const [investmentAmount, setInvestmentAmount] = useState<number | ''>('');
+    const [investmentAmount, setInvestmentAmount] = useState<number>();
     const [selectedCurrency, setSelectedCurrency] = useState<'BTC' | 'USDT' | 'ETH' | 'TRX'>('USDT'); // Default to USDT
     const [fees, setFees] = useState<Fee[]>([]);
     const [estimatedReturn, setEstimatedReturn] = useState<number>(0);
+    const [estimatedReturnPerPeriod, setEstimatedReturnPerPeriod] = useState(0);
     const [loadingPlan, setLoadingPlan] = useState(true);
     const [errorPlan, setErrorPlan] = useState<string | null>(null);
     const [processingPayment, setProcessingPayment] = useState(false);
     const [cryptoAddress, setCryptoAddress] = useState<CryptoAddress | null>(null);
 
-    const availableCurrencies = ['BTC', 'USDT (Trc-20)', 'ETH', 'SOL'];
+    const [initializing, setInitializing] = useState(false);
+    const [investmentError, setInvestmentError] = useState('');
+
+    const [transactionId, setTransactionId] = useState('');
+    const [screenshot, setScreenshot] = useState<File | null>(null);
+
+    const availableCurrencies = ['BTC', 'USDT (Trc-20)', 'TON', 'SOL'];
 
     useEffect(() => {
         const fetchPlanDetails = async () => {
@@ -59,19 +70,37 @@ const PaymentPage = () => {
 
     useEffect(() => {
         if (plan && typeof investmentAmount === 'number' && investmentAmount > 0) {
-            const monthlyReturnRate = plan.estimatedROI / 100 / 12;
-            setEstimatedReturn(investmentAmount * monthlyReturnRate * plan.durationMonths);
-            setFees([]); // No fees for crypto deposit (you might adjust this)
+            let periods = 0;
+            let ratePerPeriod = 0;
+
+            if (plan.durationType === 'months') {
+                periods = plan.duration;
+                ratePerPeriod = plan.estimatedROI / 100;
+            } else if (plan.durationType === 'weeks') {
+                periods = plan.duration
+                ratePerPeriod = plan.estimatedROI / 100;
+            }
+
+            const perPeriodReturn = investmentAmount * ratePerPeriod;
+            const totalReturn = perPeriodReturn * periods;
+
+            setEstimatedReturn(totalReturn);
+            setEstimatedReturnPerPeriod(perPeriodReturn);
+
+            setFees([]);
         } else {
             setEstimatedReturn(0);
+            setEstimatedReturnPerPeriod(0);
             setFees([]);
+
         }
     }, [plan, investmentAmount]);
+
 
     const handleInvestmentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const numberValue = value === '' ? '' : parseFloat(value);
-        setInvestmentAmount(numberValue);
+        setInvestmentAmount(numberValue as number);
     };
 
     const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -97,13 +126,10 @@ const PaymentPage = () => {
         try {
             // Fetch crypto address when proceeding to payment
             const response = await getAllCurrencies(selectedCurrency);
-            if (response.status === 200) {
-                const data = await response.data;
-                setCryptoAddress(data['currency'] as CryptoAddress);
-                setCurrentStep('confirmation');
-            } else {
-                toast.error('Failed to load payment address');
-            }
+            const data = await response.data;
+            console.log("Get all currencies data", data)
+            setCryptoAddress(data['currency'] as CryptoAddress);
+            setCurrentStep('confirmation');
         } catch (error) {
             console.error('Error during investment initiation:', error);
             toast.error('An unexpected error occurred while initiating investment.');
@@ -112,11 +138,36 @@ const PaymentPage = () => {
         }
     };
 
+    const handleInitiateInvestment = async () => {
+        setInvestmentError('');
+        setInitializing(true);
 
+        if (!transactionId || !screenshot) {
+            setInvestmentError("Transaction ID and Screenshot are required.");
+            setInitializing(false);
+            return;
+        }
 
+        try {
+            const formData = new FormData();
+            formData.append("planId", plan?._id!);
+            formData.append("amount", investmentAmount!.toString());
+            formData.append("currency", selectedCurrency);
+            formData.append("transactionId", transactionId);
+            formData.append("screenshot", screenshot);
 
+            const response = await investApi(formData);
 
+            console.log("Make investment", response);
 
+            router.push(`/personal/investments/${response.data.investmentId}/receipt`);
+        } catch (error: any) {
+            console.log(error);
+            setInvestmentError(error?.response?.data?.message || "Something went wrong");
+        } finally {
+            setInitializing(false);
+        }
+    };
 
 
     if (loadingPlan) {
@@ -132,10 +183,6 @@ const PaymentPage = () => {
                 </button>
             </div>);
     }
-
-
-
-
 
 
     const renderFormStep = () => (
@@ -213,11 +260,27 @@ const PaymentPage = () => {
                                     </div>
                                     <div className="flex justify-between">
                                         <dt className="text-gray-600">Duration</dt>
-                                        <dd className="font-medium">{plan.durationMonths} months</dd>
+                                        <dd className="font-medium">{plan.duration} {plan.durationType === 'weeks' ? 'weeks' : 'months'}</dd>
                                     </div>
                                     <div className="flex justify-between pt-3 border-t border-gray-200">
-                                        <dt className="text-green-700">Estimated Return</dt>
-                                        <dd className="font-semibold text-green-700">${formatNumberWithCommas(estimatedReturn)}</dd>
+                                        <dt className="text-gray-600">Estimated ROI</dt>
+                                        <dd className="font-medium">
+                                            {plan.estimatedROI}% {plan.durationType === 'weeks' ? 'weekly' : 'monthly'}
+                                        </dd>
+                                    </div>
+                                    <div className="flex justify-between pt-3 border-t border-gray-200">
+                                        <dt className="text-gray-600">Estimated Return</dt>
+                                        <dd className="font-medium">
+                                            {formatNumberWithCommas(estimatedReturn)}
+                                        </dd>
+
+                                    </div>
+                                    <div className="flex justify-between pt-3 border-t border-gray-200">
+                                        <dt className="text-gray-600">Estimated Return per {plan?.durationType === 'weeks' ? 'week' : 'month'}</dt>
+                                        <dd className="font-medium">
+                                            {formatNumberWithCommas(estimatedReturnPerPeriod)}
+                                        </dd>
+
                                     </div>
                                 </dl>
                             </div>
@@ -319,13 +382,127 @@ const PaymentPage = () => {
                     </div>
                 </dl>
             </div>
+
+            {investmentError && (
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 bg-red-50 border border-red-100 rounded-sm flex items-center space-x-3 animate-shake"
+                >
+                    <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>
+                            {investmentError}
+                        </AlertDescription>
+                    </Alert>
+                </motion.div>
+            )}
+
+            <button
+                onClick={() => setCurrentStep('verification')}
+                className="w-full bg-gradient-to-br from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold py-4 px-6 rounded-xl transition-all transform hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+            >
+                <div className="flex items-center justify-center">
+                    <FiArrowUpRight className="mr-3" />
+                    Make Investment
+                </div>
+            </button>
         </div>
     );
 
+    const renderConfirmPayment = () => (
+        <div className="space-y-6">
+            <div className="bg-blue-50/50 p-6 rounded-xl border border-blue-100 space-y-4">
+                <div className="space-y-4">
+                    <div>
+                        <label htmlFor="transactionId" className="block text-sm font-medium text-gray-700 mb-1">
+                            Transaction ID
+                        </label>
+                        <input
+                            type="text"
+                            id="transactionId"
+                            value={transactionId}
+                            onChange={(e) => setTransactionId(e.target.value)}
+                            required
+                            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Paste your transaction ID here"
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="screenshot" className="block text-sm font-medium text-gray-700 mb-1">
+                            Screenshot of Payment
+                        </label>
+                        <input
+                            type="file"
+                            id="screenshot"
+                            accept="image/*"
+                            onChange={(e) => setScreenshot(e.target.files?.[0] || null)}
+                            required
+                            className="w-full text-gray-700 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                </div>
+
+                {investmentError && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-red-50 border border-red-100 rounded-sm flex items-center space-x-3 animate-shake"
+                    >
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>
+                                {investmentError}
+                            </AlertDescription>
+                        </Alert>
+                    </motion.div>
+                )}
+
+                <button
+                    onClick={handleInitiateInvestment}
+                    disabled={initializing}
+                    className="w-full bg-gradient-to-br from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold py-4 px-6 rounded-xl transition-all transform hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                >
+                    <div className="flex items-center justify-center">
+                        {initializing ? (
+                            <>
+                                <FiLoader className="animate-spin mr-3" />
+                                Processing...
+                            </>
+                        ) : (
+                            <>
+                                <FiArrowUpRight className="mr-3" />
+                                Make Investment
+                            </>
+                        )}
+                    </div>
+                </button>
+            </div>
+        </div>
+    )
+
+    const renderStep = () => {
+        console.log("Current Step", currentStep);
+        switch (currentStep) {
+            case 'form':
+                return renderFormStep();
+            case 'confirmation':
+                return renderConfirmationStep();
+            case 'verification':
+                return renderConfirmPayment();
+            default:
+                return null;
+        }
+    };
+
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-xl mx-auto bg-white rounded-xl overflow-hidden border border-gray-200 transition-all duration-200 hover:shadow-xl">
-                <div className="p-3 space-y-6">
+        <div className="min-h-screen py-12 px-2 sm:px-2 lg:px-8">
+            <div className="w-full max-w-xl mx-auto rounded-xl overflow-hidden transition-all duration-200">
+                <div className="space-y-6">
                     <button
                         onClick={() => router.back()}
                         className="flex items-center text-blue-600 hover:text-blue-800 font-medium group transition-colors"
@@ -336,16 +513,25 @@ const PaymentPage = () => {
 
                     <div className="space-y-2">
                         <h1 className="text-3xl font-bold text-gray-900">
-                            {currentStep === 'form' ? 'Invest in' : 'Confirm Payment for'} {plan.name}
+                            {currentStep === 'form'
+                                ? 'Invest in'
+                                : currentStep === 'confirmation'
+                                    ? 'Confirm Payment for'
+                                    : 'Upload Transaction for'} {plan.name}
                         </h1>
+
                         <p className="text-gray-500">
                             {currentStep === 'form'
                                 ? 'Choose your investment amount and preferred cryptocurrency'
-                                : 'Complete your investment by sending the payment'}
+                                : currentStep === 'confirmation'
+                                    ? 'Complete your investment by sending the payment'
+                                    : 'Upload your transaction screenshot or hash for verification'}
                         </p>
                     </div>
 
-                    {currentStep === 'form' ? renderFormStep() : renderConfirmationStep()}
+                    <>
+                        {renderStep()}
+                    </>
                 </div>
             </div>
         </div>

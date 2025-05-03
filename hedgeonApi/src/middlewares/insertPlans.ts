@@ -6,8 +6,8 @@ const investmentPlans = [
         name: "Trial Package",
         minAmount: 5000,
         maxAmount: 15000,
-        durationMonths: 3, // Using min duration
-        durationType: "months",
+        duration: 3, // Using min duration
+        durationType: "weeks",
         estimatedROI: 5, // weekly
         taxOnProfit: 0,
         referralBonus: 3,
@@ -26,7 +26,7 @@ const investmentPlans = [
         name: "Basic Package",
         minAmount: 30000,
         maxAmount: 70000,
-        durationMonths: 6, // Using min duration
+        duration: 6, // Using min duration
         durationType: "months",
         estimatedROI: 7,
         taxOnProfit: 10,
@@ -45,7 +45,7 @@ const investmentPlans = [
         name: "Standard Package",
         minAmount: 100000,
         maxAmount: 500000,
-        durationMonths: 12, // Using min duration
+        duration: 12, // Using min duration
         durationType: "months",
         estimatedROI: 11,
         taxOnProfit: 15,
@@ -65,7 +65,7 @@ const investmentPlans = [
         name: "Premium Package",
         minAmount: 500000,
         maxAmount: 1500000,
-        durationMonths: 24, // Using min duration
+        duration: 24, // Using min duration
         durationType: "months",
         estimatedROI: 15,
         taxOnProfit: 20,
@@ -96,7 +96,7 @@ const currencies = [
         qrCodeUrl: 'https://asset.cloudinary.com/dfeoowyra/e97a959e93c3f59847edc911fc68472a',     // Replace with your Cloudinary BTC QR code URL
     },
     {
-        name: 'ETH',
+        name: 'TON',
         address: 'YOUR_ETH_WALLET_ADDRESS',     // Replace with your actual ETH address
         qrCodeUrl: 'CLOUDINARY_ETH_QR_CODE_URL',     // Replace with your Cloudinary ETH QR code URL
     },

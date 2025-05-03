@@ -8,9 +8,15 @@ export const getUserTransactions = () => {
     return axiosInstance.get('/transactions')
 }
 
-export const investApi = (investData: { planId: string, amount: number, currency: string }) => {
-    return axiosInstance.post('/invest', investData)
-}
+export const investApi = (investData: FormData) => {
+    return axiosInstance.post('/invest', investData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
+
+
 export const getProfileApi = () => {
     return axiosInstance.get('/user/profile')
 }

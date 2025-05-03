@@ -400,7 +400,7 @@ function Home() {
                                                     </svg>
                                                     Duration
                                                 </span>
-                                                <span className="font-mono">{plan?.durationMonths} Months</span>
+                                                <span className="font-mono">{plan?.duration} {plan.durationType === 'weeks' ? 'weeks' : 'months'}</span>
                                             </div>
 
                                             <div className="flex justify-between items-center">

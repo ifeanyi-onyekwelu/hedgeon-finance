@@ -12,7 +12,8 @@ export interface InvestmentPlan {
     name: string;
     minAmount: number;
     maxAmount: number;
-    durationMonths: number;
+    durationType: string;
+    duration: number;
     estimatedROI: number;
     taxOnProfit: number;
     referralBonus: number;
@@ -79,7 +80,7 @@ const InvestmentsPage = () => {
                                         {plan.riskLevel} Risk
                                     </span>
                                 </div>
-                                <p className="text-gray-600 mb-4">Invest between <span className="font-semibold">${plan.minAmount.toLocaleString()}</span> and <span className="font-semibold">${plan.maxAmount.toLocaleString()}</span> for a duration of <span className="font-semibold">{plan.durationMonths} months</span>.</p>
+                                <p className="text-gray-600 mb-4">Invest between <span className="font-semibold">${plan.minAmount.toLocaleString()}</span> and <span className="font-semibold">${plan.maxAmount.toLocaleString()}</span> for a duration of <span className="font-semibold">{plan.duration} {plan.durationType === 'weeks' ? 'weeks' : 'months'}</span>.</p>
 
                                 <div className="py-3 border-t border-b border-gray-200 mb-4">
                                     <div className="flex items-center justify-between mb-2">

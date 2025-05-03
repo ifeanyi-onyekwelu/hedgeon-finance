@@ -1,41 +1,67 @@
 import { Request, Response } from "../utils/Types";
 import asyncHandler from "express-async-handler";
-import { BadRequestError, NotFoundError } from "../utils/errors";
+import { BadRequestError, InternalServerError, NotFoundError } from "../utils/errors";
 import { logData, logError } from "../utils/logger";
 import { getUserById } from "../services/user.service";
 import planModel from "../models/plan.model";
 import Investment from "../models/investment.model";
 import Transaction from "../models/transaction.model";
+import { v2 as cloudinary } from 'cloudinary';
+import streamifier from 'streamifier';
 import { emailService } from "..";
 
 export const createInvestment = asyncHandler(
     async (req: Request, res: Response) => {
-        const { planId, amount, currency } = req.body;
+        const { planId, amount, currency, transactionId } = req.body;
         const user = await getUserById(req.session.user.id);
 
-        if (!user) throw new BadRequestError("User not found");
-        if (!planId) throw new BadRequestError("Plan ID is required");
-        if (!amount) throw new BadRequestError("Investment amount is required");
+        if (!planId || !amount || !transactionId || !req.file) {
+            return logError(res, new BadRequestError("All fields are required"));
+        }
+
+        const buffer = req.file.buffer;
+        const uploadToCloudinary = (): Promise<string> => {
+            return new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream({ folder: "investment_receipts" }, (error, result) => {
+                    if (result?.secure_url) resolve(result.secure_url);
+                    else reject(error);
+                });
+
+                streamifier.createReadStream(buffer).pipe(stream);
+            });
+        };
+
+        let receiptUrl;
+        try {
+            receiptUrl = await uploadToCloudinary();
+        } catch (err) {
+            return logError(res, new InternalServerError("Failed to upload receipt"));
+        }
+
 
         // Get selected plan
         const plan = await planModel.findById(planId);
-        if (!plan) throw new NotFoundError("Investment plan not found");
+        if (!plan) return logError(res, new NotFoundError("Investment plan not found"))
 
         // Validate investment amount
         if (amount < plan.minAmount) {
-            throw new BadRequestError(
+            return logError(res, new BadRequestError(
                 `Minimum investment for this plan is ${plan.minAmount}`
-            );
+            ));
         }
+
         if (amount > plan.maxAmount) {
-            throw new BadRequestError(
-                `Maximum investment for this plan is ${plan.maxAmount}`
-            );
+            return logError(res, new BadRequestError(`Maximum investment for this plan is ${plan.maxAmount}`));
         }
 
         const startDate = new Date();
         const endDate = new Date(startDate);
-        endDate.setMonth(endDate.getMonth() + plan.durationMonths);
+
+        if (plan.durationType === 'months') {
+            endDate.setMonth(endDate.getMonth() + plan.duration);
+        } else if (plan.durationType === 'weeks') {
+            endDate.setDate(endDate.getDate() + (plan.duration * 7));
+        }
 
 
         // Create investment
@@ -49,6 +75,8 @@ export const createInvestment = asyncHandler(
             amount,
             startDate,
             endDate,
+            transactionId,
+            receiptUrl, // ✅ Save receipt image URL
         });
 
         const planData = {
@@ -152,9 +180,6 @@ export const getUserInvestments = asyncHandler(async (req: Request, res: Respons
     logData(res, 200, { success: true, investments });
 });
 
-/**
- * Get a single investment by ID
- */
 export const getInvestmentById = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
     const investment = await Investment.findById(id);

@@ -11,7 +11,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
         <ProtectedLayout allowedRoles={['user']}>
             <SidebarProvider>
                 <DashboardSidebar />
-                <main className="flex-1 p-8 bg-gray-50 min-h-screen">
+                <main className="flex-1 p-2 bg-gray-50 min-h-screen">
                     <DashboardHeader />
                     <SidebarTrigger />
                     {children}

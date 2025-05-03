@@ -41,7 +41,7 @@ const WithdrawalSection = ({ walletBalance }: any) => {
         setIsSubmitting(false);
     };
 
-    const currencies = ['USDT', 'BTC', 'SOL', 'ETH'];
+    const currencies = ['USDT', 'BTC', 'SOL', 'ETH', 'TON'];
 
     return (
         <div className="bg-white/80 rounded-2xl p-8 mb-8 shadow-md border border-gray-100 backdrop-blur-lg">

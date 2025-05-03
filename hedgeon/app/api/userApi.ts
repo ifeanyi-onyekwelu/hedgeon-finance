@@ -20,12 +20,15 @@ export const investApi = (investData: FormData) => {
 export const getProfileApi = () => {
     return axiosInstance.get('/user/profile')
 }
+
 export const getReferralsApi = () => {
     return axiosInstance.get('/user/referrals')
 }
+
 export const updateProfileApi = (userData: { name: string, email: string, phone: string }) => {
     return axiosInstance.put('/user/update', userData)
 }
+
 export const deleteAccountApi = () => {
     return axiosInstance.post('/user/delete')
 }

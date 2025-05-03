@@ -107,8 +107,7 @@ const ChangePasswordForm = () => {
     };
 
     return (
-        <div className="bg-white shadow rounded-md p-6 mb-6 md:w-2/5 w-full mx-auto">
-            <h2 className="text-xl font-semibold mb-6 text-gray-800">Change Password</h2>
+        <div className="rounded-md b-6 w-full">
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
@@ -128,7 +127,7 @@ const ChangePasswordForm = () => {
                         <button
                             type="button"
                             onClick={() => togglePasswordVisibility('current')}
-                            className="absolute right-2 top-8 text-gray-500"
+                            className="absolute right-2 top-10 text-gray-500"
                         >
                             {showPassword.current ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
@@ -153,7 +152,7 @@ const ChangePasswordForm = () => {
                         <button
                             type="button"
                             onClick={() => togglePasswordVisibility('new')}
-                            className="absolute right-2 top-8 text-gray-500"
+                            className="absolute right-2 top-10 text-gray-500"
                         >
                             {showPassword.new ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
@@ -189,7 +188,7 @@ const ChangePasswordForm = () => {
                         <button
                             type="button"
                             onClick={() => togglePasswordVisibility('confirm')}
-                            className="absolute right-2 top-8 text-gray-500"
+                            className="absolute right-2 top-10 text-gray-500"
                         >
                             {showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>

@@ -88,7 +88,7 @@ export function DashboardSidebar() {
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <Link href="/personal/profile/change-password">
+                                    <Link href="/personal/profile/settings">
                                         <span>Settings</span>
                                     </Link>
                                 </DropdownMenuItem>

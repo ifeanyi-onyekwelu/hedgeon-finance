@@ -11,9 +11,7 @@ interface KYCData {
 
 const KYCVerificationForm = () => {
     const [currentStep, setCurrentStep] = useState(1);
-    const [formData, setFormData] = useState<KYCData>({
-        documentType: 'passport',
-    });
+    const [formData, setFormData] = useState<KYCData>({ documentType: 'passport' });
     const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
     const documentTypes = [
@@ -33,6 +31,42 @@ const KYCVerificationForm = () => {
         }
     };
 
+    const renderFilePreview = (file?: File) => {
+        if (!file) return null;
+
+        const isImage = file.type.startsWith('image/');
+        const isPDF = file.type === 'application/pdf';
+
+        if (isImage) {
+            return (
+                <img
+                    src={URL.createObjectURL(file)}
+                    alt="Preview"
+                    className="mt-2 max-h-48 border rounded-md shadow"
+                />
+            );
+        }
+
+        if (isPDF) {
+            return (
+                <a
+                    href={URL.createObjectURL(file)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-block text-blue-600 underline text-sm"
+                >
+                    View PDF
+                </a>
+            );
+        }
+
+        return (
+            <p className="text-sm text-gray-600 mt-2">
+                Uploaded: {file.name}
+            </p>
+        );
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmissionStatus('loading');
@@ -40,15 +74,13 @@ const KYCVerificationForm = () => {
         try {
             const formPayload = new FormData();
             Object.entries(formData).forEach(([key, value]) => {
-                if (value instanceof File) {
-                    formPayload.append(key, value);
-                } else {
+                if (value instanceof File || typeof value === 'string') {
                     formPayload.append(key, value);
                 }
             });
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
             setSubmissionStatus('success');
             setCurrentStep(1);
@@ -65,96 +97,74 @@ const KYCVerificationForm = () => {
         switch (currentStep) {
             case 1:
                 return (
-                    <div className="space-y-4">
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Document Type
-                            </label>
-                            <select
-                                name="documentType"
-                                value={formData.documentType}
-                                onChange={handleInputChange}
-                                className="w-full p-2 border rounded-md"
-                            >
-                                {documentTypes.map((doc) => (
-                                    <option key={doc.value} value={doc.value}>
-                                        {doc.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                    <>
+                        <label className="block mb-2 text-sm font-medium">Document Type</label>
+                        <select
+                            name="documentType"
+                            value={formData.documentType}
+                            onChange={handleInputChange}
+                            className="w-full p-2 border rounded-md"
+                        >
+                            {documentTypes.map(doc => (
+                                <option key={doc.value} value={doc.value}>
+                                    {doc.label}
+                                </option>
+                            ))}
+                        </select>
 
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
+                        <div className="mt-4">
+                            <label className="block mb-2 text-sm font-medium">
                                 Upload ID Document ({formData.documentType})
                             </label>
                             <input
                                 type="file"
+                                accept="image/*,application/pdf"
                                 onChange={(e) => handleFileUpload(e, 'idProof')}
-                                accept="image/*, application/pdf"
                                 className="w-full p-2 border rounded-md"
                                 required
                             />
-                            {formData.idProof && (
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Selected: {formData.idProof.name}
-                                </p>
-                            )}
+                            {renderFilePreview(formData.idProof)}
                         </div>
-                    </div>
+                    </>
                 );
 
             case 2:
                 return (
-                    <div className="space-y-4">
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Proof of Address (Utility bill, bank statement, etc.)
-                            </label>
+                    <>
+                        <div>
+                            <label className="block mb-2 text-sm font-medium">Proof of Address</label>
                             <input
                                 type="file"
+                                accept="image/*,application/pdf"
                                 onChange={(e) => handleFileUpload(e, 'addressProof')}
-                                accept="image/*, application/pdf"
                                 className="w-full p-2 border rounded-md"
                                 required
                             />
-                            {formData.addressProof && (
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Selected: {formData.addressProof.name}
-                                </p>
-                            )}
+                            {renderFilePreview(formData.addressProof)}
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Selfie with Document
-                            </label>
+                        <div className="mt-4">
+                            <label className="block mb-2 text-sm font-medium">Selfie with Document</label>
                             <input
                                 type="file"
-                                onChange={(e) => handleFileUpload(e, 'selfie')}
                                 accept="image/*"
+                                onChange={(e) => handleFileUpload(e, 'selfie')}
                                 className="w-full p-2 border rounded-md"
                                 required
                             />
-                            {formData.selfie && (
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Selected: {formData.selfie.name}
-                                </p>
-                            )}
+                            {renderFilePreview(formData.selfie)}
                         </div>
-                    </div>
+                    </>
                 );
 
             case 3:
                 return (
-                    <div className="space-y-4">
-                        <div className="bg-gray-50 p-4 rounded-md">
-                            <h3 className="font-semibold mb-2">Review Your Submission</h3>
-                            <p className="text-sm">Document Type: {formData.documentType}</p>
-                            <p className="text-sm">ID Document: {formData.idProof?.name}</p>
-                            <p className="text-sm">Address Proof: {formData.addressProof?.name}</p>
-                            <p className="text-sm">Selfie: {formData.selfie?.name}</p>
-                        </div>
+                    <div className="space-y-3 bg-gray-50 p-4 rounded-md border">
+                        <h3 className="font-semibold">Review Your Details</h3>
+                        <p><strong>Document Type:</strong> {formData.documentType}</p>
+                        <p><strong>ID Document:</strong> {formData.idProof?.name}</p>
+                        <p><strong>Address Proof:</strong> {formData.addressProof?.name}</p>
+                        <p><strong>Selfie:</strong> {formData.selfie?.name}</p>
                     </div>
                 );
 
@@ -163,28 +173,34 @@ const KYCVerificationForm = () => {
         }
     };
 
-    return (
-        <div className="bg-white shadow rounded-md p-6 mb-6 w-full md:w-2/5 mx-auto">
-            <h2 className="text-xl font-semibold mb-6 text-gray-800">KYC Verification</h2>
+    const canGoNext = currentStep === 1
+        ? !!formData.idProof
+        : currentStep === 2
+            ? !!formData.addressProof && !!formData.selfie
+            : true;
 
-            <div className="mb-6">
-                <div className="flex justify-between">
-                    {[1, 2, 3].map((step) => (
-                        <div key={step} className="flex-1">
-                            <div className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center
-                ${currentStep >= step ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>
-                                {step}
-                            </div>
-                            <div className="text-center mt-2 text-sm">Step {step}</div>
+    return (
+        <div className="bg-white shadow rounded-lg p-6 w-full mt-10">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">KYC Verification</h2>
+
+            <div className="flex justify-between mb-6">
+                {[1, 2, 3].map((step) => (
+                    <div key={step} className="flex-1 text-center">
+                        <div className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center
+                            ${currentStep >= step ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600'}`}>
+                            {step}
                         </div>
-                    ))}
-                </div>
+                        <p className="text-xs mt-1">Step {step}</p>
+                    </div>
+                ))}
             </div>
 
             <form onSubmit={handleSubmit}>
-                {renderStep()}
+                <div className="space-y-6">
+                    {renderStep()}
+                </div>
 
-                <div className="mt-6 flex justify-between">
+                <div className="mt-6 flex justify-between items-center">
                     {currentStep > 1 && (
                         <button
                             type="button"
@@ -194,36 +210,35 @@ const KYCVerificationForm = () => {
                             Back
                         </button>
                     )}
-
                     {currentStep < 3 ? (
                         <button
                             type="button"
                             onClick={nextStep}
-                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md ml-auto"
-                            disabled={!formData.idProof}
+                            className="ml-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+                            disabled={!canGoNext}
                         >
                             Next
                         </button>
                     ) : (
                         <button
                             type="submit"
-                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md ml-auto"
+                            className="ml-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
                             disabled={submissionStatus === 'loading'}
                         >
-                            {submissionStatus === 'loading' ? 'Submitting...' : 'Submit Verification'}
+                            {submissionStatus === 'loading' ? 'Submitting...' : 'Submit'}
                         </button>
                     )}
                 </div>
 
                 {submissionStatus === 'success' && (
-                    <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-md">
+                    <p className="mt-4 text-green-700 bg-green-100 px-4 py-2 rounded-md">
                         Submission successful! Your documents are under review.
-                    </div>
+                    </p>
                 )}
                 {submissionStatus === 'error' && (
-                    <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-                        Error submitting documents. Please try again.
-                    </div>
+                    <p className="mt-4 text-red-700 bg-red-100 px-4 py-2 rounded-md">
+                        Submission failed. Please try again later.
+                    </p>
                 )}
             </form>
         </div>

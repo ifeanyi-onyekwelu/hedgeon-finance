@@ -27,7 +27,9 @@ router.use("/transactions", authGuard, transactionRoutes);
 
 router.get("/currencies", async (req, res) => {
     const { name } = req.query
+    console.log("Name from query", name)
     const currency = await currencyModel.findOne({ name });
+    console.log("Currency Fetched", currency)
     return logData(res, 200, { currency });
 })
 

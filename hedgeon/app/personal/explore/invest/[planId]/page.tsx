@@ -13,6 +13,7 @@ import { investApi } from '@/app/api/userApi';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle } from "lucide-react"
+import Image from 'next/image';
 
 interface Fee {
     name: string;
@@ -32,7 +33,7 @@ const PaymentPage = () => {
     const [currentStep, setCurrentStep] = useState<'form' | 'confirmation' | 'verification'>('form');
     const [plan, setPlan] = useState<InvestmentPlan | null>(null);
     const [investmentAmount, setInvestmentAmount] = useState<number>();
-    const [selectedCurrency, setSelectedCurrency] = useState<'BTC' | 'USDT' | 'ETH' | 'TRX'>('USDT'); // Default to USDT
+    const [selectedCurrency, setSelectedCurrency] = useState<'BTC' | 'USDT (TRC-20)' | 'TON' | 'SOL'>('USDT (TRC-20)'); // Default to USDT
     const [fees, setFees] = useState<Fee[]>([]);
     const [estimatedReturn, setEstimatedReturn] = useState<number>(0);
     const [estimatedReturnPerPeriod, setEstimatedReturnPerPeriod] = useState(0);
@@ -47,7 +48,7 @@ const PaymentPage = () => {
     const [transactionId, setTransactionId] = useState('');
     const [screenshot, setScreenshot] = useState<File | null>(null);
 
-    const availableCurrencies = ['BTC', 'USDT (Trc-20)', 'TON', 'SOL'];
+    const availableCurrencies = ['BTC', 'USDT (TRC-20)', 'TON', 'SOL'];
 
     useEffect(() => {
         const fetchPlanDetails = async () => {
@@ -104,7 +105,7 @@ const PaymentPage = () => {
     };
 
     const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCurrency(e.target.value as 'BTC' | 'USDT' | 'ETH' | 'TRX');
+        setSelectedCurrency(e.target.value as 'BTC' | 'USDT (TRC-20)' | 'TON' | 'SOL');
         setCryptoAddress(null); // Clear previous address when currency changes
     };
 
@@ -127,7 +128,7 @@ const PaymentPage = () => {
             // Fetch crypto address when proceeding to payment
             const response = await getAllCurrencies(selectedCurrency);
             const data = await response.data;
-            console.log("Get all currencies data", data)
+            console.log("Currency Fetched:", data)
             setCryptoAddress(data['currency'] as CryptoAddress);
             setCurrentStep('confirmation');
         } catch (error) {
@@ -269,14 +270,14 @@ const PaymentPage = () => {
                                         </dd>
                                     </div>
                                     <div className="flex justify-between pt-3 border-t border-gray-200">
-                                        <dt className="text-gray-600">Estimated Return</dt>
+                                        <dt className="text-gray-600">Estimated Return (Complete)</dt>
                                         <dd className="font-medium">
                                             {formatNumberWithCommas(estimatedReturn)}
                                         </dd>
 
                                     </div>
                                     <div className="flex justify-between pt-3 border-t border-gray-200">
-                                        <dt className="text-gray-600">Estimated Return per {plan?.durationType === 'weeks' ? 'week' : 'month'}</dt>
+                                        <dt className="text-gray-600">Estimated Return ({plan?.durationType === 'weeks' ? 'weekly' : 'monthly'})</dt>
                                         <dd className="font-medium">
                                             {formatNumberWithCommas(estimatedReturnPerPeriod)}
                                         </dd>
@@ -339,10 +340,12 @@ const PaymentPage = () => {
                 {cryptoAddress?.qrCodeUrl && (
                     <div className="text-center border-t pt-4 mt-4">
                         <p className="text-sm text-gray-600 mb-3">Scan QR Code</p>
-                        <img
+                        <Image
                             src={cryptoAddress.qrCodeUrl}
                             alt="QR Code"
-                            className="inline-block w-40 h-40 p-2 bg-white rounded-lg border border-gray-200"
+                            width={160} // Adjust width as needed
+                            height={160} // Adjust height as needed
+                            className="inline-block p-2 bg-white rounded-lg border border-gray-200"
                         />
                     </div>
                 )}
@@ -485,7 +488,6 @@ const PaymentPage = () => {
     )
 
     const renderStep = () => {
-        console.log("Current Step", currentStep);
         switch (currentStep) {
             case 'form':
                 return renderFormStep();

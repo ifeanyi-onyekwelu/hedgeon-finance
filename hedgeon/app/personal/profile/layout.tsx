@@ -31,7 +31,7 @@ interface NavigationBoxProps {
 
 const NavigationBox = ({ links }: NavigationBoxProps) => {
     return (
-        <div className="p-6 rounded-sm shadow-md w-full md:w-1/4 bg-white space-y-3 h-fit">
+        <div className="p-6 rounded-sm w-full md:w-1/4 bg-white space-y-3 h-fit md:border-none border-b">
             <h2 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-3">Navigation</h2>
             <div className="space-y-2">
                 {links.map((link) => (
@@ -64,7 +64,7 @@ function SettingsLayout({ children }: { children: React.ReactNode }) {
     ];
 
     return (
-        <div className="flex space-x-10 md:flex-row flex-col md:space-y-0 space-y-3">
+        <div className="flex space-x-10 md:flex-row flex-col md:space-y-0 space-y-5">
             <NavigationBox links={links} />
 
             <main className="md:w-3/4 w-full">

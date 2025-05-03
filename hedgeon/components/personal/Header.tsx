@@ -54,7 +54,7 @@ function DashboardHeader() {
     };
 
     return (
-        <div className="flex justify-between items-center mb-6 md:mb-8">
+        <div className="flex justify-between items-center mb-6 md:mb-8 sticky top-0 bg-white z-50 p-2">
             {/* Left Section: Greeting and Date */}
             <div>
                 <h1 className="text-xl font-semibold text-gray-800 md:text-2xl">
@@ -97,7 +97,7 @@ function DashboardHeader() {
                                     <FiUser className="inline-block mr-2 text-gray-500" />
                                     Profile
                                 </Link>
-                                <Link href="/personal/profile/change-password" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left focus:outline-none">
+                                <Link href="/personal/profile/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left focus:outline-none">
                                     <FiSettings className="inline-block mr-2 text-gray-500" />
                                     Settings
                                 </Link>

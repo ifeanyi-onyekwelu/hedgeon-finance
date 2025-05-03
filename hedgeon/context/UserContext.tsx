@@ -12,7 +12,7 @@ type User = {
     role: 'user' | 'admin'
     kyc: string
     twoFactorSecret: string
-    currentPlan?: {
+    currentPlan?: [{
         planId: string
         name: string
         startDate: Date
@@ -20,7 +20,21 @@ type User = {
         daysGone: number
         investedAmount: number
         roiAccumulated: number
-    }[]
+    }]
+    pastPlans: [{
+        planId: string;
+        name: string;
+        startDate: Date;
+        endDate: Date;
+        investedAmount: number;
+        roiAccumulated: number;
+    }]
+    notifications: [{
+        message: string,
+        type: string,
+        date: Date,
+        read: boolean
+    }],
     walletBalance: number
     totalInvested: number
     netReturns: number

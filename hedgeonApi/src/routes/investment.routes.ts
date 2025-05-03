@@ -4,6 +4,7 @@ import {
     reinvestEarnings,
     getUserInvestments,
     getInvestmentById,
+    allocateProfit
 } from "../controllers/investment.controller";
 import multer from 'multer';
 
@@ -15,5 +16,6 @@ router.post("/", upload.single('screenshot'), createInvestment);
 router.post("/reinvest", reinvestEarnings);
 router.get("/", getUserInvestments);
 router.get("/:id", getInvestmentById);
+router.post("/allocate-profit", allocateProfit);
 
 export default router;

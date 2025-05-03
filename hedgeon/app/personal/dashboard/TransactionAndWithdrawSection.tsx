@@ -51,7 +51,7 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                     <FiDownload className="w-7 h-7 text-indigo-600" />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Secure Funds Withdrawal</h2>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900">Secure Funds Withdrawal</h2>
                     <p className="text-gray-500 mt-1">Transfer funds to your external wallet</p>
                 </div>
             </div>
@@ -320,6 +320,7 @@ const TransactionHistory = () => {
         </div>
     );
 };
+
 const AutoReinvestOption = () => {
     const [isAutoReinvestEnabled, setIsAutoReinvestEnabled] = useState(false);
 

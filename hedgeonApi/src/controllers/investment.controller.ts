@@ -9,6 +9,7 @@ import Transaction from "../models/transaction.model";
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 import { emailService } from "..";
+import userModel from "../models/user.model";
 
 export const createInvestment = asyncHandler(
     async (req: Request, res: Response) => {
@@ -187,3 +188,83 @@ export const getInvestmentById = asyncHandler(async (req: Request, res: Response
 
     logData(res, 200, { success: true, investment });
 });
+
+export const updateUserInvestments = async () => {
+    const users = await userModel.find({ currentPlan: { $exists: true, $not: { $size: 0 } } });
+
+    for (const user of users) {
+        let updated = false;
+
+        for (const plan of user.currentPlan) {
+            const planDetails = await planModel.findById(plan.planId);
+
+            if (!planDetails) continue;
+
+            const today = new Date();
+            const startDate = new Date(plan.startDate);
+            const endDate = new Date(plan.endDate);
+            const isExpired = today >= endDate;
+
+            if (isExpired) {
+                // Move to pastPlans
+                user.pastPlans.push({
+                    planId: plan.planId,
+                    name: plan.name,
+                    startDate: plan.startDate,
+                    endDate: plan.endDate,
+                    investedAmount: plan.investedAmount,
+                    roiAccumulated: plan.roiAccumulated,
+                });
+
+                // Remove from currentPlan
+                user.currentPlan = user.currentPlan.filter((p: any) => p.planId.toString() !== plan.planId.toString());
+                updated = true;
+                continue;
+            }
+
+
+            // Calculate difference in days
+            const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+            const daysToApply = daysSinceStart - plan.daysGone;
+
+            if (daysToApply > 0) {
+                const roiRate = planDetails.estimatedROI / 100;
+                let periodsToApply = 0;
+
+                if (planDetails.durationType === "weeks") {
+                    periodsToApply = Math.floor(daysToApply / 7);
+                } else if (planDetails.durationType === "months") {
+                    periodsToApply = Math.floor(daysToApply / 30); // Approximate monthly
+                }
+
+                if (periodsToApply > 0) {
+                    const roiPerPeriod = plan.investedAmount * roiRate;
+                    const totalNewROI = periodsToApply * roiPerPeriod;
+
+                    plan.roiAccumulated += totalNewROI;
+                    plan.daysGone += daysToApply;
+
+                    user.walletBalance += totalNewROI;
+                    user.netReturns += totalNewROI;
+                    updated = true;
+
+                    user.notifications.push({
+                        message: `You just earned $${totalNewROI.toFixed(2)} from your "${plan.name}" plan.`,
+                        type: 'roi'
+                    });
+                }
+            }
+        }
+
+        if (updated) {
+            await user.save();
+        }
+    }
+
+    return { message: "Investments updated successfully" };
+};
+
+export const allocateProfit = asyncHandler(async (req: Request, res: Response) => {
+    const result = await updateUserInvestments();
+    res.status(200).json(result);
+})

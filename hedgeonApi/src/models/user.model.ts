@@ -19,6 +19,20 @@ interface IUser {
         investedAmount: number;
         roiAccumulated: number;
     }];
+    pastPlans: [{
+        planId: mongoose.Types.ObjectId;
+        name: string;
+        startDate: Date;
+        endDate: Date;
+        investedAmount: number;
+        roiAccumulated: number;
+    }]
+    notifications: [{
+        message: string,
+        type: string,
+        date: Date,
+        read: boolean
+    }],
     walletBalance: number
     totalInvested: number;   // Track the total amount invested
     netReturns: number;      // Track the net returns
@@ -83,6 +97,24 @@ const userSchema = new mongoose.Schema<IUser>({
         daysGone: { type: Number, default: 0 },
         investedAmount: { type: Number, default: 0 },
         roiAccumulated: { type: Number, default: 0 },
+    }],
+    pastPlans: [{
+        planId: {
+            type: mongoose.Types.ObjectId,
+            ref: "Plan",
+            default: null,
+        },
+        name: { type: String, default: null },
+        startDate: { type: Date, default: null },
+        endDate: { type: Date, default: null },
+        investedAmount: { type: Number, default: 0 },
+        roiAccumulated: { type: Number, default: 0 },
+    }],
+    notifications: [{
+        message: String,
+        type: { type: String }, // e.g., 'roi', 'deposit', etc.
+        date: { type: Date, default: Date.now },
+        read: { type: Boolean, default: false }
     }],
     walletBalance: {
         type: Number,

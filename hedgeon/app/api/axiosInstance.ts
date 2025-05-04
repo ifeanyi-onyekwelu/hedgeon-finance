@@ -7,7 +7,7 @@ const baseURL = "https://hedgeon-finance-1.onrender.com/api/v1/";
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL,
-    timeout: 10000,
+    timeout: 30000,
     headers: {
         "Content-Type": "application/json",
     },

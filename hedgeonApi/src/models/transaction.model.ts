@@ -1,9 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
 
 export enum Currency {
-    USDT = 'USDT',
+    USDT = 'USDT (TRC-20)',
     BTC = 'BTC',
-    ETH = 'ETH',
     SOL = 'SOL',
     TON = 'TON'
 }

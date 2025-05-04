@@ -157,6 +157,7 @@ const PaymentPage = () => {
             formData.append("transactionId", transactionId);
             formData.append("screenshot", screenshot);
 
+            console.log("Hey there!")
             const response = await investApi(formData);
 
             console.log("Make investment", response);

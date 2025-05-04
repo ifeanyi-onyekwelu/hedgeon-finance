@@ -6,16 +6,14 @@ import { config } from "dotenv";
 import session from "express-session";
 
 import dbConn from "./config/dbConn";
-import EmailService from "./utils/mailer";
 import { logData, logError } from "./utils/logger";
 import { NotFoundError } from "./utils/errors";
 import corsOptions from "./config/corsOptions";
-
-import "./profitCronJob";
-
-export const emailService = new EmailService();
+import cloudinaryConfig from "./config/cloudinaryConfig";
 
 config();
+cloudinaryConfig();
+
 dbConn().then((r) => console.log("MongoDB Connected"));
 
 const app = express();

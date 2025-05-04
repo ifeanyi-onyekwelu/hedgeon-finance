@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "nodemon",
         "start": "node build/index.js",
-        "build": "npm install && tsc",
+        "build": "npm install && tsc && npm run copy-views",
+        "copy-views": "copyfiles -u 1 src/views/**/* build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "ifeanyi Onyekwelu",
@@ -19,6 +20,7 @@
         "cors": "^2.8.5",
         "date-fns": "^4.1.0",
         "dotenv": "^16.4.7",
+        "ejs": "^3.1.10",
         "express": "^4.21.2",
         "express-async-handler": "^1.2.0",
         "express-session": "^1.18.1",
@@ -43,6 +45,7 @@
         "@types/cors": "^2.8.17",
         "@types/date-fns": "^2.6.3",
         "@types/dotenv": "^8.2.3",
+        "@types/ejs": "^3.1.5",
         "@types/express": "^4.17.21",
         "@types/express-session": "^1.18.1",
         "@types/joi": "^17.2.3",
@@ -56,6 +59,7 @@
         "@types/nodemailer": "^6.4.17",
         "@types/streamifier": "^0.1.2",
         "@types/uuid": "^10.0.0",
+        "copyfiles": "^2.4.1",
         "nodemon": "^3.1.9",
         "typescript": "^5.8.2"
     },

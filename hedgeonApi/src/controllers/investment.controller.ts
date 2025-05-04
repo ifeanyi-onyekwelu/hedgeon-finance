@@ -8,7 +8,6 @@ import Investment from "../models/investment.model";
 import Transaction from "../models/transaction.model";
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import { emailService } from "..";
 import userModel from "../models/user.model";
 
 export const createInvestment = asyncHandler(

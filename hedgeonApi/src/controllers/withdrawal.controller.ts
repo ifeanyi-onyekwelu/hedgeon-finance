@@ -1,7 +1,6 @@
 import { Request, Response } from "../utils/Types";
 import withdrawalModel from "../models/withdrawal.model";
 import asynchHandler from "express-async-handler";
-import { emailService } from "..";
 import { logData, logError } from "../utils/logger";
 import { getUserById } from "../services/user.service";
 import { BadRequestError } from "../utils/errors";
@@ -29,17 +28,6 @@ export const withdrawalHandler = asynchHandler(
             currency,
             walletAddress
         });
-
-        // Send notifications if withdrawal is successful
-        if (withdrawal) {
-            await Promise.all([
-                emailService.sendWithdrawalRequest(user, amount),
-                emailService.notifyAdminAboutWithdrawal(
-                    user,
-                    amount
-                ),
-            ]);
-        }
 
         return logData(res, 201, {
             message: "Your withdrawal request has been received and is pending verification. You will be notified once it is processed."

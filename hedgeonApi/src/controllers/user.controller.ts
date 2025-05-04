@@ -7,7 +7,6 @@ import {
 } from "../services/user.service";
 import { Request, Response } from "../utils/Types";
 import uploadImage from "../utils/uploader";
-import { emailService } from "..";
 
 export const getUserProile = asyncHandler(
     async (req: Request, res: Response) => {
@@ -25,8 +24,6 @@ export const getAllReferrals = asyncHandler(
 );
 export const updateUser = asyncHandler(async (req: Request, res: Response) => {
     const user = await updateUserProfile(req.session.user.id, req.body);
-
-    await Promise.all([emailService.sendProfileUpdatedNotification(user)]);
 
     return logData(res, 200, { user });
 });

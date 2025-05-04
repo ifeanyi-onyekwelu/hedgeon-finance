@@ -8,7 +8,9 @@ import User from "../models/user.model";
 import Withdrawal from "../models/withdrawal.model";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import { NotFoundError } from "../utils/errors"; // Assuming you have this
+import { BadRequestError, InternalServerError, NotFoundError } from "../utils/errors";
+import { logError } from "../utils/logger";
+import sendEmail from "../utils/mailer";
 
 // -------------------- Investment Views --------------------
 export const getAllInvestmentsView = asyncHandler(async (req: Request, res: Response) => {
@@ -39,26 +41,62 @@ export const updateInvestmentStatus = asyncHandler(
         const { id, status } = req.params;
         console.log(id)
 
-        // Validate status
         if (!['active', 'paused', 'completed', 'cancelled'].includes(status)) {
-            res.status(400).json({ message: 'Invalid status' });
-            return;
+            return logError(res, new BadRequestError("Invalid status"))
         }
 
-        const investment = await Investment.findByIdAndUpdate(
-            id,
-            { status },
-            { new: true } // Return the updated document
-        );
-
+        const investment = await Investment.findById(id);
         if (!investment) {
-            res.status(404).json({ message: 'Investment not found' });
-            return;
+            return logError(res, new NotFoundError("Investment not found"))
         }
 
-        res.status(200).json({ message: 'Investment status updated', investment });
+        investment.status = status as 'active' | 'paused' | 'completed' | 'cancelled';
+        await investment.save();
+
+        const user = await User.findById(investment.user);
+        if (!user) {
+            return logError(res, new NotFoundError(`User not found for Investment ID: ${id}, User ID: ${investment.user}`))
+        } else {
+            const notificationMessage = `The status of your investment (Plan: ${investment.plan.name || 'N/A'}) has been updated to ${status}.`;
+            const notificationType = 'investment_status';
+
+            user.notifications.push({
+                message: notificationMessage,
+                type: notificationType,
+                date: new Date(),
+                read: false
+            });
+
+            try {
+                await user.save();
+            } catch (dbError) {
+                console.log(`Failed to save notification for user ${user._id}: `, dbError);
+                return logError(res, new InternalServerError(`Failed to save notification for user ${user._id}`));
+            }
+
+            // Send Email Notification
+            try {
+                const emailSubject = `Your Investment Status Has Been Updated`;
+                const templateData = {
+                    userName: user.name || 'User',
+                    message: notificationMessage,
+                    status
+                };
+                await sendEmail(user.email, emailSubject, 'investmentStatusUpdate', templateData);
+            } catch (emailError) {
+                console.error(`Failed to send investment status email to ${user.email}:`, emailError);
+                return logError(res, new InternalServerError(`Failed to send investment status email to ${user.email}`));
+            }
+        }
+
+        const updatedInvestment = await Investment.findById(id)
+            .populate('user', 'name email')
+            .populate('plan.planId', 'name');
+
+        res.status(200).json({ message: 'Investment status updated', updatedInvestment });
     }
 );
+
 
 // @desc    Update investment details
 // @route   PUT /api/investments/:id
@@ -125,24 +163,71 @@ export const updateKYCVerificationStatus = asyncHandler(
         const { id } = req.params;
         const { verified } = req.body;
 
-        // Validate the verified value
         if (typeof verified !== 'boolean') {
-            res.status(400).json({ message: 'Invalid verification status.  Must be a boolean.' });
+            res.status(400).json({ message: 'Invalid verification status. Must be a boolean.' });
             return;
         }
 
-        const kyc = await KYC.findByIdAndUpdate(
-            id,
-            { verified },
-            { new: true, runValidators: true } // Return the updated document and run validation
-        ).populate('userId', 'name email');  // Populate user details, adjust as needed
+        const kyc = await KYC.findById(id); // Find KYC first to get userId
 
         if (!kyc) {
-            res.status(404).json({ message: 'KYC submission not found' });
-            return;
+            return logError(res, new NotFoundError("KYC Submission not found"))
         }
 
-        res.status(200).json({ message: `KYC verification status updated to ${verified ? 'Verified' : 'Rejected'}`, data: kyc });
+        // Now update the KYC status
+        kyc.verified = verified;
+        await kyc.save();
+
+        // Find the user associated with this KYC
+        const user = await User.findById(kyc.userId);
+
+        if (!user) {
+            console.error(`User not found for KYC ID: ${id}, User ID: ${kyc.userId}`);
+            return logError(res, new NotFoundError("User not found"))
+        } else {
+            // --- Notification Logic ---
+            const notificationMessage = `Your KYC submission has been ${verified ? 'approved' : 'rejected'}.`;
+            const notificationType = 'kyc_status';
+
+            // 1. Add notification to User model
+            user.notifications.push({
+                message: notificationMessage,
+                type: notificationType,
+                date: new Date(),
+                read: false
+            });
+            try {
+                await user.save();
+            } catch (dbError) {
+                return logError(res, new InternalServerError(`Failed to save notification for user ${user._id}`))
+            }
+
+            // 2. Send Email Notification
+            const emailSubject = `KYC Status Update`;
+            const templateName = "kycStatus"
+
+            try {
+                // Data to pass into the template
+                const templateData = {
+                    userName: user.name || 'User',
+                    message: notificationMessage,
+                    status: verified ? 'approved' : 'rejected',
+                };
+
+                await sendEmail(user.email, emailSubject, templateName, templateData);
+            } catch (emailError) {
+                return logError(res, new InternalServerError(`Failed to send KYC status email to ${user.email}: ${emailError}`))
+            }
+        }
+
+        // Populate user details for the response (optional, based on your original code)
+        const populatedKyc = await KYC.findById(id).populate('userId', 'name email');
+
+
+        res.status(200).json({
+            message: `KYC verification status updated to ${verified ? 'Verified' : 'Rejected'}`,
+            data: populatedKyc // Send populated KYC back
+        });
     }
 );
 

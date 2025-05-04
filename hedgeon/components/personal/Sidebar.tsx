@@ -18,12 +18,15 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubItem,
     SidebarProvider
 } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useUser } from "@/context/UserContext";
 import Image from "next/image";
 import Link from "next/link";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 
 export function DashboardSidebar() {
     const { user } = useUser()
@@ -38,11 +41,6 @@ export function DashboardSidebar() {
             title: "Explore",
             url: "/personal/explore",
             icon: Compass, // symbolizes discovery/exploration
-        },
-        {
-            title: "Investments",
-            url: "/personal/investments",
-            icon: LineChart, // reflects financial trends and investments
         },
     ];
     return (
@@ -63,6 +61,31 @@ export function DashboardSidebar() {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
+                            <Collapsible>
+                                <SidebarMenuItem>
+                                    <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton asChild>
+                                            <a href="#">
+                                                <LineChart />
+                                                <span>Investment</span>
+                                            </a>
+                                        </SidebarMenuButton>
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent>
+                                        <SidebarMenuSub>
+                                            {[{ url: '/personal/investments/active', title: 'Active' }, { url: '/personal/investments/history', title: 'History' }].map((item, index) => (
+                                                <SidebarMenuItem key={item.title}>
+                                                    <SidebarMenuButton asChild>
+                                                        <a href={item.url}>
+                                                            <span>{item.title}</span>
+                                                        </a>
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuItem>
+                                            ))}
+                                        </SidebarMenuSub>
+                                    </CollapsibleContent>
+                                </SidebarMenuItem>
+                            </Collapsible>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

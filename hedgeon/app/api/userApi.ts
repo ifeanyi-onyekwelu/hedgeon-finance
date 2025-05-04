@@ -16,6 +16,9 @@ export const investApi = (investData: FormData) => {
     });
 };
 
+export const getAllInvestments = () => {
+    return axiosInstance.get("invest/")
+}
 
 export const getProfileApi = () => {
     return axiosInstance.get('/user/profile')

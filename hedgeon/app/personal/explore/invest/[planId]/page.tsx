@@ -157,12 +157,11 @@ const PaymentPage = () => {
             formData.append("transactionId", transactionId);
             formData.append("screenshot", screenshot);
 
-            console.log("Hey there!")
             const response = await investApi(formData);
 
-            console.log("Make investment", response);
+            const investmentId = response['data']['investment']['_id']
 
-            router.push(`/personal/investments/${response.data.investmentId}/receipt`);
+            router.push(`/personal/investments/${investmentId}/receipt`);
         } catch (error: any) {
             console.log(error);
             setInvestmentError(error?.response?.data?.message || "Something went wrong");
@@ -409,7 +408,7 @@ const PaymentPage = () => {
             >
                 <div className="flex items-center justify-center">
                     <FiArrowUpRight className="mr-3" />
-                    Make Investment
+                    Confirm Deposit
                 </div>
             </button>
         </div>
@@ -519,7 +518,7 @@ const PaymentPage = () => {
                             {currentStep === 'form'
                                 ? 'Invest in'
                                 : currentStep === 'confirmation'
-                                    ? 'Confirm Payment for'
+                                    ? 'Make deposit for'
                                     : 'Upload Transaction for'} {plan.name}
                         </h1>
 

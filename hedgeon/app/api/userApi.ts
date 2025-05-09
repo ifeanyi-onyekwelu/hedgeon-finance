@@ -20,6 +20,10 @@ export const getAllInvestments = () => {
     return axiosInstance.get("invest/")
 }
 
+export const getInvestmentById = (investmentId: string) => {
+    return axiosInstance.get(`invest/${investmentId}`);
+}
+
 export const getProfileApi = () => {
     return axiosInstance.get('/user/profile')
 }

@@ -373,7 +373,7 @@ const PlansManager = () => {
         <Section>
             <div className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="flex justify-between mb-4">
-                    <h2 className="text-xl font-semibold">PLAN Management</h2>
+                    <h2 className="text-xl font-semibold">Plan Management</h2>
                     <div className='flex gap-4'>
                         <Input.Search
                             placeholder="Search PLAN..."

@@ -20,6 +20,9 @@ interface Props {
 }
 
 export default function TopPlans({ plans }: Props) {
+
+    console.log("Active Plans", plans)
+
     const getTimeLeft = (endDate: string | Date) => {
         const now = new Date();
         const end = new Date(endDate);
@@ -107,8 +110,14 @@ export default function TopPlans({ plans }: Props) {
                             <Button variant="default" className="h-10 text-sm font-semibold" disabled={!isCompleted}>
                                 Withdraw
                             </Button>
-                            <Button variant="outline" className="h-10 text-sm font-semibold">
-                                Details
+                            <Button
+                                variant="link"
+                                className="w-full mt-4 text-gray-600 hover:bg-gray-50 flex items-center justify-between"
+                            >
+                                <Link href={`/personal/investments/${plan.id}`} className='w-full flex items-center justify-center space-x-3 underline-none'>
+                                    <span>View Details</span>
+                                    <ArrowUpRight className="w-4 h-4" />
+                                </Link>
                             </Button>
                         </div>
                     </div>

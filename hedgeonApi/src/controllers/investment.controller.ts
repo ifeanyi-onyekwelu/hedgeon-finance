@@ -182,6 +182,7 @@ export const getUserInvestments = asyncHandler(async (req: Request, res: Respons
 
 export const getInvestmentById = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
+    console.log("Investment ID", id)
     const investment = await Investment.findById(id);
     if (!investment) throw new NotFoundError("Investment not found");
 

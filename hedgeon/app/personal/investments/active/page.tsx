@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 
 interface Plan {
-    id: string;
+    _id: string;
     name: string;
     amount: number;
     roiAccumulated: number
@@ -95,7 +95,7 @@ export default function ActiveInvestments() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {activePlans.map(plan => (
-                    <div key={plan.id} className="group relative bg-white rounded-xl border border-gray-100 hover:border-gray-200 transition-all duration-200 ease-out hover:shadow-lg">
+                    <div key={plan._id} className="group relative bg-white rounded-xl border border-gray-100 hover:border-gray-200 transition-all duration-200 ease-out hover:shadow-lg">
                         <div className="absolute top-3 right-3">
                             <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
                                 Active
@@ -141,11 +141,13 @@ export default function ActiveInvestments() {
                             </div>
 
                             <Button
-                                variant="ghost"
+                                variant="link"
                                 className="w-full mt-4 text-gray-600 hover:bg-gray-50 flex items-center justify-between"
                             >
-                                <span>View Details</span>
-                                <ArrowUpRight className="w-4 h-4" />
+                                <Link href={`/personal/investments/${plan._id}`} className='w-full flex items-center justify-center space-x-3 underline-none'>
+                                    <span>View Details</span>
+                                    <ArrowUpRight className="w-4 h-4" />
+                                </Link>
                             </Button>
                         </div>
                     </div>

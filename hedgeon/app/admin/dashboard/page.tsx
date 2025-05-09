@@ -58,7 +58,7 @@ const AdminDashboard = () => {
 
     return (
         <Section>
-            <h1 className="text-3xl font-bold">Welcome back, {user?.name ?? "Admin"}</h1>
+            <h1 className="text-3xl font-bold">Welcome back, Captain</h1>
 
             <DashboardStats totalUsers={users.length} activeInvestments={getActiveInvestments()} pendingKYC={kycs.filter(kyc => kyc.verified == false).length} />
             <UsersManager users={users} setUsers={setUsers} />

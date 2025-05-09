@@ -15,8 +15,9 @@ import { getAllUsersAdminApi, updateUserAdminApi, updateUserStatusAdminApi, veri
 import Section from '@/components/admin/Section';
 import { AxiosError } from 'axios';
 import UserStats from './UsersStats';
+import { Grid } from 'antd';
+const { useBreakpoint } = Grid;
 
-// Interface for User data (adjust to match your actual User model)
 interface UserType {
     _id: string;
     name: string;
@@ -267,24 +268,13 @@ const UserManager = () => {
     const [searchText, setSearchText] = useState('');
     const [loading, setLoading] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
-    const [activeFilter, setActiveFilter] = useState<boolean | null>(null); // null: all, true: active, false: inactive
-    const [verifiedFilter, setVerifiedFilter] = useState<boolean | null>(null); // null: all, true: verified, false: not verified
-    const [suspendedFilter, setSuspendedFilter] = useState<boolean | null>(null);
+    const screens = useBreakpoint();
+
+
 
     const fetchUsers = useCallback(async () => {
         try {
             setLoading(true);
-            const queryParams: Record<string, any> = {};
-
-            if (activeFilter !== null) {
-                queryParams.active = activeFilter;
-            }
-            if (verifiedFilter !== null) {
-                queryParams.verified = verifiedFilter;
-            }
-            if (suspendedFilter !== null) {
-                queryParams.suspended = suspendedFilter;
-            }
 
             const response = await getAllUsersAdminApi();
 
@@ -294,16 +284,6 @@ const UserManager = () => {
             const responseData = response.data;
 
             let filteredData = responseData;
-
-            if (activeFilter !== null) {
-                filteredData = filteredData.filter(user => user.active === activeFilter);
-            }
-            if (verifiedFilter !== null) {
-                filteredData = filteredData.filter(user => user.verified === verifiedFilter);
-            }
-            if (suspendedFilter !== null) {
-                filteredData = filteredData.filter(user => user.suspended === suspendedFilter);
-            }
 
             setUsers(filteredData);
 
@@ -322,7 +302,7 @@ const UserManager = () => {
         } finally {
             setLoading(false);
         }
-    }, [activeFilter, verifiedFilter, suspendedFilter]);
+    }, []);
 
     useEffect(() => {
         fetchUsers();
@@ -332,62 +312,71 @@ const UserManager = () => {
         setSearchText(value);
     };
 
-    const columns: ColumnsType<UserType> = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            sorter: (a, b) => a.name.localeCompare(b.name),
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            sorter: (a, b) => a.email.localeCompare(b.email),
-        },
-        {
-            title: 'Phone',
-            dataIndex: 'phone',
-            sorter: (a, b) => (a.phone ?? '').localeCompare(b.phone ?? ''),
-        },
-        {
-            title: 'Verified',
-            dataIndex: 'isVerified',
-            render: (verified) => (
-                <Badge status={verified ? 'success' : 'error'} text={verified ? 'Yes' : 'No'} />
-            ),
-            filters: [ // Add filters for the verified column
-                { text: 'Verified', value: true },
-                { text: 'Not Verified', value: false },
-            ],
-            onFilter: (value, record) => record.isVerified === (value === true),
-        },
-        {
-            title: 'Active',
-            dataIndex: 'active',
-            render: (active) => (
-                <Badge status={active ? 'success' : 'error'} text={active ? 'Yes' : 'No'} />
-            ),
-            filters: [ // Add filters for the verified column
-                { text: 'Active', value: true },
-                { text: 'Suspended', value: false },
-            ],
-            onFilter: (value, record) => record.active === (value === true),
-        },
-        {
-            title: 'Role',
-            dataIndex: 'role',
-            sorter: (a, b) => a.role.localeCompare(b.role),
-        },
-        {
-            title: 'Actions',
-            render: (_, record) => (
-                <Space>
-                    <Button size="small" onClick={() => handleViewDetails(record)}>
-                        View
-                    </Button>
-                </Space>
-            ),
-        },
-    ];
+    const responsiveColumns: ColumnsType<UserType> = React.useMemo(() => {
+        const baseColumns: ColumnsType<UserType> = [
+            {
+                title: 'Name',
+                dataIndex: 'name',
+                sorter: (a, b) => a.name.localeCompare(b.name),
+            },
+            {
+                title: 'Email',
+                dataIndex: 'email',
+                sorter: (a, b) => a.email.localeCompare(b.email),
+            },
+            {
+                title: 'Role',
+                dataIndex: 'role',
+                sorter: (a, b) => a.role.localeCompare(b.role),
+            },
+            {
+                title: 'Actions',
+                render: (_, record) => (
+                    <Space>
+                        <Button size="small" onClick={() => handleViewDetails(record)}>
+                            View
+                        </Button>
+                    </Space>
+                ),
+            },
+        ];
+
+        const extendedColumns: ColumnsType<UserType> = [
+            {
+                title: 'Phone',
+                dataIndex: 'phone',
+                sorter: (a, b) => (a.phone ?? '').localeCompare(b.phone ?? ''),
+            },
+            {
+                title: 'Verified',
+                dataIndex: 'isVerified',
+                render: (verified) => (
+                    <Badge status={verified ? 'success' : 'error'} text={verified ? 'Yes' : 'No'} />
+                ),
+                filters: [
+                    { text: 'Verified', value: true },
+                    { text: 'Not Verified', value: false },
+                ],
+                onFilter: (value, record) => record.isVerified === (value === true),
+            },
+            {
+                title: 'Active',
+                dataIndex: 'active',
+                render: (active) => (
+                    <Badge status={active ? 'success' : 'error'} text={active ? 'Yes' : 'No'} />
+                ),
+                filters: [
+                    { text: 'Active', value: true },
+                    { text: 'Suspended', value: false },
+                ],
+                onFilter: (value, record) => record.active === (value === true),
+            },
+        ];
+
+        // Show fewer columns on xs screens
+        return screens.xs ? baseColumns : [...baseColumns, ...extendedColumns];
+    }, [screens]);
+
 
     const handleViewDetails = (user: UserType) => {
         setSelectedUser(user);
@@ -448,12 +437,11 @@ const UserManager = () => {
                     </div>
                 </div>
                 <Table
-                    columns={columns}
+                    columns={responsiveColumns}
                     dataSource={filteredUsers}
                     rowKey="_id"
                     loading={loading}
-                //pagination={paginationInfo}  Removed Pagination
-                //onChange={handleTableChange}  Removed Pagination
+                    scroll={{ x: 'max-content' }}
                 />
             </div>
         </Section>

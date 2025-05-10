@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import ChangePasswordForm from './ChangePassword';
 import { useUser } from '@/context/UserContext';
+import { deleteAccountApi } from '@/app/api/userApi';
+import { useRouter } from 'next/navigation';
 
 const SettingsPage = () => {
     const [emailNotifications, setEmailNotifications] = useState(true);
@@ -16,13 +18,17 @@ const SettingsPage = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [deleteConfirmInput, setDeleteConfirmInput] = useState('');
 
+    const router = useRouter()
+
     const { user } = useUser();
 
     if (!user) return <div>Loading user...</div>;
 
-    const handleFinalDelete = () => {
-        alert('Account deleted.');
+    const handleFinalDelete = async () => {
+        await deleteAccountApi();
         setDialogOpen(false);
+
+        router.push("/auth/login")
     };
 
     return (

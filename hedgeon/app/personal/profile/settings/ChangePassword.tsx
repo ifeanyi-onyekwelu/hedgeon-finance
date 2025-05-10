@@ -1,8 +1,10 @@
 'use client';
 
-import { CheckCircle, Eye, EyeOff, XCircle } from "lucide-react";
+import { CheckCircle, Eye, EyeOff, XCircle, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { changePasswordApi } from "@/app/api/userApi";
+import { motion } from 'framer-motion';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 interface PasswordData {
     currentPassword: string;
@@ -84,7 +86,6 @@ const ChangePasswordForm = () => {
         try {
             // Simulate API call
             const response = await (await changePasswordApi(formData)).data
-            console.log("Response from change password API:", response);
 
             setSubmissionStatus('success');
             setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' });
@@ -207,16 +208,34 @@ const ChangePasswordForm = () => {
                 </button>
 
                 {submissionStatus === 'success' && (
-                    <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-md flex items-center gap-2">
-                        <CheckCircle size={18} />
-                        Password updated successfully!
-                    </div>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-green-50 border border-green-100 rounded-sm flex items-center space-x-3 animate-shake"
+                    >
+                        <Alert variant="default">
+                            <CheckCircle className="h-4 w-4" />
+                            <AlertTitle>Success</AlertTitle>
+                            <AlertDescription>
+                                Password updated successfully
+                            </AlertDescription>
+                        </Alert>
+                    </motion.div>
                 )}
                 {submissionStatus === 'error' && (
-                    <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md flex items-center gap-2">
-                        <XCircle size={18} />
-                        Error updating password. Please try again.
-                    </div>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-red-50 border border-red-100 rounded-sm flex items-center space-x-3 animate-shake"
+                    >
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>
+                                Current password is incorrect!
+                            </AlertDescription>
+                        </Alert>
+                    </motion.div>
                 )}
             </form>
         </div>

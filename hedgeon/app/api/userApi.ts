@@ -42,10 +42,9 @@ export const deleteAccountApi = () => {
 
 export const changePasswordApi = (formData: {
     currentPassword: string,
-    newPassword: string,
-    confirmPassword: string
+    newPassword: string
 }) => {
-    return axiosInstance.put('/user/change-password')
+    return axiosInstance.put('/user/change-password', formData)
 }
 
 export const uploadProfilePictureApi = async (file: File) => {
@@ -53,6 +52,14 @@ export const uploadProfilePictureApi = async (file: File) => {
     formData.append('profilePicture', file);
 
     return axiosInstance.put('/user/upload', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
+
+export const uploadKycDocuments = async (formData: FormData) => {
+    return axiosInstance.post('/user/kyc', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },

@@ -103,20 +103,19 @@ export function DashboardSidebar() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 side="top"
-                                className="w-[--radix-popper-anchor-width]"
                             >
                                 <DropdownMenuItem>
-                                    <Link href="/personal/profile">
+                                    <Link href="/personal/profile" className="w-full">
                                         <span>Account</span>
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <Link href="/personal/profile/settings">
+                                    <Link href="/personal/profile/settings" className="w-full">
                                         <span>Settings</span>
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <Link href="/auth/logout">
+                                    <Link href="/auth/logout" className="w-full">
                                         <span>Sign out</span>
                                     </Link>
                                 </DropdownMenuItem>

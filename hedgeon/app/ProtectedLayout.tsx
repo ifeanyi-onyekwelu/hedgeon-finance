@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import axiosInstance from './api/axiosInstance';
 
 export default function ProtectedLayout({
     children,
@@ -13,7 +14,7 @@ export default function ProtectedLayout({
     const router = useRouter();
     const [authorized, setAuthorized] = useState(false);
 
-    useEffect(() => {
+    const verifyAuth = async () => {
         const token = localStorage.getItem('access_token');
         const role = localStorage.getItem('user_role');
 
@@ -27,7 +28,14 @@ export default function ProtectedLayout({
             return;
         }
 
+        const response = await axiosInstance.get("protected");
+        console.log("AUTH RESPONSE", response);
+
         setAuthorized(true);
+    }
+
+    useEffect(() => {
+        verifyAuth()
     }, []);
 
     if (!authorized) return null; // Or a loading spinner

@@ -12,6 +12,8 @@ const UploadImage = () => {
     const [image, setImage] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
 
+    const { user } = useUser()
+
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const uploadedFile = event.target.files?.[0];
         if (uploadedFile) {
@@ -47,7 +49,7 @@ const UploadImage = () => {
                 <div
                     className="rounded-full w-full h-full bg-cover bg-center"
                     style={{
-                        backgroundImage: `url(${image || "https://via.placeholder.com/150?text=No+Image"})`,
+                        backgroundImage: `url(${user?.profilePicture || "https://via.placeholder.com/150?text=No+Image"})`,
                     }}
                 ></div>
             </div>

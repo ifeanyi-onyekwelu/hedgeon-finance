@@ -4,7 +4,7 @@ export enum Currency {
     USDT = 'USDT (TRC-20)',
     BTC = 'BTC',
     SOL = 'SOL',
-    TON = 'TON'
+    ETH = 'ETH'
 }
 
 export enum TransactionType {

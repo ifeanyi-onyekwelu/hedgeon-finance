@@ -112,7 +112,7 @@ export default function VerifyEmail() {
                                     <CheckCircle className="h-4 w-4" />
                                     <AlertTitle>Success</AlertTitle>
                                     <AlertDescription>
-                                        Your email has been verified! Redirecting to login...
+                                        Your email has been verified! Redirecting to your dashboard...
                                     </AlertDescription>
                                 </Alert>
                             </motion.div>

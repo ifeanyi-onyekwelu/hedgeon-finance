@@ -33,7 +33,7 @@ const PaymentPage = () => {
     const [currentStep, setCurrentStep] = useState<'form' | 'confirmation' | 'verification'>('form');
     const [plan, setPlan] = useState<InvestmentPlan | null>(null);
     const [investmentAmount, setInvestmentAmount] = useState<number>();
-    const [selectedCurrency, setSelectedCurrency] = useState<'BTC' | 'USDT (TRC-20)' | 'TON' | 'SOL'>('USDT (TRC-20)'); // Default to USDT
+    const [selectedCurrency, setSelectedCurrency] = useState<'BTC' | 'USDT (TRC-20)' | 'ETH' | 'SOL'>('USDT (TRC-20)'); // Default to USDT
     const [fees, setFees] = useState<Fee[]>([]);
     const [estimatedReturn, setEstimatedReturn] = useState<number>(0);
     const [estimatedReturnPerPeriod, setEstimatedReturnPerPeriod] = useState(0);
@@ -48,7 +48,7 @@ const PaymentPage = () => {
     const [transactionId, setTransactionId] = useState('');
     const [screenshot, setScreenshot] = useState<File | null>(null);
 
-    const availableCurrencies = ['BTC', 'USDT (TRC-20)', 'TON', 'SOL'];
+    const availableCurrencies = ['BTC', 'USDT (TRC-20)', 'ETH', 'SOL'];
 
     useEffect(() => {
         const fetchPlanDetails = async () => {
@@ -105,7 +105,7 @@ const PaymentPage = () => {
     };
 
     const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCurrency(e.target.value as 'BTC' | 'USDT (TRC-20)' | 'TON' | 'SOL');
+        setSelectedCurrency(e.target.value as 'BTC' | 'USDT (TRC-20)' | 'ETH' | 'SOL');
         setCryptoAddress(null); // Clear previous address when currency changes
     };
 

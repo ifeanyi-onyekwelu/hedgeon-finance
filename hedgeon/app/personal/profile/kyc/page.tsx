@@ -1,6 +1,10 @@
 'use client';
 
 import { useState } from "react";
+import { motion } from 'framer-motion';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle, CheckCircle } from "lucide-react";
+import { uploadKycDocuments } from "@/app/api/userApi";
 
 interface KYCData {
     documentType: string;
@@ -73,20 +77,25 @@ const KYCVerificationForm = () => {
 
         try {
             const formPayload = new FormData();
-            Object.entries(formData).forEach(([key, value]) => {
-                if (value instanceof File || typeof value === 'string') {
-                    formPayload.append(key, value);
-                }
-            });
+            formPayload.append('documentType', formData.documentType); // Include documentType
+            if (formData.idProof) formPayload.append('idProof', formData.idProof);
+            if (formData.addressProof) formPayload.append('addressProof', formData.addressProof);
+            if (formData.selfie) formPayload.append('selfie', formData.selfie);
 
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            console.log('Form Data:');
+            for (let [key, value] of formPayload.entries()) {
+                console.log(`${key}:`, value);
+            }
+
+            const response = await uploadKycDocuments(formPayload);
+            console.log("Response", response);
 
             setSubmissionStatus('success');
-            setCurrentStep(1);
             setFormData({ documentType: 'passport' });
-        } catch (error) {
+            setCurrentStep(1); // Go back to the first step
+        } catch (error: any) {
             setSubmissionStatus('error');
+            console.error("KYC Upload Error:", error);
         }
     };
 
@@ -159,15 +168,45 @@ const KYCVerificationForm = () => {
 
             case 3:
                 return (
-                    <div className="space-y-3 bg-gray-50 p-4 rounded-md border">
-                        <h3 className="font-semibold">Review Your Details</h3>
-                        <p><strong>Document Type:</strong> {formData.documentType}</p>
-                        <p><strong>ID Document:</strong> {formData.idProof?.name}</p>
-                        <p><strong>Address Proof:</strong> {formData.addressProof?.name}</p>
-                        <p><strong>Selfie:</strong> {formData.selfie?.name}</p>
+                    <div className="bg-gray-50 p-6 rounded-md border space-y-4">
+                        <h3 className="font-semibold text-lg">Review Your Uploads</h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div>
+                                <h4 className="font-semibold text-md">ID Document</h4>
+                                {formData.idProof && (
+                                    <>
+                                        <p className="text-gray-600">{formData.idProof.name}</p>
+                                        {renderFilePreview(formData.idProof)}
+                                    </>
+                                )}
+                                {!formData.idProof && <p className="text-gray-600">No file uploaded</p>}
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-md">Proof of Address</h4>
+                                {formData.addressProof && (
+                                    <>
+                                        <p className="text-gray-600">{formData.addressProof.name}</p>
+                                        {renderFilePreview(formData.addressProof)}
+                                    </>
+                                )}
+                                {!formData.addressProof && <p className="text-gray-600">No file uploaded</p>}
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-md">Selfie with Document</h4>
+                                {formData.selfie && (
+                                    <>
+                                        <p className="text-gray-600">{formData.selfie.name}</p>
+                                        {renderFilePreview(formData.selfie)}
+                                    </>
+                                )}
+                                {!formData.selfie && <p className="text-gray-600">No file uploaded</p>}
+                            </div>
+                        </div>
+
+                        <p className="text-sm text-gray-600">Please ensure all details are correct before proceeding.</p>
                     </div>
                 );
-
             default:
                 return null;
         }
@@ -200,7 +239,7 @@ const KYCVerificationForm = () => {
                     {renderStep()}
                 </div>
 
-                <div className="mt-6 flex justify-between items-center">
+                <div className="mt-6 flex justify-between items-center mb-6">
                     {currentStep > 1 && (
                         <button
                             type="button"
@@ -210,19 +249,21 @@ const KYCVerificationForm = () => {
                             Back
                         </button>
                     )}
-                    {currentStep < 3 ? (
+                    {currentStep < 3 && (
                         <button
                             type="button"
                             onClick={nextStep}
-                            className="ml-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+                            className="ml-auto bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
                             disabled={!canGoNext}
                         >
-                            Next
+                            Continue
                         </button>
-                    ) : (
+                    )}
+
+                    {currentStep === 3 && (
                         <button
                             type="submit"
-                            className="ml-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+                            className="ml-auto bg-primary hover:bg-primary-fade text-white px-4 py-2 rounded-md"
                             disabled={submissionStatus === 'loading'}
                         >
                             {submissionStatus === 'loading' ? 'Submitting...' : 'Submit'}
@@ -231,14 +272,34 @@ const KYCVerificationForm = () => {
                 </div>
 
                 {submissionStatus === 'success' && (
-                    <p className="mt-4 text-green-700 bg-green-100 px-4 py-2 rounded-md">
-                        Submission successful! Your documents are under review.
-                    </p>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-green-50 border border-green-100 rounded-sm flex items-center space-x-3 animate-shake"
+                    >
+                        <Alert variant="default">
+                            <CheckCircle className="h-4 w-4" />
+                            <AlertTitle>Success</AlertTitle>
+                            <AlertDescription>
+                                Submission successful! Your documents are under review
+                            </AlertDescription>
+                        </Alert>
+                    </motion.div>
                 )}
                 {submissionStatus === 'error' && (
-                    <p className="mt-4 text-red-700 bg-red-100 px-4 py-2 rounded-md">
-                        Submission failed. Please try again later.
-                    </p>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-red-50 border border-red-100 rounded-sm flex items-center space-x-3 animate-shake"
+                    >
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>
+                                Submission failed. Please try again later.
+                            </AlertDescription>
+                        </Alert>
+                    </motion.div>
                 )}
             </form>
         </div>

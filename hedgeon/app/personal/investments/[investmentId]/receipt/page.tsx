@@ -61,7 +61,7 @@ const InvestmentReceipt = () => {
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto">
                 <button
-                    onClick={() => router.back()}
+                    onClick={() => router.push('/personal/investments/active')}
                     className="mb-8 flex items-center text-blue-600 hover:text-blue-800 font-medium"
                 >
                     <FiArrowLeft className="mr-2" />

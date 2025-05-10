@@ -38,7 +38,6 @@ export const createInvestment = asyncHandler(
             return logError(res, new InternalServerError("Failed to upload receipt"));
         }
 
-
         // Get selected plan
         const plan = await planModel.findById(planId);
         if (!plan) return logError(res, new NotFoundError("Investment plan not found"))
@@ -62,7 +61,6 @@ export const createInvestment = asyncHandler(
         } else if (plan.durationType === 'weeks') {
             endDate.setDate(endDate.getDate() + (plan.duration * 7));
         }
-
 
         // Create investment
         const investment = await Investment.create({

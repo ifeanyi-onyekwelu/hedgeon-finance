@@ -87,23 +87,23 @@ const investmentPlans = [
 const currencies = [
     {
         name: 'USDT (TRC-20)',
-        address: 'Bo47XfDUKcb31Bbq6661NoVZjZuW26s9Af7BK1mhn4ut', // Replace with your actual USDT address
-        qrCodeUrl: 'https://res.cloudinary.com/dfeoowyra/image/upload/fl_preserve_transparency/v1745993003/usdt-trc-20_kj1j3r.jpg?_s=public-apps'
+        address: 'TKevn6mrvWitruLsruftTATtjnX1bek3u9', // Replace with your actual USDT address
+        qrCodeUrl: 'https://res.cloudinary.com/dfeoowyra/image/upload/fl_preserve_transparency/v1746865902/USDT%20QR%20Code.jpg?_s=public-apps'
     },
     {
         name: 'BTC',
         address: 'bc1q6ujvvxafu4td0wpfm4eujyyrxec45wvu8m95lf',     // Replace with your actual BTC address
-        qrCodeUrl: 'https://res.cloudinary.com/dfeoowyra/image/upload/fl_preserve_transparency/v1745993003/btc_iqglko.jpg?_s=public-apps',     // Replace with your Cloudinary BTC QR code URL
+        qrCodeUrl: 'https://res.cloudinary.com/dfeoowyra/image/upload/fl_preserve_transparency/v1746865995/Bitcoin%20QR%20Code.jpg?_s=public-apps'
     },
     {
-        name: 'TON',
-        address: 'YOUR_ETH_WALLET_ADDRESS',     // Replace with your actual ETH address
-        qrCodeUrl: 'CLOUDINARY_ETH_QR_CODE_URL',     // Replace with your Cloudinary ETH QR code URL
+        name: 'ETH',
+        address: '0x27F9165b31036D254E449325ef70c6bB4a998eAB',     // Replace with your actual ETH address
+        qrCodeUrl: 'https://res.cloudinary.com/dfeoowyra/image/upload/fl_preserve_transparency/v1746865813/Ethereum%20QR%20Code.jpg?_s=public-apps',
     },
     {
         name: 'SOL',
-        address: '0x27F9165b31036D254E449325ef70c6bB4a998eAB',     // Replace with your actual TRX address
-        qrCodeUrl: 'https://res.cloudinary.com/dfeoowyra/image/upload/fl_preserve_transparency/v1745993003/sol_b2o7u3.jpg?_s=public-apps',     // Replace with your Cloudinary TRX QR code URL
+        address: 'Bo47XfDUKcb31Bbq6661NoVZjZuW26s9Af7BK1mhn4ut',     // Replace with your actual TRX address
+        qrCodeUrl: 'https://res.cloudinary.com/dfeoowyra/image/upload/fl_preserve_transparency/v1746865865/Solana%20QR%20Code.jpg?_s=public-apps'
     },
 ]
 

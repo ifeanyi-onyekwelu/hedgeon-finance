@@ -8,8 +8,7 @@ interface IUser {
     phone: string,
     password: string,
     role: 'user' | 'admin',
-    kyc: string,
-    twoFactorSecret: string,
+    kycVerified: boolean,
     currentPlan?: [{
         planId: mongoose.Types.ObjectId;
         name: string;
@@ -83,8 +82,7 @@ const userSchema = new mongoose.Schema<IUser>({
         type: String,
         default: 'user'
     },
-    kyc: String,
-    twoFactorSecret: String,
+    kycVerified: { type: Boolean, default: false },
     currentPlan: [{
         planId: {
             type: mongoose.Types.ObjectId,

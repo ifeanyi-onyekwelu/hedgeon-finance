@@ -4,7 +4,8 @@ export interface IPlan {
     name: string;
     minAmount: number,
     maxAmount: number,
-    duration: number; // could be weeks or months
+    minDuration: number; // Minimum duration (in weeks or months)
+    maxDuration: number; // Maximum duration (in weeks or months)
     durationType: 'weeks' | 'months'; // <- this is new
     estimatedROI: number,
     taxOnProfit: number,
@@ -23,7 +24,14 @@ const planSchema = new mongoose.Schema<IPlan>(
         },
         minAmount: Number,
         maxAmount: Number,
-        duration: Number,
+        minDuration: {
+            type: Number,
+            required: true,
+        },
+        maxDuration: {
+            type: Number,
+            required: true,
+        },
         durationType: {
             type: String,
             enum: ['weeks', 'months'],

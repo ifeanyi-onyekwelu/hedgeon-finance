@@ -3,9 +3,11 @@ import { FiAlertCircle, FiArrowUpRight, FiCheckCircle, FiClock, FiDollarSign, Fi
 import { withdrawApi, getUserTransactions } from '@/app/api/userApi';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle, CheckCircle } from "lucide-react"
+import { AlertCircle, CheckCircle, Wallet } from "lucide-react"
 import { Table } from 'antd';
 import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
+import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 
 const WithdrawalSection = ({ walletBalance }: any) => {
     const [withdrawalAmount, setWithdrawalAmount] = useState('');
@@ -41,7 +43,7 @@ const WithdrawalSection = ({ walletBalance }: any) => {
         setIsSubmitting(false);
     };
 
-    const currencies = ['USDT', 'BTC', 'SOL', 'ETH', 'TON'];
+    const currencies = ['USDT (TRC-20)', 'BTC', 'SOL', 'ETH'];
 
     return (
         <div className="bg-white/80 rounded-2xl p-8 mb-8 shadow-md border border-gray-100 backdrop-blur-lg">
@@ -82,11 +84,11 @@ const WithdrawalSection = ({ walletBalance }: any) => {
 
             <form onSubmit={handleWithdrawal} className="space-y-8">
                 {/* Balance Card */}
-                <div className="bg-gradient-to-br from-indigo-50 to-indigo-50/20 p-6 rounded-2xl border border-indigo-100/50">
+                <div className="bg-gradient-to-br from-indigo-50 to-indigo-50/20 p-6 rounded-lg border border-indigo-100/50">
                     <div className="flex justify-between items-center">
                         <div>
                             <p className="text-xs font-semibold text-indigo-600/80 uppercase tracking-wide">Available Balance</p>
-                            <p className="text-3xl font-bold text-indigo-900 mt-2">${walletBalance?.toLocaleString()}</p>
+                            <p className="text-3xl font-bold text-primary mt-2">${walletBalance?.toLocaleString()}</p>
                         </div>
                         <div className="p-3 bg-white/50 rounded-xl border border-indigo-100">
                             <FiLock className="w-6 h-6 text-indigo-500" />
@@ -105,25 +107,25 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                         <button
                             type="button"
                             onClick={() => setWithdrawalAmount(walletBalance || 0)}
-                            className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                            className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                         >
                             <FiZap className="w-4 h-4" />
                             Full Balance
                         </button>
                     </div>
                     <div className="relative group">
-                        <div className="relative flex items-center bg-white rounded-xl border-2 border-gray-200/80 hover:border-indigo-300 focus-within:border-indigo-400 focus-within:ring-4 ring-indigo-100/50 transition-all">
+                        <div className="relative flex items-center bg-white rounded-md border-2 border-gray-200/80 hover:border-indigo-300 focus-within:border-indigo-400 focus-within:ring-4 ring-indigo-100/50 transition-all">
                             <span className="pl-4 pr-2 text-gray-400">
                                 <FiDollarSign className="w-5 h-5" />
                             </span>
                             <input
                                 type="number"
-                                className="flex-1 py-4 pl-2 pr-4 border-0 bg-transparent text-lg font-semibold outline-none placeholder:text-gray-300"
+                                className="flex-1 py-2 pl-2 pr-4 border-0 bg-transparent text-lg font-semibold outline-none placeholder:text-gray-300"
                                 placeholder="0.00"
                                 value={withdrawalAmount}
                                 onChange={(e) => setWithdrawalAmount(e.target.value)}
-                                min="0.01"
-                                step="0.01"
+                                min="0"
+                                step="50"
                                 required
                             />
                             <span className="px-4 text-gray-500 font-medium">USD</span>
@@ -136,12 +138,12 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                     <label className="text-sm font-semibold text-gray-700">Destination Currency</label>
                     <div className="relative">
                         <select
-                            className="w-full py-3.5 px-4 border-2 border-gray-200/80 rounded-xl appearance-none bg-white bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM2NzM3ZWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1jaGV2cm9uLWRvd24iPjxwYXRoIGQ9Im02IDkgNiA2IDYtNiIvPjwvc3ZnPg==')] bg-no-repeat bg-[center_right_1rem]"
+                            className="w-full py-2 px-4 border-2 border-gray-200/80 rounded-md appearance-none bg-white"
                             value={selectedCurrency}
                             onChange={(e) => setSelectedCurrency(e.target.value)}
                         >
                             {currencies.map((currency) => (
-                                <option key={currency} value={currency}>
+                                <option key={currency} value={currency} className='bg-gray-200'>
                                     {currency}
                                 </option>
                             ))}
@@ -155,7 +157,7 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                     <div className="flex gap-2 relative">
                         <input
                             type="text"
-                            className="flex-1 py-3.5 px-4 border-2 border-gray-200/80 rounded-xl placeholder:text-gray-400 focus:border-indigo-400 focus:ring-4 ring-indigo-100/50 transition-all"
+                            className="flex-1 py-2 px-4 border-2 border-gray-200/80 rounded-md placeholder:text-gray-400 focus:border-indigo-400 focus:ring-4 ring-indigo-100/50 transition-all"
                             placeholder={`Paste ${selectedCurrency} address`}
                             value={walletAddress}
                             onChange={(e) => setWalletAddress(e.target.value)}
@@ -166,7 +168,7 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                             className="px-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-colors flex items-center justify-center"
                             title="Scan QR Code"
                         >
-                            <FiMaximize2 className="w-5 h-5 rotate-45" />
+                            <Wallet className="w-5 h-5 rotate-45" />
                         </button>
                     </div>
                     <p className="text-sm text-gray-400 mt-2 flex items-center gap-2">
@@ -217,26 +219,22 @@ const WithdrawalSection = ({ walletBalance }: any) => {
                     </motion.div>
                 )}
 
-                {/* Submit Button */}
-                <button
+                <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-4 bg-gradient-to-br from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-semibold rounded-xl transition-all disabled:opacity-50 disabled:pointer-events-none shadow-lg hover:shadow-indigo-200/50"
+                    className='py-6 px-14 rounded-sm'
                 >
-                    <div className="flex items-center justify-center gap-3">
-                        {isSubmitting ? (
-                            <>
-                                <FiLoader className="animate-spin w-5 h-5" />
-                                <span>Authorizing Transaction...</span>
-                            </>
-                        ) : (
-                            <>
-                                <FiArrowUpRight className="w-5 h-5" />
-                                <span>Initiate Withdrawal →</span>
-                            </>
-                        )}
-                    </div>
-                </button>
+                    {isSubmitting ? (
+                        <>
+                            <FiLoader className="animate-spin w-5 h-5" />
+                            <span>Authorizing Transaction...</span>
+                        </>
+                    ) : (
+                        <>
+                            <span>Initiate Withdrawal</span>
+                        </>
+                    )}
+                </Button>
 
                 {/* Footer Note */}
                 <div className="text-center text-sm text-gray-400 mt-4 flex items-center justify-center gap-2">
@@ -334,20 +332,7 @@ const AutoReinvestOption = () => {
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Auto Reinvestment</h2>
             <div className="flex items-center justify-between">
                 <span className="text-gray-700">Automatically reinvest profits and dividends?</span>
-                <button
-                    className={`relative inline-flex flex-shrink-0 w-11 h-6 transition-colors duration-200 ease-in-out rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isAutoReinvestEnabled ? 'bg-indigo-600' : 'bg-gray-200'
-                        }`}
-                    role="switch"
-                    aria-checked={isAutoReinvestEnabled}
-                    onClick={handleToggleAutoReinvest}
-                >
-                    <span className="sr-only">Enable automatic reinvestment</span>
-                    <span
-                        aria-hidden="true"
-                        className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200 ${isAutoReinvestEnabled ? 'translate-x-5' : 'translate-x-0'
-                            }`}
-                    ></span>
-                </button>
+                <Switch />
             </div>
             {isAutoReinvestEnabled && (
                 <p className="text-sm text-gray-500 mt-2">Your profits and dividends will be automatically reinvested based on your portfolio allocation.</p>

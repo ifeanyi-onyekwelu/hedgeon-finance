@@ -12,7 +12,7 @@ import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
 import { investApi } from '@/app/api/userApi';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle, CheckCircle } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 import Image from 'next/image';
 
 interface Fee {
@@ -45,6 +45,8 @@ const PaymentPage = () => {
     const [initializing, setInitializing] = useState(false);
     const [investmentError, setInvestmentError] = useState('');
 
+    const [selectedDuration, setSelectedDuration] = useState<number>(0);
+
     const [transactionId, setTransactionId] = useState('');
     const [screenshot, setScreenshot] = useState<File | null>(null);
 
@@ -55,7 +57,11 @@ const PaymentPage = () => {
             try {
                 setLoadingPlan(true);
                 const response = await getPlanDetailsApi(planId as string);
-                setPlan(response.data['plan']);
+                const fetchedPlan = response.data['plan'];
+
+                setPlan(fetchedPlan);
+                setSelectedDuration(fetchedPlan.minDuration);
+
             } catch (err: any) {
                 console.error('Error fetching plan details:', err);
                 setErrorPlan('Failed to load plan details for investment.');
@@ -71,31 +77,22 @@ const PaymentPage = () => {
 
     useEffect(() => {
         if (plan && typeof investmentAmount === 'number' && investmentAmount > 0) {
-            let periods = 0;
-            let ratePerPeriod = 0;
-
-            if (plan.durationType === 'months') {
-                periods = plan.duration;
-                ratePerPeriod = plan.estimatedROI / 100;
-            } else if (plan.durationType === 'weeks') {
-                periods = plan.duration
-                ratePerPeriod = plan.estimatedROI / 100;
-            }
+            // Use selected duration for calculations
+            const periods = selectedDuration;
+            const ratePerPeriod = plan.estimatedROI / 100;
 
             const perPeriodReturn = investmentAmount * ratePerPeriod;
             const totalReturn = perPeriodReturn * periods;
 
             setEstimatedReturn(totalReturn);
             setEstimatedReturnPerPeriod(perPeriodReturn);
-
             setFees([]);
         } else {
             setEstimatedReturn(0);
             setEstimatedReturnPerPeriod(0);
             setFees([]);
-
         }
-    }, [plan, investmentAmount]);
+    }, [plan, investmentAmount, selectedDuration]); // Add selectedDuration to dependencies
 
 
     const handleInvestmentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,10 +119,14 @@ const PaymentPage = () => {
             toast.error(`Amount must be between $${plan.minAmount} and $${plan.maxAmount}.`);
             return;
         }
+        if (selectedDuration < plan.minDuration || selectedDuration > plan.maxDuration) {
+            toast.error(`Duration must be between ${plan.minDuration}-${plan.maxDuration} ${plan.durationType}`);
+            return;
+        }
+
 
         setProcessingPayment(true);
         try {
-            // Fetch crypto address when proceeding to payment
             const response = await getAllCurrencies(selectedCurrency);
             const data = await response.data;
             console.log("Currency Fetched:", data)
@@ -156,6 +157,7 @@ const PaymentPage = () => {
             formData.append("currency", selectedCurrency);
             formData.append("transactionId", transactionId);
             formData.append("screenshot", screenshot);
+            formData.append("duration", selectedDuration.toString());
 
             const response = await investApi(formData);
 
@@ -230,6 +232,26 @@ const PaymentPage = () => {
                             )}
                         </div>
 
+                        {/* Add this to renderFormStep() */}
+                        <div className="space-y-2">
+                            <label htmlFor="duration" className="block text-sm font-medium text-gray-700">
+                                Investment Duration ({plan.durationType})
+                            </label>
+                            <input
+                                type="number"
+                                id="duration"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                value={selectedDuration}
+                                onChange={(e) => setSelectedDuration(Math.max(plan.minDuration, Math.min(plan.maxDuration, Number(e.target.value))))}
+                                min={plan.minDuration}
+                                max={plan.maxDuration}
+                                placeholder={`${plan.minDuration} - ${plan.maxDuration}`}
+                            />
+                            <p className="text-sm text-gray-500">
+                                Choose between {plan.minDuration} and {plan.maxDuration} {plan.durationType}
+                            </p>
+                        </div>
+
                         {/* Currency Selector */}
                         <div>
                             <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
@@ -261,7 +283,9 @@ const PaymentPage = () => {
                                     </div>
                                     <div className="flex justify-between">
                                         <dt className="text-gray-600">Duration</dt>
-                                        <dd className="font-medium">{plan.duration} {plan.durationType === 'weeks' ? 'weeks' : 'months'}</dd>
+                                        <dd className="font-medium">
+                                            {selectedDuration} {plan.durationType}
+                                        </dd>
                                     </div>
                                     <div className="flex justify-between pt-3 border-t border-gray-200">
                                         <dt className="text-gray-600">Estimated ROI</dt>
@@ -382,6 +406,13 @@ const PaymentPage = () => {
                     <div className="flex justify-between pt-3 border-t border-gray-200">
                         <dt className="text-green-700">Estimated Return</dt>
                         <dd className="font-semibold text-green-700">${formatNumberWithCommas(estimatedReturn)}</dd>
+                    </div>
+                    {/* In both renderFormStep and renderConfirmationStep */}
+                    <div className="flex justify-between">
+                        <dt className="text-gray-600">Duration</dt>
+                        <dd className="font-medium">
+                            {selectedDuration} {plan.durationType}
+                        </dd>
                     </div>
                 </dl>
             </div>

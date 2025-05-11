@@ -6,7 +6,8 @@ const investmentPlans = [
         name: "Trial Package",
         minAmount: 5000,
         maxAmount: 15000,
-        duration: 3, // Using min duration
+        minDuration: 3, // minimum duration
+        maxDuration: 6, // maximum duration
         durationType: "weeks",
         estimatedROI: 5, // weekly
         taxOnProfit: 0,
@@ -26,7 +27,8 @@ const investmentPlans = [
         name: "Basic Package",
         minAmount: 30000,
         maxAmount: 70000,
-        duration: 6, // Using min duration
+        minDuration: 6, // minimum duration
+        maxDuration: 12, // maximum duration
         durationType: "months",
         estimatedROI: 7,
         taxOnProfit: 10,
@@ -45,7 +47,8 @@ const investmentPlans = [
         name: "Standard Package",
         minAmount: 100000,
         maxAmount: 500000,
-        duration: 12, // Using min duration
+        minDuration: 12, // minimum duration
+        maxDuration: 24, // maximum duration
         durationType: "months",
         estimatedROI: 11,
         taxOnProfit: 15,
@@ -65,7 +68,8 @@ const investmentPlans = [
         name: "Premium Package",
         minAmount: 500000,
         maxAmount: 1500000,
-        duration: 24, // Using min duration
+        minDuration: 24, // minimum duration
+        maxDuration: 36, // maximum duration
         durationType: "months",
         estimatedROI: 15,
         taxOnProfit: 20,
@@ -83,6 +87,7 @@ const investmentPlans = [
         createdAt: new Date()
     }
 ];
+
 
 const currencies = [
     {

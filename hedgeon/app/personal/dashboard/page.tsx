@@ -31,6 +31,7 @@ const PersonalDashboard = () => {
 
     const transformedPlans = (user?.currentPlan || []).map(plan => ({
         id: plan.planId,
+        investmentId: plan.investmentId,
         name: plan.name,
         investedAmount: plan.investedAmount,
         roi: plan.roiAccumulated,

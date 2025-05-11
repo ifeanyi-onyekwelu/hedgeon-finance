@@ -12,8 +12,9 @@ import userModel from "../models/user.model";
 
 export const createInvestment = asyncHandler(
     async (req: Request, res: Response) => {
-        const { planId, amount, currency, transactionId } = req.body;
+        const { planId, amount, currency, transactionId, duration } = req.body;
         const user = await getUserById(req.session.user.id);
+        const numericDuration = Number(duration);
 
         if (!planId || !amount || !transactionId || !req.file) {
             return logError(res, new BadRequestError("All fields are required"));
@@ -53,13 +54,31 @@ export const createInvestment = asyncHandler(
             return logError(res, new BadRequestError(`Maximum investment for this plan is ${plan.maxAmount}`));
         }
 
+        if (
+            isNaN(numericDuration) ||
+            numericDuration < plan.minDuration ||
+            numericDuration > plan.maxDuration
+        ) {
+            return logError(res, new BadRequestError('Invalid duration value'));
+        }
+
+
         const startDate = new Date();
         const endDate = new Date(startDate);
 
+        console.log(
+            "Date Calculation:",
+            `Current Month: ${endDate.getMonth()}`,
+            `Duration: ${duration} (type: ${typeof duration})`,
+            `Numeric Duration: ${numericDuration}`
+        );
+
+
+        // Use the duration passed from frontend (after validation)
         if (plan.durationType === 'months') {
-            endDate.setMonth(endDate.getMonth() + plan.duration);
+            endDate.setMonth(endDate.getMonth() + numericDuration); // Now uses numeric addition
         } else if (plan.durationType === 'weeks') {
-            endDate.setDate(endDate.getDate() + (plan.duration * 7));
+            endDate.setDate(endDate.getDate() + (numericDuration * 7));
         }
 
         // Create investment
@@ -79,6 +98,7 @@ export const createInvestment = asyncHandler(
 
         const planData = {
             planId: plan._id,
+            investmentId: investment._id,
             name: plan.name,
             startDate: new Date(),
             endDate: investment.endDate,
@@ -189,6 +209,8 @@ export const getInvestmentById = asyncHandler(async (req: Request, res: Response
 
 export const updateUserInvestments = async () => {
     const users = await userModel.find({ currentPlan: { $exists: true, $not: { $size: 0 } } });
+
+    console.log("users", users)
 
     for (const user of users) {
         let updated = false;

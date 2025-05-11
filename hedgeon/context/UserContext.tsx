@@ -14,6 +14,7 @@ type User = {
     twoFactorSecret: string
     currentPlan?: [{
         planId: string
+        investmentId: string
         name: string
         startDate: Date
         endDate: Date
@@ -23,6 +24,7 @@ type User = {
     }]
     pastPlans: [{
         planId: string;
+        investmentId: string;
         name: string;
         startDate: Date;
         endDate: Date;

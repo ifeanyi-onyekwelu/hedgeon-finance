@@ -11,6 +11,7 @@ interface IUser {
     kycVerified: boolean,
     currentPlan?: [{
         planId: mongoose.Types.ObjectId;
+        investmentId: mongoose.Types.ObjectId;
         name: string;
         startDate: Date;
         endDate: Date;
@@ -20,6 +21,7 @@ interface IUser {
     }];
     pastPlans: [{
         planId: mongoose.Types.ObjectId;
+        investmentId: mongoose.Types.ObjectId;
         name: string;
         startDate: Date;
         endDate: Date;
@@ -89,6 +91,11 @@ const userSchema = new mongoose.Schema<IUser>({
             ref: "Plan",
             default: null,
         },
+        investmentId: {
+            type: mongoose.Types.ObjectId,
+            ref: "Investment",
+            default: null,
+        },
         name: { type: String, default: null },
         startDate: { type: Date, default: Date.now },
         endDate: { type: Date, default: null },
@@ -100,6 +107,11 @@ const userSchema = new mongoose.Schema<IUser>({
         planId: {
             type: mongoose.Types.ObjectId,
             ref: "Plan",
+            default: null,
+        },
+        investmentId: {
+            type: mongoose.Types.ObjectId,
+            ref: "Investment",
             default: null,
         },
         name: { type: String, default: null },

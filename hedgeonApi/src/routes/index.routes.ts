@@ -11,7 +11,6 @@ import authGuard from "../middlewares/authGuard";
 import adminOnly from "../middlewares/adminOnly";
 import currencyModel from "../models/currency";
 import { logData } from "../utils/logger";
-import { NONAME } from "node:dns";
 
 
 const router = express.Router();
@@ -23,13 +22,11 @@ router.use("/user", authGuard, userRoutes);
 router.use("/plans", planRoutes);
 router.use("/admin", authGuard, adminOnly, adminRoutes);
 router.use("/transactions", authGuard, transactionRoutes);
-// router.use("/cron", cronRoutes);
+router.use("/cron", cronRoutes);
 
 router.get("/currencies", async (req, res) => {
     const { name } = req.query
-    console.log("Name from query", name)
     const currency = await currencyModel.findOne({ name });
-    console.log("Currency Fetched", currency)
     return logData(res, 200, { currency });
 })
 

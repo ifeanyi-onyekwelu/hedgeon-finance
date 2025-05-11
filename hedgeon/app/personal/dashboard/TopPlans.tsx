@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 interface Plan {
     id: string;
+    investmentId: string;
     name: string;
     investedAmount: number;
     roi: number;
@@ -109,7 +110,7 @@ export default function TopPlans({ plans }: Props) {
                                 variant="default"
                                 className="w-full text-gray-600 hover:bg-gray-50 flex items-center justify-between"
                             >
-                                <Link href={`/personal/investments/${plan.id}`} className='w-full flex items-center justify-center space-x-3 underline-none text-white'>
+                                <Link href={`/personal/investments/${plan.investmentId}`} className='w-full flex items-center justify-center space-x-3 underline-none text-white'>
                                     <span>View Details</span>
                                     <ArrowUpRight className="w-4 h-4" />
                                 </Link>

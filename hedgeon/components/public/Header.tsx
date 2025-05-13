@@ -31,7 +31,7 @@ const Header = () => {
 
     return (
         <header className={`fixed w-full top-0 z-50 trans ition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-transparent'}`}>
-            <div className="max-w-6xl mx-auto h-20 flex items-center justify-between">
+            <div className="max-w-6xl mx-auto h-20 flex items-center justify-between px-5 md:px-0">
                 {/* Logo */}
                 <div className="flex items-center justify-start">
                     <Link href="/" className="z-50">
@@ -61,10 +61,6 @@ const Header = () => {
 
                 {/* CTA Section */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <div className={`flex items-center space-x-2 ${isScrolled ? 'text-gray-700' : 'text-gray-200'}`}>
-                        <IconPhone className="w-5 h-5" />
-                        <span className="text-sm">+1 (580) 304-2990</span>
-                    </div>
 
                     <Link
                         href="/auth/login"

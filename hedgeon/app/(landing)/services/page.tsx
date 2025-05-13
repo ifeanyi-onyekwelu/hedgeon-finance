@@ -76,7 +76,7 @@ function page() {
                                     <PieChart className="w-12 h-12 text-sky-400" />
                                 </div>
                                 <div>
-                                    <h2 className="text-4xl font-bold bg-gradient-to-r from-sky-300 to-cyan-400 bg-clip-text text-transparent mb-2">
+                                    <h2 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-sky-300 to-cyan-400 bg-clip-text text-transparent mb-2">
                                         Portfolio Management Services (PMS)
                                     </h2>
                                     <div className="h-1 w-24 bg-sky-400/30 rounded-full mb-6"></div>
@@ -124,7 +124,7 @@ function page() {
                     <div className="bg-slate-900/40 p-12 rounded-3xl border border-purple-800/30 shadow-xl">
                         <div className="flex items-center gap-6 mb-10">
                             <DollarSign className="w-12 h-12 text-purple-400" />
-                            <h2 className="text-4xl font-bold text-purple-200">Mutual Funds & IPOs</h2>
+                            <h2 className="text-2xl md:text-4xl font-bold text-purple-200">Mutual Funds & IPOs</h2>
                         </div>
 
                         <div className="">
@@ -158,7 +158,7 @@ function page() {
                     <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20 p-12 rounded-3xl border border-emerald-800/30">
                         <div className="flex items-center gap-6 mb-10">
                             <Briefcase className="w-12 h-12 text-emerald-400" />
-                            <h2 className="text-4xl font-bold text-emerald-200">Merchant Program & Financial Services</h2>
+                            <h2 className="text-2xl md:text-4xl font-bold text-emerald-200">Merchant Program & Financial Services</h2>
                         </div>
 
                         <div className="grid lg:grid-cols-2 gap-8 mb-12">
@@ -185,7 +185,7 @@ function page() {
                     <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20 p-12 rounded-3xl border border-emerald-800/30">
                         <div className="flex items-center gap-6 mb-10">
                             <Briefcase className="w-12 h-12 text-emerald-400" />
-                            <h2 className="text-4xl font-bold text-emerald-200">Copy Trading & Signal Subscription Service</h2>
+                            <h2 className="text-2xl md:text-4xl font-bold text-emerald-200">Copy Trading & Signal Subscription Service</h2>
                         </div>
 
                         <div className="flex md:flex-row flex-col justify-between gap-12">
@@ -278,7 +278,7 @@ function page() {
                     <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20 p-12 rounded-3xl border border-emerald-800/30">
                         <div className="flex items-center gap-6 mb-10">
                             <Briefcase className="w-12 h-12 text-emerald-400" />
-                            <h2 className="text-4xl font-bold text-emerald-200">Consulting Services</h2>
+                            <h2 className="text-2xl md:text-4xl font-bold text-emerald-200">Consulting Services</h2>
                         </div>
 
                         <div className="flex md:flex-row flex-col justify-between gap-12">
@@ -340,7 +340,7 @@ function page() {
                         <div className="relative z-10">
                             <div className="flex items-center gap-6 mb-10">
                                 <Building2 className="w-12 h-12 text-amber-400" />
-                                <h2 className="text-4xl font-bold text-amber-200">Real Estate Investment</h2>
+                                <h2 className="text-2xl md:text-4xl font-bold text-amber-200">Real Estate Investment</h2>
                             </div>
 
                             <div className="grid lg:grid-cols-2 gap-8 mb-12">
@@ -378,7 +378,7 @@ function page() {
                                     </div>
 
 
-                                    <div className="flex items-center space-x-4">
+                                    <div className="md:flex-row flex flex-col items-center gap-5">
                                         <p className='text-slate-300'>Want to buy a Real estate?</p>
                                         <Link href="/contact-us" className='bg-amber-600 hover:bg-amber-400 duration-300 text-slate-300 px-10 py-3 rounded-md'>Get In Touch</Link>
                                     </div>

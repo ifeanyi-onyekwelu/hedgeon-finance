@@ -30,17 +30,19 @@ const Header = () => {
     }, []);
 
     return (
-        <header className={`fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-transparent'}`}>
-            <div className="container mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+        <header className={`fixed w-full top-0 z-50 trans ition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-transparent'}`}>
+            <div className="max-w-6xl mx-auto h-20 flex items-center justify-between">
                 {/* Logo */}
-                <Link href="/" className="z-50">
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="flex items-center space-x-2"
-                    >
-                        <Image src="/images/logo.png" width={200} height={200} alt="Hedgeon Finance Logo" />
-                    </motion.div>
-                </Link>
+                <div className="flex items-center justify-start">
+                    <Link href="/" className="z-50">
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            className="flex items-center space-x-2"
+                        >
+                            <Image src="/images/logo.png" width={50} height={200} alt="Hedgeon Finance Logo" />
+                        </motion.div>
+                    </Link>
+                </div>
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-8">

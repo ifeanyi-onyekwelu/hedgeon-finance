@@ -166,3 +166,13 @@ color: #00685E;
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
+
+/* Custom Swiper styles */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #00685E !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #00685E !important;
+}

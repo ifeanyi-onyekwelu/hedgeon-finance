@@ -12,19 +12,19 @@ function Footer() {
             <div className="max-w-7xl mx-auto px-4 xl:px-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-base">
                     {/* Brand Section */}
-                    <div className="space-y-6">
-                        <Link href="/" className="z-50">
+                    <div className="space-y-4">
+                        <Link href="/" className="block">
                             <motion.div
                                 whileHover={{ scale: 1.05 }}
-                                className="flex items-center space-x-2"
                             >
-                                <Image src="/images/logo.png" width={300} height={300} alt="Hedgeon Finance Logo" />
+                                <Image src="/images/logo.png" width={50} height={300} alt="Hedgeon Finance Logo" />
                             </motion.div>
                         </Link>
 
-                        <p className="text-muted-foreground leading-relaxed">
+                        <p className="text-muted-foreground">
                             Empowering your financial future with innovative solutions and expert guidance.
                         </p>
+
                         <div className="flex space-x-3">
                             {[IconBrandFacebook, IconBrandX, IconBrandInstagram, IconBrandYoutube].map((Icon, idx) => (
                                 <Link

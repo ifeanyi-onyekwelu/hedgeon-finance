@@ -39,7 +39,7 @@ const Header = () => {
                             whileHover={{ scale: 1.05 }}
                             className="flex items-center space-x-2"
                         >
-                            <Image src="/images/logo.png" width={50} height={200} alt="Hedgeon Finance Logo" />
+                            <Image src="/images/logo.png" width={200} height={200} alt="Hedgeon Finance Logo" />
                         </motion.div>
                     </Link>
                 </div>

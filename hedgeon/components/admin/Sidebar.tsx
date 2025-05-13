@@ -62,7 +62,7 @@ export function AdminSidebar() {
     return (
         <Sidebar>
             <SidebarContent>
-                <Image src="/images/logo.png" alt="Hedgeon Finance Logo" width={50} height={200} className="mx-auto py-5" />
+                <Image src="/images/logo.png" alt="Hedgeon Finance Logo" width={200} height={200} className="mx-auto py-5" />
                 <SidebarGroup>
                     <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
                     <SidebarGroupContent>

@@ -32,6 +32,31 @@ export const getAllReferrals = asyncHandler(
 export const updateUser = asyncHandler(async (req: Request, res: Response) => {
     const user = await updateUserProfile(req.session.user.id, req.body);
 
+    // Add notification
+    const notificationMessage = "Your profile has been successfully updated.";
+    user.notifications.push({
+        message: notificationMessage,
+        type: 'profile_update',
+        date: new Date(),
+        read: false
+    });
+
+    try {
+        await user.save();
+
+        await sendEmail(
+            user.email,
+            'Profile Updated Successfully',
+            'profileUpdateNotification', // Ensure this template exists
+            {
+                userName: user.name || 'User',
+                message: notificationMessage
+            }
+        );
+    } catch (error) {
+        console.error("Failed to send profile update notification or email:", error);
+    }
+
     return logData(res, 200, { user });
 });
 
@@ -134,9 +159,32 @@ export const changePassword = asyncHandler(async (req: Request, res: Response) =
     }
 
     user.password = newPassword;
-    await user.save();
 
-    // await emailService.sendPasswordChangedNotification(user);
+    // Add password change notification
+    const notificationMessage = "Your password has been changed successfully.";
+    user.notifications.push({
+        message: notificationMessage,
+        type: 'password_change',
+        date: new Date(),
+        read: false
+    });
+
+    try {
+        await user.save();
+
+        await sendEmail(
+            user.email,
+            'Password Changed',
+            'passwordChangeNotification', // Ensure this email template exists
+            {
+                userName: user.name || 'User',
+                message: notificationMessage,
+                date: new Date().toDateString()
+            }
+        );
+    } catch (error) {
+        console.error("Failed to send password change notification or email:", error);
+    }
 
     return logData(res, 200, { message: "Password changed successfully!" });
 });

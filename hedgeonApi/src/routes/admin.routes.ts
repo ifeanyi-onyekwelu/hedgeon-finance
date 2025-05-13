@@ -18,6 +18,9 @@ import {
     getPayoutTrackerByInvestmentView,
     getAllPlansView,
     getPlanByIdView,
+    createPlanView,
+    updatePlanView,
+    deletePlanView,
     getAllTransactionsView,
     getTransactionByIdView,
     getAllUsersView,
@@ -26,8 +29,10 @@ import {
     updateUserStatus,
     verifyUserEmail,
     updateUser,
+    deleteUserView,
     getAllWithdrawalRequestsView,
     getWithdrawalRequestByIdView,
+    updateWithdrawalStatusView
 } from '../controllers/admin.controller';
 
 const router = express.Router();
@@ -58,6 +63,9 @@ router.get('/payout-trackers/investment/:investmentId', isAdmin, getPayoutTracke
 // Plan Routes
 router.get('/plans', isAdmin, getAllPlansView);
 router.get('/plans/:planId', isAdmin, getPlanByIdView);
+router.post("/plans", createPlanView);
+router.put("/plans/:planId", updatePlanView);
+router.delete("/plans/:planId", deletePlanView);
 
 // Transaction Routes
 router.get('/transactions', isAdmin, getAllTransactionsView);
@@ -70,9 +78,11 @@ router.get('/users/:userId/referrals', isAdmin, viewUserReferralsView);
 router.put('/users/:userId/status', isAdmin, updateUserStatus);
 router.put('/users/:userId/verify-email', isAdmin, verifyUserEmail);
 router.put('/users/:userId/', isAdmin, updateUser);
+router.put('/users/:userId/', isAdmin, deleteUserView);
 
 // Withdrawal Routes
 router.get('/withdrawals', isAdmin, getAllWithdrawalRequestsView);
 router.get('/withdrawals/:withdrawalId', isAdmin, getWithdrawalRequestByIdView);
+router.get('/withdrawals/:withdrawalId', isAdmin, updateWithdrawalStatusView);
 
 export default router;

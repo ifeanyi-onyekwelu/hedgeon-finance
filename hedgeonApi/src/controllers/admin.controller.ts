@@ -33,9 +33,6 @@ export const getInvestmentsByUserView = asyncHandler(async (req: Request, res: R
     res.status(200).json(investments);
 });
 
-// @desc    Update investment status
-// @route   PUT /api/investments/:id/status
-// @access  Admin
 export const updateInvestmentStatus = asyncHandler(
     async (req: Request, res: Response) => {
         const { id, status } = req.params;
@@ -76,7 +73,7 @@ export const updateInvestmentStatus = asyncHandler(
 
             // Send Email Notification
             try {
-                const emailSubject = `Your Investment Status Has Been Updated`;
+                const emailSubject = `Update Regarding Your Recent Investment`;
                 const templateData = {
                     userName: user.name || 'User',
                     message: notificationMessage,
@@ -97,10 +94,6 @@ export const updateInvestmentStatus = asyncHandler(
     }
 );
 
-
-// @desc    Update investment details
-// @route   PUT /api/investments/:id
-// @access  Admin
 export const updateInvestmentAdmin = asyncHandler(
     async (req: Request, res: Response) => {
         const { id } = req.params;
@@ -136,6 +129,7 @@ export const updateInvestmentAdmin = asyncHandler(
         res.status(200).json({ message: 'Investment updated', investment });
     }
 );
+
 
 // -------------------- KYC Views --------------------
 export const getAllKYCSubmissionsView = asyncHandler(async (req: Request, res: Response) => {
@@ -231,6 +225,7 @@ export const updateKYCVerificationStatus = asyncHandler(
     }
 );
 
+
 // -------------------- Notification Views --------------------
 export const getAllNotificationsView = asyncHandler(async (req: Request, res: Response) => {
     const notifications = await Notification.find().populate('userId', 'name email');
@@ -251,6 +246,7 @@ export const getNotificationsByUserView = asyncHandler(async (req: Request, res:
     const notifications = await Notification.find({ userId: userId });
     res.status(200).json(notifications);
 });
+
 
 // -------------------- PayoutTracker Views --------------------
 export const getAllPayoutTrackersView = asyncHandler(async (req: Request, res: Response) => {
@@ -273,6 +269,7 @@ export const getPayoutTrackerByInvestmentView = asyncHandler(async (req: Request
     res.status(200).json(payoutTracker);
 });
 
+
 // -------------------- Plan Views --------------------
 export const getAllPlansView = asyncHandler(async (req: Request, res: Response) => {
     const plans = await Plan.find();
@@ -287,6 +284,73 @@ export const getPlanByIdView = asyncHandler(async (req: Request, res: Response) 
     }
     res.status(200).json(plan);
 });
+
+export const createPlanView = asyncHandler(async (req: Request, res: Response) => {
+    const {
+        name,
+        minAmount,
+        maxAmount,
+        minDuration,
+        maxDuration,
+        durationType,
+        estimatedROI,
+        taxOnProfit,
+        referralBonus,
+        riskLevel,
+        benefits,
+        status
+    } = req.body;
+
+    const existingPlan = await Plan.findOne({ name });
+    if (existingPlan) {
+        res.status(400).json({ message: "Plan with this name already exists" });
+    }
+
+    const newPlan = await Plan.create({
+        name,
+        minAmount,
+        maxAmount,
+        minDuration,
+        maxDuration,
+        durationType,
+        estimatedROI,
+        taxOnProfit,
+        referralBonus,
+        riskLevel,
+        benefits,
+        status
+    });
+
+    res.status(201).json({ message: "Plan created successfully", plan: newPlan });
+});
+
+export const updatePlanView = asyncHandler(async (req: Request, res: Response) => {
+    const { planId } = req.params;
+
+    const updatedPlan = await Plan.findByIdAndUpdate(planId, req.body, {
+        new: true,
+        runValidators: true,
+    });
+
+    if (!updatedPlan) {
+        throw new NotFoundError(`Plan with ID ${planId} not found`);
+    }
+
+    res.status(200).json({ message: "Plan updated successfully", plan: updatedPlan });
+});
+
+export const deletePlanView = asyncHandler(async (req: Request, res: Response) => {
+    const { planId } = req.params;
+
+    const plan = await Plan.findByIdAndDelete(planId);
+    if (!plan) {
+        throw new NotFoundError(`Plan with ID ${planId} not found`);
+    }
+
+    res.status(200).json({ message: "Plan deleted successfully" });
+});
+
+
 
 // -------------------- Transaction Views --------------------
 export const getAllTransactionsView = asyncHandler(async (req: Request, res: Response) => {
@@ -422,6 +486,32 @@ export const updateUser = asyncHandler(
     }
 );
 
+export const deleteUserView = asyncHandler(async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    // Check if the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new NotFoundError(`User with ID ${userId} not found`);
+    }
+
+    // Delete user-related documents
+    await Promise.all([
+        Investment.deleteMany({ user: userId }),
+        KYC.deleteMany({ userId }),
+        Notification.deleteMany({ userId }),
+        PayoutTracker.deleteMany({ userId }),
+        Transaction.deleteMany({ userId }),
+        Withdrawal.deleteMany({ userId })
+    ]);
+
+    // Delete the user itself
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({ message: "User and all related data deleted successfully" });
+});
+
+
 // -------------------- Withdrawal Views --------------------
 export const getAllWithdrawalRequestsView = asyncHandler(async (req: Request, res: Response) => {
     const withdrawals = await Withdrawal.find().populate('userId', 'name email');
@@ -435,4 +525,73 @@ export const getWithdrawalRequestByIdView = asyncHandler(async (req: Request, re
         throw new NotFoundError(`Withdrawal request with ID ${withdrawalId} not found`);
     }
     res.status(200).json(withdrawal);
+});
+
+export const updateWithdrawalStatusView = asyncHandler(async (req: Request, res: Response) => {
+    const { withdrawalId } = req.params;
+    const { status } = req.body;
+
+    if (!['APPROVED', 'DECLINED', 'FAILED'].includes(status)) {
+        res.status(400);
+        throw new Error('Invalid status. Must be APPROVED, DECLINED, or FAILED.');
+    }
+
+    const withdrawal = await Withdrawal.findById(withdrawalId);
+    if (!withdrawal) {
+        throw new NotFoundError(`Withdrawal request with ID ${withdrawalId} not found`);
+    }
+
+    if (withdrawal.status !== 'PENDING') {
+        res.status(400);
+        throw new Error('Only PENDING withdrawals can be updated');
+    }
+
+    // Update withdrawal status
+    withdrawal.status = status;
+    await withdrawal.save();
+
+    // Fetch the user
+    const user = await User.findById(withdrawal.userId);
+    if (!user) {
+        throw new NotFoundError(`User not found for Withdrawal ID: ${withdrawalId}`);
+    }
+
+    // Refund wallet if DECLINED or FAILED
+    if (status === 'DECLINED' || status === 'FAILED') {
+        user.walletBalance += withdrawal.amount; // assumes you have a walletBalance field
+    }
+
+    // Notify the user
+    const notificationMessage = `Your withdrawal request of ${withdrawal.amount} ${withdrawal.currency} has been ${status.toLowerCase()}.`;
+    const notificationType = 'withdrawal_status';
+
+    user.notifications.push({
+        message: notificationMessage,
+        type: notificationType,
+        date: new Date(),
+        read: false
+    });
+
+    try {
+        await user.save();
+    } catch (dbError) {
+        console.error(`Failed to save user updates for ${user._id}:`, dbError);
+        throw new InternalServerError(`Failed to update user wallet or save notification`);
+    }
+
+    // Send Email Notification
+    try {
+        const emailSubject = `Update Regarding Your Recent Withdrawal Request`;
+        const templateData = {
+            userName: user.name || 'User',
+            message: notificationMessage,
+            status
+        };
+        await sendEmail(user.email, emailSubject, 'withdrawalStatusUpdate', templateData);
+    } catch (emailError) {
+        console.error(`Failed to send withdrawal status email to ${user.email}:`, emailError);
+        throw new InternalServerError(`Failed to send withdrawal status email`);
+    }
+
+    res.status(200).json({ message: `Withdrawal ${status.toLowerCase()} successfully`, withdrawal });
 });

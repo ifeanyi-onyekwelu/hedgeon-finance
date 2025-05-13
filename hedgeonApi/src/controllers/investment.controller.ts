@@ -9,6 +9,7 @@ import Transaction from "../models/transaction.model";
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 import userModel from "../models/user.model";
+import sendEmail from "../utils/mailer";
 
 export const createInvestment = asyncHandler(
     async (req: Request, res: Response) => {
@@ -125,11 +126,35 @@ export const createInvestment = asyncHandler(
             currency
         });
 
-        // Send notifications
-        // await Promise.all([
-        //     emailService.sendInvestmentConfirmation(user, investment),
-        //     emailService.notifyAdminAboutInvestment(user, investment),
-        // ]);
+        const notificationMessage = `Your investment in the "${plan.name}" plan was successful.`;
+        user.notifications.push({
+            message: notificationMessage,
+            type: 'investment_created',
+            date: new Date(),
+            read: false
+        });
+
+        try {
+            await user.save(); // This already exists, so ensure you don’t duplicate this save
+
+            // Send email
+            await sendEmail(
+                user.email,
+                'Investment Created Successfully',
+                'investmentCreated',
+                {
+                    userName: user.name || 'User',
+                    message: notificationMessage,
+                    planName: plan.name,
+                    amount,
+                    startDate: startDate.toDateString(),
+                    endDate: endDate.toDateString()
+                }
+            );
+        } catch (error) {
+            console.error('Failed to save notification or send email:', error);
+        }
+
 
         logData(res, 201, {
             success: true,
@@ -181,6 +206,35 @@ export const reinvestEarnings = asyncHandler(
         };
 
         await user.save();
+
+        const notificationMessage = `You successfully reinvested $${amount} into the "${plan.name}" plan.`;
+        user.notifications.push({
+            message: notificationMessage,
+            type: 'reinvestment',
+            date: new Date(),
+            read: false
+        });
+
+        try {
+            await user.save(); // Already being called, so keep this outside if it's already used
+
+            await sendEmail(
+                user.email,
+                'Reinvestment Successful',
+                'reinvestmentNotification',
+                {
+                    userName: user.name || 'User',
+                    message: notificationMessage,
+                    amount,
+                    planName: plan.name,
+                    startDate: investment.startDate.toDateString(),
+                    endDate: investment.endDate.toDateString()
+                }
+            );
+        } catch (error) {
+            console.error('Failed to send reinvestment notification or email:', error);
+        }
+
 
         logData(res, 200, {
             success: true,
@@ -272,6 +326,23 @@ export const updateUserInvestments = async () => {
                         message: `You just earned $${totalNewROI.toFixed(2)} from your "${plan.name}" plan.`,
                         type: 'roi'
                     });
+
+                    try {
+                        await sendEmail(
+                            user.email,
+                            'ROI Earnings Update',
+                            'roiUpdate',
+                            {
+                                userName: user.name || 'User',
+                                message: `You just earned $${totalNewROI.toFixed(2)} from your "${plan.name}" plan.`,
+                                roi: totalNewROI.toFixed(2),
+                                planName: plan.name
+                            }
+                        );
+                    } catch (emailError) {
+                        console.error(`Failed to send ROI email to ${user.email}:`, emailError);
+                    }
+
                 }
             }
         }

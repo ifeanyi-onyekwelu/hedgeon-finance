@@ -8,8 +8,22 @@ import { Input } from "@/components/ui/input"
 
 function Footer() {
     return (
-        <footer className="bg-primary-fade pt-24 pb-12">
-            <div className="max-w-7xl mx-auto px-4 xl:px-0">
+        <footer className="relative pt-24 pb-12">
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src="/images/testimonials-bg.jpg"
+                    alt="Background"
+                    layout="fill"
+                    objectFit="cover"
+                    quality={100}
+                    priority
+                />
+            </div>
+
+            {/* Dark Overlay */}
+            <div className="absolute inset-0 bg-black/50 z-1"></div>
+
+            <div className="relative max-w-6xl mx-auto px-4 xl:px-0 z-2">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-base">
                     {/* Brand Section */}
                     <div className="space-y-4">
@@ -21,7 +35,7 @@ function Footer() {
                             </motion.div>
                         </Link>
 
-                        <p className="text-muted-foreground">
+                        <p className="text-white">
                             Empowering your financial future with innovative solutions and expert guidance.
                         </p>
 
@@ -61,13 +75,13 @@ function Footer() {
                         }
                     ].map((section, idx) => (
                         <div key={idx} className="space-y-6">
-                            <h3 className="text-lg font-semibold text-foreground">{section.title}</h3>
+                            <h3 className="text-lg font-semibold text-gray-100">{section.title}</h3>
                             <ul className="space-y-3">
                                 {section.links.map((link, i) => (
                                     <li key={i}>
                                         <Link
                                             href={link.href}
-                                            className="text-muted-foreground hover:text-primary transition-colors"
+                                            className="text-gray-300 hover:text-primary transition-colors"
                                         >
                                             {link.name}
                                         </Link>
@@ -79,15 +93,15 @@ function Footer() {
 
                     {/* Newsletter Section */}
                     <div className="space-y-6">
-                        <h3 className="text-lg font-semibold text-foreground">Stay Updated</h3>
-                        <p className="text-muted-foreground">
+                        <h3 className="text-lg font-semibold text-gray-100">Stay Updated</h3>
+                        <p className="text-gray-100">
                             Subscribe to our newsletter for financial insights and updates.
                         </p>
                         <form className="flex gap-2">
                             <Input
                                 type="email"
                                 placeholder="Enter your email"
-                                className="rounded-full px-6 h-12 border-2 border-primary/20 focus-visible:ring-primary"
+                                className="flex-1 rounded-full px-6 h-12 border-2 border-white focus-visible:ring-primary"
                             />
                             <Button
                                 type="submit"

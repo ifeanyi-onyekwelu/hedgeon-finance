@@ -12,7 +12,7 @@ export default function Testimonials() {
         <section className="overflow-hidden py-16 lg:py-24 text-center relative text-white">
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/images/testimonials-bg.jpeg"
+                    src="/images/testimonials-bg.jpg"
                     alt="Background"
                     layout="fill"
                     objectFit="cover"
@@ -25,11 +25,14 @@ export default function Testimonials() {
             <div className="absolute inset-0 bg-black/50 z-1"></div>
 
             <div className="relative container mx-auto px-4">
-                <div className="max-w-2xl mx-auto mb-12 lg:mb-16">
-                    <span className="text-primary text-sm font-semibold uppercase tracking-wide">
-                        What Investors are saying?
-                    </span>
-                    <h2 className="text-3xl lg:text-4xl font-bold mt-4">Testimonials</h2>
+                <div className="max-w-2xl mx-auto mb-12 lg:mb-16 flex flex-col items-center justify-center">
+                    <div className="flex items-center space-x-2">
+                        <div className="w-14 h-1 bg-white"></div>
+                        <span className="text-gray-200 text-sm font-semibold uppercase tracking-wide">
+                            What Investors are saying?
+                        </span>
+                    </div>
+                    <h2 className="text-3xl lg:text-6xl text-white mt-4">Testimonials</h2>
                 </div>
 
                 <Swiper
@@ -47,7 +50,7 @@ export default function Testimonials() {
                         <div className="max-w-3xl mx-auto px-4">
                             <div className="relative w-24 h-24 rounded-full mx-auto mb-6">
                                 <Image
-                                    src="/images/test1.jpg"
+                                    src="/images/testimonial-1.jpg"
                                     alt="Sam Ashton"
                                     layout="fill"
                                     objectFit="cover"
@@ -69,7 +72,7 @@ export default function Testimonials() {
                         <div className="max-w-3xl mx-auto px-4">
                             <div className="relative w-24 h-24 rounded-full mx-auto mb-6">
                                 <Image
-                                    src="/images/test2.jpg"
+                                    src="/images/testimonial-2.jpg"
                                     alt="Sajid Hassan"
                                     layout="fill"
                                     objectFit="cover"
@@ -91,7 +94,7 @@ export default function Testimonials() {
                         <div className="max-w-3xl mx-auto px-4">
                             <div className="relative w-24 h-24 rounded-full mx-auto mb-6">
                                 <Image
-                                    src="/images/test3.jpg"
+                                    src="/images/testimonial-3.jpg"
                                     alt="Peter P. Becton"
                                     layout="fill"
                                     objectFit="cover"

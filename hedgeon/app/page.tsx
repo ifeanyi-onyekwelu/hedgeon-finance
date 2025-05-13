@@ -9,6 +9,10 @@ import { getPlansApi } from './api/planApi';
 import formatNumberWithCommas from '@/utils/formatNumbersWithCommas'
 import { FiCheckCircle } from 'react-icons/fi'
 import Testimonials from '@/components/public/Home/Testimonials'
+import LatestNews from '@/components/public/Home/LatestNews'
+import Faqs from '@/components/public/Home/Faqs'
+import ContactSection from '@/components/public/Home/Contact'
+import PartnersSection from '@/components/public/Home/Partners'
 
 
 function Home() {
@@ -617,6 +621,14 @@ function Home() {
             </section>
 
             <Testimonials />
+
+            <LatestNews />
+
+            <Faqs />
+
+            <ContactSection />
+
+            <PartnersSection />
         </>
     )
 }

@@ -68,10 +68,17 @@ const Header = () => {
 
                     <Link
                         href="/auth/login"
-                        className="w-fit bg-primary text-white hover:bg-primary-dark flex items-center py-2 px-4 text-center rounded-sm hover:bg-primary-fade duration-300"
+                        className={`relative px-3 py-2 text-sm font-medium transition-colors ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-gray-200 hover:text-white'
+                            }`}
                     >
-                        <User2 className="w-5 h-5 mr-2" />
                         Login
+                    </Link>
+                    <Link
+                        href="/auth/signup"
+                        className={`relative px-3 py-2 text-sm font-medium transition-colors ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-gray-200 hover:text-white'
+                            }`}
+                    >
+                        Create Account
                     </Link>
                 </div>
 

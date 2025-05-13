@@ -62,7 +62,7 @@ export default function Testimonials() {
                                 ★★★★★
                             </div>
                             <p className="text-gray-200 text-lg leading-relaxed">
-                                "Trinity Trustfund has achieved impressive growth and returns on investment. I highly recommend considering investing in this company to anyone looking for a promising investment opportunity."
+                                "Hedgeon Finance has achieved impressive growth and returns on investment. I highly recommend considering investing in this company to anyone looking for a promising investment opportunity."
                             </p>
                         </div>
                     </SwiperSlide>
@@ -84,7 +84,7 @@ export default function Testimonials() {
                                 ★★★★★
                             </div>
                             <p className="text-gray-200 text-lg leading-relaxed">
-                                "Investing in TTF has been one of the best decisions I've made. Not only have I seen impressive returns, but I've also gained a deeper understanding of the rapidly evolving world of blockchain technology."
+                                "Investing in Hedgeon Finance has been one of the best decisions I've made. Not only have I seen impressive returns, but I've also gained a deeper understanding of the rapidly evolving world of blockchain technology."
                             </p>
                         </div>
                     </SwiperSlide>
@@ -106,7 +106,7 @@ export default function Testimonials() {
                                 ★★★★☆
                             </div>
                             <p className="text-gray-200 text-lg leading-relaxed">
-                                "Investing in Trinity Trustfund has been a smart move for me. The professionals provided me with valuable insights & strategies that have helped me grow my portfolio & achieve my financial goals."
+                                "Investing in Hedgeon Finance has been a smart move for me. The professionals provided me with valuable insights & strategies that have helped me grow my portfolio & achieve my financial goals."
                             </p>
                         </div>
                     </SwiperSlide>

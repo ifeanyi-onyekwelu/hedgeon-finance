@@ -69,7 +69,7 @@ function page() {
             <section className="space-y-24 py-20 bg-gradient-to-b from-slate-950 via-sky-950 to-indigo-950">
                 <div className="max-w-7xl mx-auto px-6 space-y-20">
                     {/* PMS Section */}
-                    <div className="relative bg-gradient-to-br from-slate-800/50 to-blue-900/30 rounded-[3rem] p-12 border border-sky-800/30 shadow-2xl overflow-hidden">
+                    <div className="relative bg-gradient-to-br from-slate-800/50 to-blue-900/30 rounded-[3rem] p-5 md:p-12 border border-sky-800/30 shadow-2xl overflow-hidden">
                         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10"></div>
                         <div className="relative z-10">
                             <div className="flex items-start gap-6 mb-8">
@@ -122,7 +122,7 @@ function page() {
                     </div>
 
                     {/* Mutual Funds & IPOs */}
-                    <div className="bg-slate-900/40 p-12 rounded-3xl border border-purple-800/30 shadow-xl">
+                    <div className="bg-slate-900/40  p-5 md:p-12 rounded-3xl border border-purple-800/30 shadow-xl">
                         <div className="flex items-center gap-6 mb-10">
                             <DollarSign className="w-12 h-12 text-purple-400" />
                             <h2 className="text-2xl md:text-4xl font-bold text-purple-200">Mutual Funds & IPOs</h2>
@@ -143,7 +143,7 @@ function page() {
                             </p>
                             <div className="bg-slate-800/30 p-6 rounded-xl">
                                 <h4 className="text-lg font-semibold text-purple-300 mb-4">Fund Types We Offer:</h4>
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {fundTypes.map((type) => (
                                         <div key={type} className="flex items-center gap-2 text-slate-300">
                                             <Check className="w-4 h-4 text-emerald-400" />
@@ -156,7 +156,7 @@ function page() {
                     </div>
 
                     {/* Merchant Program */}
-                    <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20 p-12 rounded-3xl border border-emerald-800/30">
+                    <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20  p-5 md:p-12 rounded-3xl border border-emerald-800/30">
                         <div className="flex items-center gap-6 mb-10">
                             <Briefcase className="w-12 h-12 text-emerald-400" />
                             <h2 className="text-2xl md:text-4xl font-bold text-emerald-200">Merchant Program & Financial Services</h2>
@@ -183,7 +183,7 @@ function page() {
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20 p-12 rounded-3xl border border-emerald-800/30">
+                    <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20  p-5 md:p-12 rounded-3xl border border-emerald-800/30">
                         <div className="flex items-center gap-6 mb-10">
                             <Briefcase className="w-12 h-12 text-emerald-400" />
                             <h2 className="text-2xl md:text-4xl font-bold text-emerald-200">Copy Trading & Signal Subscription Service</h2>
@@ -284,7 +284,7 @@ function page() {
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20 p-12 rounded-3xl border border-emerald-800/30">
+                    <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20  p-5 md:p-12 rounded-3xl border border-emerald-800/30">
                         <div className="flex items-center gap-6 mb-10">
                             <Briefcase className="w-12 h-12 text-emerald-400" />
                             <h2 className="text-2xl md:text-4xl font-bold text-emerald-200">Consulting Services</h2>
@@ -344,7 +344,7 @@ function page() {
                     </div>
 
                     {/* Real Estate Section */}
-                    <div className="bg-slate-900/40 p-12 rounded-3xl border border-amber-800/30 relative overflow-hidden">
+                    <div className="bg-slate-900/40  p-5 md:p-12 rounded-3xl border border-amber-800/30 relative overflow-hidden">
                         <div className="absolute inset-0 bg-[url('/real-estate-pattern.svg')] opacity-10"></div>
                         <div className="relative z-10">
                             <div className="flex items-center gap-6 mb-10">
@@ -403,19 +403,6 @@ function page() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Footer CTA */}
-                    <div className="text-center py-16">
-                        <div className="bg-slate-900/40 p-12 rounded-3xl border border-sky-800/30">
-                            <h3 className="text-2xl font-semibold text-slate-100 mb-4">Need Specialized Assistance?</h3>
-                            <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
-                                Our financial experts are ready to help you navigate complex investment landscapes and find optimal solutions.
-                            </p>
-                            <Link href="/contact-us" className="bg-gradient-to-r from-sky-500 to-cyan-600 px-10 py-5 rounded-xl font-semibold text-lg hover:shadow-2xl transition-all">
-                                Contact Our Advisory Team
-                            </Link>
                         </div>
                     </div>
                 </div>

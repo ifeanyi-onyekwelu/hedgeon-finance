@@ -12,49 +12,46 @@ function Faqs() {
     const faqs = [
         {
             trigger: "How do I create an account?",
-            content: "Click on the 'Get Started' button on the homepage and follow the prompts to register with your valid details and complete KYC verification."
+            content: "Click on the 'Get Started' button on the homepage, fill in your details, and complete the KYC verification to activate your account."
         },
         {
             trigger: "Can I reset my password if I forget it?",
-            content: "Yes, click on 'Forgot Password' on the login page and follow the instructions sent to your email to reset your password."
+            content: "Yes. Click on 'Forgot Password' on the login page and follow the instructions sent to your registered email."
         },
         {
             trigger: "How do I enable two-factor authentication (2FA)?",
-            content: "Go to your account settings and toggle on 2FA. You'll be prompted to scan a QR code with an authenticator app."
+            content: "Go to your account settings and enable 2FA. Use an authenticator app to scan the QR code and complete the setup."
         },
         {
             trigger: "Is my personal information secure?",
-            content: "Absolutely. We use bank-level encryption, secure data centers, and follow strict data protection policies."
+            content: "Yes. We use bank-grade encryption and secure infrastructure to protect your data at all times."
         },
         {
             trigger: "What should I do if I suspect unauthorized activity?",
-            content: "Immediately change your password and contact our support team. We'll temporarily lock your account and investigate."
+            content: "Immediately change your password and contact our support team. Your account will be temporarily locked while we investigate."
         },
         {
-            trigger: "What should I do if I suspect unauthorized activity?",
-            content: "Immediately change your password and contact our support team. We'll temporarily lock your account and investigate."
+            trigger: "How long does KYC verification take?",
+            content: "KYC verification typically takes 1–2 business days. You'll receive a notification once it's complete."
         },
         {
-            trigger: "What should I do if I suspect unauthorized activity?",
-            content: "Immediately change your password and contact our support team. We'll temporarily lock your account and investigate."
+            trigger: "What documents are required for KYC?",
+            content: "A valid government-issued ID (e.g., passport or driver's license) and a proof of address such as a utility bill or bank statement."
         },
         {
-            trigger: "What should I do if I suspect unauthorized activity?",
-            content: "Immediately change your password and contact our support team. We'll temporarily lock your account and investigate."
+            trigger: "Can I change my registered email address?",
+            content: "Yes. Go to Account Settings > Personal Info to request an email change. You’ll need to verify the new email address."
         },
         {
-            trigger: "What should I do if I suspect unauthorized activity?",
-            content: "Immediately change your password and contact our support team. We'll temporarily lock your account and investigate."
+            trigger: "How can I contact customer support?",
+            content: "You can reach our support team via the 'Contact Us' page or by emailing support@yourdomain.com."
         },
         {
-            trigger: "What should I do if I suspect unauthorized activity?",
-            content: "Immediately change your password and contact our support team. We'll temporarily lock your account and investigate."
-        },
-        {
-            trigger: "What should I do if I suspect unauthorized activity?",
-            content: "Immediately change your password and contact our support team. We'll temporarily lock your account and investigate."
-        },
+            trigger: "Are there any fees for transactions?",
+            content: "Most services are free, but some transactions may incur minor fees. Please refer to our Pricing page for details."
+        }
     ];
+
 
     return (
         <section className="min-h-screen bg-gradient-to-br from-slate-950 via-sky-950 to-indigo-950 py-28 px-6">
@@ -91,16 +88,17 @@ function Faqs() {
                         <div className="flex space-x-4 items-center">
                             <div className="w-16 h-1 bg-primary"></div>
                             <span className="text-md font-semibold text-gray-300 uppercase tracking-wide">
-                                At Hedgeon Community
+                                Frequently Asked Questions
                             </span>
                         </div>
                         <h2 className="text-4xl md:text-4xl font-bold text-gray-200 leading-tight">
-                            Earn more than just commission
+                            Your Questions, Answered
                         </h2>
-                        <p className="text-lg text-gray-600 leading-relaxed">
-                            Join thousands of affiliates from across the globe and access exclusive opportunities while earning competitive referral commissions, and elevating yourselves as leaders in the industry.
+                        <p className="text-lg text-gray-400 leading-relaxed">
+                            We’ve compiled answers to the most common questions from our users. If you still need help, feel free to reach out to our support team anytime.
                         </p>
                     </div>
+
 
                     <div className="space-y-6">
                         <Accordion type="single" collapsible className="w-full space-y-5">

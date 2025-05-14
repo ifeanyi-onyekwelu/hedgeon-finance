@@ -6,6 +6,7 @@ import {
     UserPlus,
 } from "lucide-react"
 import Link from 'next/link'
+import Image from 'next/image'
 
 function page() {
     const whyPMSItems = [
@@ -272,6 +273,14 @@ function page() {
                                     Stay ahead of the market with professional-grade trading signals from Hedgeon Finance!
                                 </p>
                             </div>
+
+                            <Image
+                                src="/images/copy-trading.jpg"
+                                alt="Copy trading"
+                                width={500}
+                                height={350}
+                                className="rounded-xl shadow-xl object-contain"
+                            />
                         </div>
                     </div>
 
@@ -384,6 +393,15 @@ function page() {
                                     </div>
                                 </div>
 
+                                <div className="hidden lg:flex items-center justify-center">
+                                    <Image
+                                        src="/images/real-estate.jpg"
+                                        alt="Modern real estate buildings"
+                                        width={500}
+                                        height={400}
+                                        className="h-full rounded-xl shadow-lg"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

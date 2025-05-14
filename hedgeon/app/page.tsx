@@ -212,7 +212,10 @@ function Home() {
                                 Welcome To Hedgeon Finance
                             </h1>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium quod est at, veritatis minima labore beatae omnis ea reiciendis quasi possimus molestiae? Eveniet nihil eaque iusto optio, culpa aliquam voluptatibus blanditiis nisi? Similique minus voluptatibus in? Earum rem!
+                                Created in 2001, Our aim is to help others achieve their
+                                aim in life, we saw the opportunity to help others and we took it, and so are we passionate about it.
+                                Investments are life-savers and shouldn’t be rejected by anyone, you’re helping yourself and no one
+                                else, this goes to answer the question of “why do I invest?”
                             </p>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-1">

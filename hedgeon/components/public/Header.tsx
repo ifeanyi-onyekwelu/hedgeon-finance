@@ -13,6 +13,8 @@ const navLinks = [
     { name: 'About Us', path: '/about' },
     { name: 'Services', path: '/services' },
     { name: 'FAQ', path: '/faq' },
+    { name: 'Login', path: '/auth/login' },
+    { name: 'Sign Up', path: '/auth/signup' },
     { name: 'Contact Us', path: '/contact-us' },
 ];
 
@@ -59,29 +61,10 @@ const Header = () => {
                     ))}
                 </nav>
 
-                {/* CTA Section */}
-                <div className="hidden md:flex items-center space-x-6">
-
-                    <Link
-                        href="/auth/login"
-                        className={`relative px-3 py-2 text-sm font-medium transition-colors ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-gray-200 hover:text-white'
-                            }`}
-                    >
-                        Login
-                    </Link>
-                    <Link
-                        href="/auth/signup"
-                        className={`relative px-3 py-2 text-sm font-medium transition-colors ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-gray-200 hover:text-white'
-                            }`}
-                    >
-                        Create Account
-                    </Link>
-                </div>
-
                 {/* Mobile Menu Button */}
                 <button
                     aria-label="Toggle menu"
-                    className="md:hidden p-2 z-50"
+                    className="md:hidden p-2 z-50 cursor-pointer"
                     onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
                 >
                     <div className={`w-6 h-0.5 mb-1.5 transition-all ${isMobileMenuOpen ? 'rotate-45 translate-y-2 bg-primary' : `${isScrolled ? 'bg-gray-700' : 'bg-white'}`}`} />
@@ -97,7 +80,7 @@ const Header = () => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: '100%' }}
                             transition={{ type: 'tween' }}
-                            className="fixed top-0 right-0 w-full max-w-xs h-screen bg-white shadow-2xl md:hidden p-8 z-50"
+                            className="fixed top-0 right-0 w-full max-w-xs h-screen bg-white shadow-2xl md:hidden p-8"
                         >
                             <div className="h-full flex flex-col justify-between">
                                 <div className="space-y-2">
@@ -112,20 +95,6 @@ const Header = () => {
                                             {link.name}
                                         </Link>
                                     ))}
-                                </div>
-
-                                <div className="space-y-6 border-t pt-8">
-                                    <div className="flex items-center space-x-2 text-gray-700">
-                                        <IconPhone className="w-5 h-5" />
-                                        <span>+1 (580) 304-2990</span>
-                                    </div>
-                                    <Link
-                                        href="/auth/login"
-                                        className="w-full bg-primary text-white hover:bg-primary-dark flex items-center py-2 px-4 text-center rounded-sm hover:bg-primary-fade duration-300"
-                                    >
-                                        <User2 className="w-5 h-5 mr-2" />
-                                        Login
-                                    </Link>
                                 </div>
                             </div>
                         </motion.nav>

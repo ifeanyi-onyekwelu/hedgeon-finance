@@ -96,8 +96,8 @@ function Home() {
 
     return (
         <>
-            <section className="relative h-[80vh] min-h-screen w-full overflow-hidden">
-                {/* Background with overlay */}
+            <section className="relative h-screen min-h-[800px] w-full overflow-hidden">
+                {/* Animated background elements */}
                 <div className="absolute inset-0 z-0">
                     <Image
                         src="/images/hero-bg.jpg"
@@ -107,65 +107,84 @@ function Home() {
                         className="brightness-90"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-primary/30" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 to-primary/40" />
+
+                    {/* Floating shapes */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute w-[300px] h-[300px] bg-primary/10 rounded-full -top-32 -left-32 mix-blend-screen"
+                            data-aos="zoom-out" data-aos-delay="300" />
+                        <div className="absolute w-[400px] h-[400px] bg-gradient-to-r from-primary/20 to-transparent rounded-full -bottom-48 -right-48"
+                            data-aos="zoom-out" data-aos-delay="500" />
+                    </div>
                 </div>
 
                 <div className="relative z-10 h-full flex items-center">
-                    <div className="max-w-6xl mx-auto px-4 xl:px-0 w-full">
-                        <div className="max-w-2xl space-y-8">
-                            {/* Subheading with decorative line */}
-                            <div
-                                className="flex items-center gap-4"
-                                data-aos="fade-up"
-                                data-aos-delay="100"
-                            >
-                                <div className="w-12 h-0.5 bg-primary" />
-                                <p className="text-lg font-semibold tracking-wide text-primary">
+                    <div className="max-w-7xl mx-auto px-4 xl:px-0 w-full">
+                        <div className="max-w-2xl lg:max-w-3xl space-y-8">
+                            {/* Subheading */}
+                            <div className="flex items-center gap-4" data-aos="fade-up" data-aos-delay="100">
+                                <div className="w-12 h-0.5 bg-primary animate-pulse" />
+                                <p className="text-lg font-semibold tracking-wide text-primary bg-gradient-to-r from-primary/30 to-transparent px-4 py-1 rounded-l-full">
                                     SMART INVESTING
                                 </p>
                             </div>
 
                             {/* Main Heading */}
-                            <h1
-                                className="text-4xl md:text-6xl font-bold leading-tight tracking-tight text-gray-600"
-                                data-aos="fade-up"
-                                data-aos-delay="200"
-                            >
-                                <span className="text-white">Future-Focused</span>{' '}
-                                Wealth Management
+                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-white"
+                                data-aos="fade-up" data-aos-delay="200">
+                                <span className="bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
+                                    Future-Focused
+                                </span>{' '}
+                                Wealth Solutions
                             </h1>
 
                             {/* Description */}
-                            <p
-                                className="text-xl md:text-2xl text-gray-200 leading-relaxed md:w-5/6"
-                                data-aos="fade-up"
-                                data-aos-delay="300"
-                            >
-                                Invest Smarter with Hedgeon Finance
+                            <p className="text-xl md:text-2xl text-gray-200 leading-relaxed md:w-4/5"
+                                data-aos="fade-up" data-aos-delay="300">
+                                Harness innovative strategies and AI-powered insights to grow your wealth confidently
                             </p>
 
+                            {/* Stats Container */}
+                            <div className="flex gap-8 py-4" data-aos="fade-up" data-aos-delay="350">
+                                <div className="flex items-center gap-3">
+                                    <div className="text-3xl font-bold text-primary">15+</div>
+                                    <div className="text-gray-300">Years Experience</div>
+                                </div>
+                                <div className="h-12 w-px bg-gray-600/50" />
+                                <div className="flex items-center gap-3">
+                                    <div className="text-3xl font-bold text-primary">$4.2B+</div>
+                                    <div className="text-gray-300">Assets Managed</div>
+                                </div>
+                            </div>
+
                             {/* CTA Buttons */}
-                            <div className="flex gap-4"
-                                data-aos="fade-up"
-                                data-aos-delay="400">
-                                {/* Primary Button */}
+                            <div className="flex flex-wrap gap-4" data-aos="fade-up" data-aos-delay="400">
                                 <Link
                                     href="/auth/signup"
-                                    className="relative inline-flex items-center justify-center px-8 py-4 bg-primary rounded-sm text-white font-medium"
+                                    className="relative inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-primary/90 rounded-lg text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl transition-all duration-300 group"
                                 >
-                                    Get Started Now
+                                    <span>Get Started Now</span>
+                                    <svg className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
                                 </Link>
 
-                                {/* Secondary Button */}
                                 <Link
                                     href="/about"
-                                    className="relative inline-flex items-center justify-center px-8 py-4  text-primary font-semibold rounded-xl border-2 border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02]"
+                                    className="relative inline-flex items-center justify-center px-8 py-4 text-gray-300 hover:text-white font-medium rounded-lg border-2 border-gray-600 hover:border-primary/50 hover:bg-gray-900/30 transition-all duration-300 group"
                                 >
-                                    Discover More
-                                    <span className="absolute h-[2px] w-8 bg-primary bottom-3 left-1/2 -translate-x-1/2 opacity-0 hover:opacity-100 transition-opacity duration-300"></span>
+                                    <span>Explore Strategies</span>
+                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                                 </Link>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* Scrolling indicator */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20" data-aos="fade-up" data-aos-delay="600">
+                    <div className="animate-bounce w-8 h-14 rounded-full border-2 border-gray-400 flex items-center justify-center">
+                        <div className="w-1 h-3 bg-gray-400 rounded-full animate-pulse" />
                     </div>
                 </div>
             </section>
@@ -381,7 +400,8 @@ function Home() {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row-reverse items-center justify-between gap-8 lg:gap-12 mb-12">
                         {/* Image Column */}
-                        <div className="w-full lg:w-7/12">
+                        <div className="w-full lg:w-7/12" data-aos="fade-left"
+                            data-aos-delay="100">
                             <div className="relative rounded-2xl overflow-hidden">
                                 <Image
                                     src="/images/affiliate.png"
@@ -396,16 +416,23 @@ function Home() {
                         {/* Text Content Column */}
                         <div className="w-full lg:w-5/12">
                             <div className="space-y-4">
-                                <div className="flex space-x-4 items-center">
+                                <div className="flex space-x-4 items-center"
+                                    data-aos="fade-up"
+                                    data-aos-delay="100"
+                                >
                                     <div className="w-16 h-1 bg-primary"></div>
                                     <span className="text-md font-semibold text-primary-600 uppercase tracking-wide">
                                         At Hedgeon Community
                                     </span>
                                 </div>
-                                <h2 className="text-4xl md:text-4xl font-bold text-gray-900 leading-tight">
+                                <h2 className="text-4xl md:text-4xl font-bold text-gray-900 leading-tight"
+                                    data-aos="fade-up"
+                                    data-aos-delay="200">
                                     Earn more than just commission
                                 </h2>
-                                <p className="text-lg text-gray-600 leading-relaxed">
+                                <p className="text-lg text-gray-600 leading-relaxed"
+                                    data-aos="fade-up"
+                                    data-aos-delay="300">
                                     Join thousands of affiliates from across the globe and access exclusive opportunities while earning competitive referral commissions, and elevating yourselves as leaders in the industry.
                                 </p>
                             </div>
@@ -415,14 +442,16 @@ function Home() {
                     {/* Features Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {[
-                            { title: "Safe & Secure Transactions", color: "green" },
-                            { title: "Encrypted and Kept Private", color: "blue" },
-                            { title: "Multiple Payment Gateway", color: "yellow" },
-                            { title: "KYC Verification", color: "purple" },
+                            { title: "Safe & Secure Transactions", color: "green", fade: 'right', delay: 100 },
+                            { title: "Encrypted and Kept Private", color: "blue", fade: 'up', delay: 200 },
+                            { title: "Multiple Payment Gateway", color: "yellow", fade: 'down', delay: 300 },
+                            { title: "KYC Verification", color: "purple", fade: 'left', delay: 400 },
                         ].map((feature, index) => (
                             <div
                                 key={index}
                                 className="bg-white rounded-xl p-6 border border-gray-200 hover:border-primary-500 transition-all duration-300 shadow-sm hover:shadow-md"
+                                data-aos={`fade-${feature.fade}`}
+                                data-aos-delay={feature.delay}
                             >
                                 <div className="flex items-center space-x-4">
                                     <div className={`flex-shrink-0 w-12 h-12 p-3 rounded-full flex items-center justify-center bg-${feature.color}-100`}>
@@ -581,22 +610,31 @@ function Home() {
                                 title: "White Paper",
                                 fileType: "PDF",
                                 image: "/images/terms-of-sale.png",
-                                link: "documents/whitepaper.pdf"
+                                link: "documents/whitepaper.pdf",
+                                fade: 'right',
+                                delay: 200
                             },
                             {
                                 title: "Terms of Sales",
                                 fileType: "PDF",
                                 image: "/images/white-paper.png",
-                                link: "documents/terms_of_sales.pdf"
+                                link: "documents/terms_of_sales.pdf",
+                                fade: 'down',
+                                delay: 400
                             },
                             {
                                 title: "Privacy & Policy",
                                 fileType: "PDF",
                                 image: "/images/privacy-policy.png",
-                                link: "documents/privacy_policy.pdf"
+                                link: "documents/privacy_policy.pdf",
+                                fade: 'left',
+                                delay: 600
                             }
                         ].map((doc, index) => (
-                            <div key={index}>
+                            <div key={index}
+                                data-aos={`fade-${doc.fade}`}
+                                data-aos-delay={doc.delay}
+                            >
                                 <Image
                                     src={doc.image}
                                     alt={doc.title}

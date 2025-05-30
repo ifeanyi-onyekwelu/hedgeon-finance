@@ -3,7 +3,7 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 //
 // const baseURL = "http://localhost:3500/api/v1/";
-const baseURL = "https://hedgeon-finance.onrender.com/api/v1/";
+const baseURL = "https://hedgeon-finance-i9bz.onrender.com/api/v1/";
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL,

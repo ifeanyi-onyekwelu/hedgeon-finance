@@ -96,97 +96,293 @@ function Home() {
 
     return (
         <>
-            <section className="relative h-screen min-h-[800px] w-full overflow-hidden">
+            <section className="relative min-h-screen w-full overflow-hidden bg-gray-900 py-26">
                 {/* Animated background elements */}
                 <div className="absolute inset-0 z-0">
-                    <Image
-                        src="/images/hero-bg.jpg"
-                        alt="Investment landscape"
-                        layout="fill"
-                        objectFit="cover"
-                        className="brightness-90"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 to-primary/40" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-primary/20" />
 
                     {/* Floating shapes */}
                     <div className="absolute inset-0 overflow-hidden">
-                        <div className="absolute w-[300px] h-[300px] bg-primary/10 rounded-full -top-32 -left-32 mix-blend-screen"
-                            data-aos="zoom-out" data-aos-delay="300" />
-                        <div className="absolute w-[400px] h-[400px] bg-gradient-to-r from-primary/20 to-transparent rounded-full -bottom-48 -right-48"
-                            data-aos="zoom-out" data-aos-delay="500" />
+                        <div className="absolute w-[300px] h-[300px] bg-primary/10 rounded-full -top-32 -left-32 mix-blend-screen animate-pulse-slow" />
+                        <div className="absolute w-[400px] h-[400px] bg-gradient-to-r from-primary/20 to-transparent rounded-full -bottom-48 -right-48 animate-pulse-slower" />
+                        <div className="absolute w-[250px] h-[250px] bg-cyan-400/10 rounded-full top-1/4 right-1/4 mix-blend-screen animate-pulse-medium" />
+                        <div className="absolute w-[350px] h-[350px] bg-gradient-to-b from-cyan-400/10 to-transparent rounded-full bottom-0 left-1/4 animate-pulse-slow" />
                     </div>
+
+                    {/* Grid overlay */}
+                    <div className="absolute inset-0 opacity-10 bg-[url('/images/grid-pattern.svg')] bg-[length:40px_40px]" />
                 </div>
 
-                <div className="relative z-10 h-full flex items-center">
+                <div className="relative z-10 min-h-screen flex flex-col justify-center pt-16 pb-24">
                     <div className="max-w-7xl mx-auto px-4 xl:px-0 w-full">
-                        <div className="max-w-2xl lg:max-w-3xl space-y-8">
-                            {/* Subheading */}
-                            <div className="flex items-center gap-4" data-aos="fade-up" data-aos-delay="100">
-                                <div className="w-12 h-0.5 bg-primary animate-pulse" />
-                                <p className="text-lg font-semibold tracking-wide text-primary bg-gradient-to-r from-primary/30 to-transparent px-4 py-1 rounded-l-full">
-                                    SMART INVESTING
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                            {/* Left Content Column */}
+                            <div className="lg:col-span-5 space-y-8">
+                                {/* Subheading */}
+                                <div className="flex items-center gap-4" data-aos="fade-up" data-aos-delay="100">
+                                    <div className="w-12 h-0.5 bg-primary animate-pulse" />
+                                    <p className="text-lg font-semibold tracking-wide text-primary bg-gradient-to-r from-primary/30 to-transparent px-4 py-1 rounded-l-full">
+                                        SMART INVESTING
+                                    </p>
+                                </div>
+
+                                {/* Main Heading */}
+                                <h1 className="text-5xl md:text-6xl font-bold leading-tight tracking-tight text-white"
+                                    data-aos="fade-up" data-aos-delay="200">
+                                    <span className="bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
+                                        Future-Focused
+                                    </span>{' '}
+                                    Wealth Solutions
+                                </h1>
+
+                                {/* Description */}
+                                <p className="text-xl text-gray-200 leading-relaxed"
+                                    data-aos="fade-up" data-aos-delay="300">
+                                    Harness innovative strategies and AI-powered insights to grow your wealth confidently in today's dynamic markets.
                                 </p>
-                            </div>
 
-                            {/* Main Heading */}
-                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-white"
-                                data-aos="fade-up" data-aos-delay="200">
-                                <span className="bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
-                                    Future-Focused
-                                </span>{' '}
-                                Wealth Solutions
-                            </h1>
-
-                            {/* Description */}
-                            <p className="text-xl md:text-2xl text-gray-200 leading-relaxed md:w-4/5"
-                                data-aos="fade-up" data-aos-delay="300">
-                                Harness innovative strategies and AI-powered insights to grow your wealth confidently
-                            </p>
-
-                            {/* Stats Container */}
-                            <div className="flex gap-8 py-4" data-aos="fade-up" data-aos-delay="350">
-                                <div className="flex items-center gap-3">
-                                    <div className="text-3xl font-bold text-primary">15+</div>
-                                    <div className="text-gray-300">Years Experience</div>
+                                {/* Features List */}
+                                <div className="grid grid-cols-2 gap-4 pt-4" data-aos="fade-up" data-aos-delay="350">
+                                    <div className="flex items-start space-x-3">
+                                        <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                                            <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span className="text-gray-300">AI-Powered Analytics</span>
+                                    </div>
+                                    <div className="flex items-start space-x-3">
+                                        <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                                            <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span className="text-gray-300">Global Opportunities</span>
+                                    </div>
+                                    <div className="flex items-start space-x-3">
+                                        <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                                            <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span className="text-gray-300">Tax Optimization</span>
+                                    </div>
+                                    <div className="flex items-start space-x-3">
+                                        <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                                            <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span className="text-gray-300">Risk Management</span>
+                                    </div>
                                 </div>
-                                <div className="h-12 w-px bg-gray-600/50" />
-                                <div className="flex items-center gap-3">
-                                    <div className="text-3xl font-bold text-primary">$4.2B+</div>
-                                    <div className="text-gray-300">Assets Managed</div>
+
+                                {/* Stats Container */}
+                                <div className="flex gap-8 py-6" data-aos="fade-up" data-aos-delay="350">
+                                    <div className="flex flex-col">
+                                        <div className="text-3xl font-bold text-primary">15+</div>
+                                        <div className="text-gray-300">Years Experience</div>
+                                    </div>
+                                    <div className="h-12 w-px bg-gray-600/50" />
+                                    <div className="flex flex-col">
+                                        <div className="text-3xl font-bold text-primary">$4.2B+</div>
+                                        <div className="text-gray-300">Assets Managed</div>
+                                    </div>
+                                    <div className="h-12 w-px bg-gray-600/50" />
+                                    <div className="flex flex-col">
+                                        <div className="text-3xl font-bold text-primary">97%</div>
+                                        <div className="text-gray-300">Client Retention</div>
+                                    </div>
+                                </div>
+
+                                {/* CTA Buttons */}
+                                <div className="flex flex-wrap gap-4 pt-4" data-aos="fade-up" data-aos-delay="400">
+                                    <Link
+                                        href="/auth/signup"
+                                        className="relative inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-primary/90 rounded-lg text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl transition-all duration-300 group"
+                                    >
+                                        <span>Get Started Now</span>
+                                        <svg className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                        </svg>
+                                    </Link>
+
+                                    <Link
+                                        href="/about"
+                                        className="relative inline-flex items-center justify-center px-8 py-4 text-gray-300 hover:text-white font-medium rounded-lg border-2 border-gray-600 hover:border-primary/50 hover:bg-gray-900/30 transition-all duration-300 group"
+                                    >
+                                        <span>Explore Strategies</span>
+                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                                    </Link>
                                 </div>
                             </div>
 
-                            {/* CTA Buttons */}
-                            <div className="flex flex-wrap gap-4" data-aos="fade-up" data-aos-delay="400">
-                                <Link
-                                    href="/auth/signup"
-                                    className="relative inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-primary/90 rounded-lg text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl transition-all duration-300 group"
-                                >
-                                    <span>Get Started Now</span>
-                                    <svg className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
-                                </Link>
+                            {/* Center Graphic Column */}
+                            <div className="lg:col-span-7 relative">
+                                <div className="relative z-10">
+                                    <div className="bg-gradient-to-br from-primary/20 to-cyan-400/10 border border-gray-700/50 rounded-2xl backdrop-blur-sm p-6">
+                                        <div className="bg-gray-800/50 border border-gray-700 rounded-xl overflow-hidden">
+                                            <div className="h-6 bg-gray-800 border-b border-gray-700 flex items-center px-4">
+                                                <div className="flex space-x-2">
+                                                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                                </div>
+                                            </div>
+                                            <div className="p-4">
+                                                {/* Chart visualization */}
+                                                <div className="h-64 bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg relative overflow-hidden">
+                                                    {/* Chart lines */}
+                                                    <div className="absolute inset-0 flex items-end">
+                                                        {[30, 50, 70, 40, 80, 60, 90, 50, 70, 60].map((height, index) => (
+                                                            <div
+                                                                key={index}
+                                                                className={`flex-1 mx-0.5 bg-gradient-to-t ${index === 6 ? 'from-cyan-500 to-cyan-400' : 'from-primary to-primary/70'} rounded-t`}
+                                                                style={{ height: `${height}%` }}
+                                                            ></div>
+                                                        ))}
+                                                    </div>
+                                                    {/* Growth indicator */}
+                                                    <div className="absolute top-4 right-4 bg-green-900/30 text-green-400 text-sm font-medium px-3 py-1 rounded-full flex items-center">
+                                                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                                                        </svg>
+                                                        +24.3% YTD
+                                                    </div>
+                                                </div>
 
-                                <Link
-                                    href="/about"
-                                    className="relative inline-flex items-center justify-center px-8 py-4 text-gray-300 hover:text-white font-medium rounded-lg border-2 border-gray-600 hover:border-primary/50 hover:bg-gray-900/30 transition-all duration-300 group"
-                                >
-                                    <span>Explore Strategies</span>
-                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-                                </Link>
+                                                {/* Performance indicators */}
+                                                <div className="grid grid-cols-3 gap-4 mt-6">
+                                                    {[
+                                                        { name: 'Portfolio Value', value: '$142,850', change: '+2.4%' },
+                                                        { name: 'Today\'s Gain', value: '+$3,420', change: '+1.2%' },
+                                                        { name: 'Risk Level', value: 'Balanced', change: 'Optimal' }
+                                                    ].map((item, index) => (
+                                                        <div key={index} className="bg-gray-800/50 p-3 rounded-lg border border-gray-700">
+                                                            <div className="text-gray-400 text-sm">{item.name}</div>
+                                                            <div className="text-white font-medium mt-1">{item.value}</div>
+                                                            <div className={`text-xs mt-1 ${index !== 2 ? 'text-green-400' : 'text-cyan-400'}`}>{item.change}</div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Floating cards */}
+                                    <div className="absolute -bottom-6 -left-6 z-0" data-aos="fade-right" data-aos-delay="500">
+                                        <div className="bg-gradient-to-br from-cyan-500/10 to-primary/10 backdrop-blur-sm border border-cyan-400/30 rounded-xl p-5 w-64 shadow-lg">
+                                            <div className="flex items-center">
+                                                <div className="bg-cyan-500/10 p-2 rounded-lg">
+                                                    <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-gray-300 text-sm">Diversification</div>
+                                                    <div className="text-white font-medium">12 Industries</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="absolute -top-6 -right-6 z-0" data-aos="fade-left" data-aos-delay="500">
+                                        <div className="bg-gradient-to-br from-primary/10 to-cyan-500/10 backdrop-blur-sm border border-primary/30 rounded-xl p-5 w-64 shadow-lg">
+                                            <div className="flex items-center">
+                                                <div className="bg-primary/10 p-2 rounded-lg">
+                                                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-gray-300 text-sm">AI Predictions</div>
+                                                    <div className="text-white font-medium">92% Accuracy</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Client Logos */}
+                    <div className="max-w-7xl mx-auto px-4 xl:px-0 w-full mt-16 pt-8 border-t border-gray-800" data-aos="fade-up" data-aos-delay="600">
+                        <div className="text-center text-gray-500 text-sm mb-6">TRUSTED BY INDUSTRY LEADERS</div>
+                        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+                            {[
+                                {
+                                    name: "Forbes",
+                                    logo: "/images/logos/forbes.png",
+                                    width: 120,
+                                    height: 32
+                                },
+                                {
+                                    name: "Bloomberg",
+                                    logo: "/images/logos/bloomberg.png",
+                                    width: 150,
+                                    height: 32
+                                },
+                                {
+                                    name: "Wall Street Journal",
+                                    logo: "/images/logos/wsj.webp",
+                                    width: 160,
+                                    height: 32
+                                },
+                                {
+                                    name: "McKinsey",
+                                    logo: "/images/logos/mckinsey.webp",
+                                    width: 130,
+                                    height: 32
+                                },
+                                {
+                                    name: "The Economist",
+                                    logo: "/images/logos/economist.png",
+                                    width: 150,
+                                    height: 32
+                                }
+                            ].map((company, index) => (
+                                <div
+                                    key={index}
+                                    className="opacity-70 hover:opacity-100 transition-opacity duration-300"
+                                    title={company.name}
+                                >
+                                    <Image
+                                        src={company.logo}
+                                        alt={company.name}
+                                        width={company.width}
+                                        height={company.height}
+                                        className="object-contain"
+                                        loading="lazy"
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
 
                 {/* Scrolling indicator */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20" data-aos="fade-up" data-aos-delay="600">
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20" data-aos="fade-up" data-aos-delay="700">
                     <div className="animate-bounce w-8 h-14 rounded-full border-2 border-gray-400 flex items-center justify-center">
                         <div className="w-1 h-3 bg-gray-400 rounded-full animate-pulse" />
                     </div>
                 </div>
+
+                {/* Floating particles */}
+                {[...Array(150)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="absolute rounded-full bg-primary animate-float"
+                        style={{
+                            top: `${Math.random() * 100}%`,
+                            left: `${Math.random() * 100}%`,
+                            width: `${Math.random() * 10 + 5}px`,
+                            height: `${Math.random() * 10 + 5}px`,
+                            animationDuration: `${Math.random() * 10 + 10}s`,
+                            animationDelay: `${Math.random() * 5}s`
+                        }}
+                    />
+                ))}
             </section>
 
             <section className="bg-gray-50 py-16">

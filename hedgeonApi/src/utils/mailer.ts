@@ -2,15 +2,14 @@ import nodemailer from "nodemailer";
 import ejs from "ejs";
 import path from "path";
 
-const ADMIN_EMAIL = "Support <support@hedgeonfinance.com>"; // Replace with actual admin email
+const ADMIN_EMAIL = "support@hedgeonfinance.com";
+const EMAIL_USER = "support@hedgeonfinance.com";
+const EMAIL_PASSWORD = "Pass@hedgeon123";
 
-const EMAIL_USER = "support@hedgeonfinance.com"
-const EMAIL_PASSWORD = "Pass@hedgeon123"
-
-
-// Configure your mailer (replace with your actual mailer configuration)
+// Configure your mailer
 const transporter = nodemailer.createTransport({
-    service: 'mail.spacemail.com',
+    host: 'mail.spacemail.com',
+    secure: true,
     port: 465,
     auth: {
         user: EMAIL_USER,
@@ -32,18 +31,18 @@ const sendEmail = async (to: string, subject: string, templateName: string, temp
         const emailHtml: string = await ejs.renderFile(templatePath, templateData);
 
         const mailOptions = {
-            from: ADMIN_EMAIL!,
+            from: `"Jake from Hedgeon Finance" <${ADMIN_EMAIL}>`,
             to: to,
             subject: subject,
             html: emailHtml,
         };
 
         await transporter.sendMail(mailOptions);
-        console.log(`Email sent successfully to ${to}`); // Optional logging
+        console.log(`Email sent successfully to ${to}`);
     } catch (error: any) {
-        console.error(`Error sending email to ${to}:`, error); // Optional logging
+        console.error(`Error sending email to ${to}:`, error);
         throw new Error(`Failed to send email: ${error.message}`);
     }
 };
 
-export default sendEmail
+export default sendEmail;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,10 +8,10 @@ import { motion } from 'framer-motion';
 import { signupApi } from '@/app/api/authApi';
 import BreadcrumbsSection from "@/components/public/Breadcrumb";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
-
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface FormData {
     name: string;
@@ -30,67 +30,122 @@ const SignupForm = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [signupSuccess, setSignupSuccess] = useState<boolean>(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [passwordValidation, setPasswordValidation] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false,
+    });
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
     const router = useRouter()
     const { refreshUser } = useUser();
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+
+        if (name === 'password') {
+            // Update password validation rules
+            setPasswordValidation({
+                length: value.length >= 8,
+                uppercase: /[A-Z]/.test(value),
+                lowercase: /[a-z]/.test(value),
+                number: /\d/.test(value),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(value),
+            });
+        }
+
         setFormData({ ...formData, [name]: value });
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleRecaptchaChange = (token: string | null) => {
+        setRecaptchaToken(token);
+    };
+
+    const validateForm = () => {
+        // Reset errors
+        setError(null);
+
+        // Check required fields
+        if (!formData.name || !formData.email || !formData.phone || !formData.password) {
+            setError('All fields are required.');
+            return false;
+        }
+
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Invalid email address.');
+            return false;
+        }
+
+        // Phone number format validation
+        const phoneRegex = /^\+?\d{1,15}$/;
+        if (!phoneRegex.test(formData.phone)) {
+            setError('Invalid phone number. Only digits and optional + sign allowed.');
+            return false;
+        }
+
+        // Password validation
+        const passwordErrors: string[] = [];
+
+        if (!passwordValidation.length) passwordErrors.push('at least 8 characters');
+        if (!passwordValidation.uppercase) passwordErrors.push('one uppercase letter');
+        if (!passwordValidation.lowercase) passwordErrors.push('one lowercase letter');
+        if (!passwordValidation.number) passwordErrors.push('one number');
+        if (!passwordValidation.special) passwordErrors.push('one special character');
+
+        if (passwordErrors.length > 0) {
+            setError(`Password must contain: ${passwordErrors.join(', ')}`);
+            return false;
+        }
+
+        // reCAPTCHA validation
+        if (!recaptchaToken) {
+            setError('Please complete the reCAPTCHA verification');
+            return false;
+        }
+
+        return true;
     };
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
-        setSignupSuccess(false);
 
-        // Basic validation
-        if (!formData.name || !formData.email || !formData.phone || !formData.password) {
-            setError('All fields are required.');
-            setLoading(false);
-            return;
-        }
-
-        // Email format validation (simple)
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            setError('Invalid email address.');
-            setLoading(false);
-            return;
-        }
-
-        // Phone number format validation (simple)
-        const phoneRegex = /^\+?\d{1,15}$/;  // Allows for optional '+' and up to 15 digits
-        if (!phoneRegex.test(formData.phone)) {
-            setError('Invalid phone number.');
-            setLoading(false);
-            return;
-        }
-
-        // Password validation (basic - more complex rules are recommended)
-        if (formData.password.length < 8) {
-            setError('Password must be at least 8 characters long.');
+        if (!validateForm()) {
             setLoading(false);
             return;
         }
 
         try {
-            // Include the passkey in the data sent
-            const response = await (await signupApi(formData)).data
-            const { accessToken, role } = response
+            // Include recaptchaToken in the signup request
+            const response = await signupApi({
+                ...formData,
+                recaptchaToken
+            });
 
-            localStorage.setItem('access_token', accessToken)
-            localStorage.setItem('user_role', role)
+            const { accessToken, role } = response.data;
 
-            setSignupSuccess(true)
+            localStorage.setItem('access_token', accessToken);
+            localStorage.setItem('user_role', role);
+
+            setSignupSuccess(true);
             refreshUser();
 
-            await new Promise(resolve => setTimeout(resolve, 1000))
-
-            router.push("/auth/email/verify")
-
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            router.push("/auth/email/verify");
         } catch (err: any) {
-            setError(`${err['response']['data']['message']}`);
+            setError(err.response?.data?.message || 'Signup failed. Please try again.');
+            // Reset reCAPTCHA on error
+            recaptchaRef.current?.reset();
+            setRecaptchaToken(null);
         } finally {
             setLoading(false);
         }
@@ -115,6 +170,7 @@ const SignupForm = () => {
                     </div>
 
                     <form onSubmit={handleSignup} className="space-y-6">
+                        {/* Name Field */}
                         <div className="group">
                             <Label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                                 Full Name
@@ -139,6 +195,7 @@ const SignupForm = () => {
                             </div>
                         </div>
 
+                        {/* Email Field */}
                         <div className="group">
                             <Label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                                 Email Address
@@ -163,6 +220,7 @@ const SignupForm = () => {
                             </div>
                         </div>
 
+                        {/* Phone Field */}
                         <div className="group">
                             <Label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
                                 Phone Number
@@ -187,6 +245,7 @@ const SignupForm = () => {
                             </div>
                         </div>
 
+                        {/* Password Field with Toggle */}
                         <div className="group">
                             <Label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                                 Password
@@ -194,24 +253,64 @@ const SignupForm = () => {
                             <div className="relative">
                                 <Input
                                     id="password"
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder-gray-400 peer"
+                                    className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder-gray-400 peer pr-12"
                                     placeholder="••••••••"
                                     required
                                     autoComplete="new-password"
                                 />
-                                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-gray-400 peer-focus:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                    </svg>
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-blue-500 transition-colors"
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="h-5 w-5" />
+                                    ) : (
+                                        <Eye className="h-5 w-5" />
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* Password Validation Indicators */}
+                            <div className="mt-3 grid grid-cols-2 gap-2">
+                                <div className="flex items-center">
+                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.length ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <span className="text-xs text-gray-600">8+ characters</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.uppercase ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <span className="text-xs text-gray-600">Uppercase letter</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.lowercase ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <span className="text-xs text-gray-600">Lowercase letter</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.number ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <span className="text-xs text-gray-600">Number</span>
+                                </div>
+                                <div className="flex items-center col-span-2">
+                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.special ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <span className="text-xs text-gray-600">Special character (!@#$%^&*)</span>
                                 </div>
                             </div>
                         </div>
 
+                        {/* reCAPTCHA */}
+                        <div className="flex justify-start">
+                            <ReCAPTCHA
+                                ref={recaptchaRef}
+                                sitekey={"6Lc4HFMrAAAAAD1hiQf9AHWQBl0qmLrlSi-zwSFd"}
+                                onChange={handleRecaptchaChange}
+                            />
+                        </div>
 
+                        {/* Alerts */}
                         {error && (
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
@@ -243,6 +342,7 @@ const SignupForm = () => {
                             </motion.div>
                         )}
 
+                        {/* Submit Button */}
                         <Button
                             type="submit"
                             disabled={loading}

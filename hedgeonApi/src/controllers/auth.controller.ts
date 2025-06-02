@@ -21,25 +21,46 @@ import {
 import jwt from "jsonwebtoken";
 import { Request, Response } from "../utils/Types";
 import sendEmail from "../utils/mailer";
+import axios from "axios";
 
 const ADMIN_PASSKEY = process.env.ADMIN_PASSKEY || "fallbackkey";
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY || "your_recaptcha_secret"; // Add to .env
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
     const roleFromQuery = req.query.role as string; // Get role from query parameter
     const passkey = data.passkey;
+    const recaptchaToken = data.recaptchaToken; // Get token from request body
 
-    // 1. Validate Role
-    const validRoles = ['user', 'admin']; // Define valid roles
+
+    if (!recaptchaToken) {
+        return logError(res, new UnauthorizedError("reCAPTCHA verification required"));
+    }
+
+    try {
+        const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`;
+        const response = await axios.post(verificationUrl);
+        const verificationData = response.data;
+
+        if (!verificationData.success || verificationData.score < 0.5) {
+            return logError(res, new UnauthorizedError("reCAPTCHA verification failed"));
+        }
+    } catch (error) {
+        console.error("reCAPTCHA verification error:", error);
+        return logError(res, new InternalServerError("reCAPTCHA verification service unavailable"));
+    }
+
+    // 2. Validate Role (existing code)
+    const validRoles = ['user', 'admin'];
     if (roleFromQuery && !validRoles.includes(roleFromQuery)) {
         return logError(res, new ConflictError("Invalid role provided.  Must be 'user' or 'admin'."));
     }
 
-    // Set the role.  Default to 'user' if not provided.
+    // Set the role (existing code)
     const userRole = roleFromQuery || 'user';
-    data.role = userRole; // Ensure the role is in the data object for userModel.create
+    data.role = userRole;
 
-    // 2. Validate Passkey for Admin Role
+    // 3. Validate Passkey for Admin Role (existing code)
     if (userRole === 'admin') {
         if (!passkey || passkey !== ADMIN_PASSKEY) {
             return logError(res, new UnauthorizedError("Unauthorized: Admin passkey is incorrect or missing."));

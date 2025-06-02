@@ -4,9 +4,16 @@ export const loginApi = (credentials: { email: string, password: string }) => {
     return axiosInstance.post("/auth/login", credentials)
 }
 
-export const signupApi = (credentials: { email: string, password: string; role?: string }) => {
+export const signupApi = (credentials: {
+    email: string,
+    password: string,
+    name: string,
+    phone: string,
+    recaptchaToken: string | null,
+    role?: string
+}) => {
     return axiosInstance.post(`/auth/register?role=${credentials.role || "user"}`, credentials);
-}
+};
 
 export const refreshApi = () => {
     return axiosInstance.get("/auth/refresh")

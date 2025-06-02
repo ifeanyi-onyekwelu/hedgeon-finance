@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react"
 import AOSWrapper from "@/components/public/AOSWrapper";
 import GTranslateWidget from "@/components/Translate";
+import TawkToScript from "@/components/public/TawkScript";
 
 export const metadata: Metadata = {
     title: "Hedgeon Finance",
@@ -33,6 +34,7 @@ export default function RootLayout({
                             {children}
 
                             <GTranslateWidget />
+                            <TawkToScript />
                         </AOSWrapper>
                     </PathWrapper>
                 </Providers>

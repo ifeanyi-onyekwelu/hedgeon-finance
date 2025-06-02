@@ -2,16 +2,16 @@ import nodemailer from "nodemailer";
 import ejs from "ejs";
 import path from "path";
 
-const ADMIN_EMAIL = "Admin <admin@hedgoenfinance.com>"; // Replace with actual admin email
+const ADMIN_EMAIL = "Support <support@hedgeonfinance.com>"; // Replace with actual admin email
 
-const EMAIL_USER = "ifeanyionyekwelu786@gmail.com"
-const EMAIL_PASSWORD = "iwac pdzq lgfy dpct"
+const EMAIL_USER = "support@hedgeonfinance.com"
+const EMAIL_PASSWORD = "Pass@hedgeon123"
 
 
 // Configure your mailer (replace with your actual mailer configuration)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-
+    service: 'mail.spacemail.com',
+    port: 465,
     auth: {
         user: EMAIL_USER,
         pass: EMAIL_PASSWORD

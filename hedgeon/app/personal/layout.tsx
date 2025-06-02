@@ -2,6 +2,7 @@ import DashboardHeader from "@/components/personal/Header";
 import DashboardSidebar from "@/components/personal/Sidebar";
 import ProtectedLayout from "../ProtectedLayout";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import TawkToScript from "@/components/public/TawkScript";
 
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
@@ -16,6 +17,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
                     <SidebarTrigger className="sticky top-16" size={'lg'} />
                     <div className="p-2">
                         {children}
+                        <TawkToScript />
                     </div>
                 </main>
             </SidebarProvider>

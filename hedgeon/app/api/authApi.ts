@@ -9,7 +9,6 @@ export const signupApi = (credentials: {
     password: string,
     name: string,
     phone: string,
-    recaptchaToken: string | null,
     role?: string
 }) => {
     return axiosInstance.post(`/auth/register?role=${credentials.role || "user"}`, credentials);

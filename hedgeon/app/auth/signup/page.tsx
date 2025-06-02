@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,7 +11,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
-import ReCAPTCHA from "react-google-recaptcha";
 
 interface FormData {
     name: string;
@@ -38,10 +37,8 @@ const SignupForm = () => {
         number: false,
         special: false,
     });
-    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
     const router = useRouter()
     const { refreshUser } = useUser();
-    const recaptchaRef = useRef<ReCAPTCHA>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -64,9 +61,6 @@ const SignupForm = () => {
         setShowPassword(!showPassword);
     };
 
-    const handleRecaptchaChange = (token: string | null) => {
-        setRecaptchaToken(token);
-    };
 
     const validateForm = () => {
         // Reset errors
@@ -106,12 +100,6 @@ const SignupForm = () => {
             return false;
         }
 
-        // reCAPTCHA validation
-        if (!recaptchaToken) {
-            setError('Please complete the reCAPTCHA verification');
-            return false;
-        }
-
         return true;
     };
 
@@ -127,8 +115,7 @@ const SignupForm = () => {
         try {
             // Include recaptchaToken in the signup request
             const response = await signupApi({
-                ...formData,
-                recaptchaToken
+                ...formData
             });
 
             const { accessToken, role } = response.data;
@@ -143,13 +130,25 @@ const SignupForm = () => {
             router.push("/auth/email/verify");
         } catch (err: any) {
             setError(err.response?.data?.message || 'Signup failed. Please try again.');
-            // Reset reCAPTCHA on error
-            recaptchaRef.current?.reset();
-            setRecaptchaToken(null);
         } finally {
             setLoading(false);
         }
     };
+
+    const CheckIcon = ({ active }) => (
+        <svg
+            className={`w-4 h-4 mr-2 ${active ? 'text-green-500' : 'text-gray-300'}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+        >
+            <circle cx="12" cy="12" r="11" strokeWidth="2" />
+            {active && (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12l4 4 8-8" />
+            )}
+        </svg>
+    );
 
     return (
         <section className="space-y-6">
@@ -279,35 +278,26 @@ const SignupForm = () => {
                             {/* Password Validation Indicators */}
                             <div className="mt-3 grid grid-cols-2 gap-2">
                                 <div className="flex items-center">
-                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.length ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <CheckIcon active={passwordValidation.length} />
                                     <span className="text-xs text-gray-600">8+ characters</span>
                                 </div>
                                 <div className="flex items-center">
-                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.uppercase ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <CheckIcon active={passwordValidation.uppercase} />
                                     <span className="text-xs text-gray-600">Uppercase letter</span>
                                 </div>
                                 <div className="flex items-center">
-                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.lowercase ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <CheckIcon active={passwordValidation.lowercase} />
                                     <span className="text-xs text-gray-600">Lowercase letter</span>
                                 </div>
                                 <div className="flex items-center">
-                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.number ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <CheckIcon active={passwordValidation.number} />
                                     <span className="text-xs text-gray-600">Number</span>
                                 </div>
                                 <div className="flex items-center col-span-2">
-                                    <div className={`w-4 h-4 rounded-full mr-2 ${passwordValidation.special ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                    <CheckIcon active={passwordValidation.special} />
                                     <span className="text-xs text-gray-600">Special character (!@#$%^&*)</span>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* reCAPTCHA */}
-                        <div className="flex justify-start">
-                            <ReCAPTCHA
-                                ref={recaptchaRef}
-                                sitekey={"6Lc4HFMrAAAAAD1hiQf9AHWQBl0qmLrlSi-zwSFd"}
-                                onChange={handleRecaptchaChange}
-                            />
                         </div>
 
                         {/* Alerts */}

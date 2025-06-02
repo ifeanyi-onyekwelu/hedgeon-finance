@@ -36,7 +36,7 @@ const PlanDetailsPage = () => {
     }, [planId]);
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">Loading plan details...</div>;
+        return <div className="loader"></div>
     }
 
     if (error || !plan) {

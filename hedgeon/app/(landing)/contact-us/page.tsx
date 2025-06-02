@@ -13,8 +13,7 @@ function ContactUsPage() {
                 {/* Interactive Map Section */}
                 <div className="relative h-[500px] group overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent z-10"></div>
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d317715.7119163245!2d-0.3817825056791108!3d51.52873519656658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a00baf21de75%3A0x52963a5addd52a99!2sLondon%2C%20UK!5e0!3m2!1sen!2sus!4v1718810922923!5m2!1sen!2sus"
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d96671.06751999454!2d-74.1108090142642!3d40.7846547752833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s415%20Liberty%20Street!5e0!3m2!1sen!2sng!4v1748858076133!5m2!1sen!2sng"
                         className="w-full h-full object-cover transform transition-all group-hover:scale-105"
                         style={{ border: 0 }}
                         allowFullScreen
@@ -29,7 +28,7 @@ function ContactUsPage() {
                             <div className="space-y-3 text-slate-300">
                                 <div className="flex items-center gap-3">
                                     <MapPin className="w-5 h-5 text-sky-400" />
-                                    <p>123 Financial District, London, UK</p>
+                                    <p>415 Liberty Street, Suite 800, New York, NY 10006, United States</p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Phone className="w-5 h-5 text-sky-400" />

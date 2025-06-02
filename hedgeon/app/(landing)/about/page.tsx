@@ -96,32 +96,12 @@ function About() {
 
                                 <div className="bg-blue-50 p-6 rounded-xl">
                                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Client-Centric Approach</h3>
-                                    <p className="text-gray-600 leading-relaxed">
+                                    <p className="text-gray-600 leading-relaxed italic">
                                         "Our success is measured by your financial milestones. We develop personalized strategies
                                         through in-depth consultations, ensuring alignment with your unique goals."
                                     </p>
-                                    <div className="mt-4 flex items-center space-x-3">
-                                        <div className="flex-shrink-0">
-                                            <Image
-                                                className="rounded-full object-cover"
-                                                src="/images/ceo.jpg"
-                                                alt="CEO"
-                                                width={50}
-                                                height={50}
-                                            />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-gray-900">Sarah Johnson</p>
-                                            <p className="text-sm text-primary">CEO & Founder</p>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-
-                            <button className="mt-6 inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-all">
-                                Explore Our History
-                                <ArrowRight className="ml-2 w-5 h-5" />
-                            </button>
                         </div>
 
                         {/* Stats Card - Keep existing improvements */}

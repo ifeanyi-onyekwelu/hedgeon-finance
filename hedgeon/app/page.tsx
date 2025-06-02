@@ -462,12 +462,6 @@ function Home() {
                                 height={500}
                                 width={400}
                             />
-
-                            {/* Overlay badge */}
-                            <div className="absolute bottom-4 left-4 bg-white/90 p-3 rounded shadow">
-                                <h4 className="text-primary font-bold">James P. Morrison</h4>
-                                <p className="text-sm">Chairman and CEO</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -667,19 +661,21 @@ function Home() {
             </section>
 
             <section className="bg-gray-60 py-12" data-aos="fade-up">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center space-y-2 mb-14" data-aos="fade-up" data-aos-delay="100">
                         <h4 className="text-primary font-semibold text-xl">Our Pricing</h4>
                         <h2 className="text-2xl md:text-4xl font-semibold text-center">
                             Featured investment opportunities
                         </h2>
-                        <p className='text-center text-sm md:text-md w-full md:w-3/5 mx-auto'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna</p>
+                        <p className='text-center text-sm md:text-md w-full md:w-3/5 mx-auto'>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                        </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 p-5">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
                         {plans.map((plan, index) => (
                             <div
-                                className="group relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl transition-all duration-300 hover:-translate-y-2 shadow-xl hover:shadow-2xl"
+                                className="group relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl transition-all duration-300 hover:-translate-y-2 shadow-xl hover:shadow-2xl overflow-hidden"
                                 key={index}
                                 data-aos="fade-up"
                                 data-aos-delay={index * 100}
@@ -687,16 +683,16 @@ function Home() {
                                 {/* Glowing border effect */}
                                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                                <div className="relative p-8 space-y-6">
+                                <div className="relative p-5 sm:p-6 md:p-8 space-y-5">
                                     {/* Plan Header */}
-                                    <div className="flex justify-between items-start">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                                         <div>
-                                            <h3 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                                            <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
                                                 {plan?.name}
                                             </h3>
                                             <p className="text-sm text-slate-400 mt-1">Investment Plan</p>
                                         </div>
-                                        <span className="flex items-center gap-2 bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full text-sm border border-cyan-400/20">
+                                        <span className="flex items-center gap-2 bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full text-xs sm:text-sm border border-cyan-400/20 w-max self-start">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                             </svg>
@@ -707,39 +703,47 @@ function Home() {
                                     {/* ROI Section */}
                                     <div className="pb-4 border-b border-slate-700/50 relative">
                                         <div className="absolute -bottom-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                        <p className="text-5xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-2">
+                                        <p className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-2">
                                             {plan?.estimatedROI}%
                                         </p>
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                                             <p className="text-sm text-slate-400">Monthly ROI</p>
-                                            <span className="text-xs bg-green-400/10 text-green-400 px-2 py-1 rounded-full">
+                                            <span className="text-xs bg-green-400/10 text-green-400 px-2 py-1 rounded-full w-max">
                                                 +{plan?.bonus}% bonus
                                             </span>
                                         </div>
                                     </div>
 
-                                    {/* Stats Grid */}
-                                    <div className="grid grid-cols-2 gap-4 py-4">
+                                    {/* Stats Grid - Improved for mobile */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4">
+                                        {/* Investment Range - Stacked on mobile */}
                                         <div className="space-y-1 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50 hover:border-cyan-400/30 transition-colors">
-                                            <div className="text-sm text-slate-400 flex items-center gap-2">
+                                            <div className="text-sm text-slate-400 flex items-center gap-2 mb-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                                                 </svg>
                                                 Investment Range
                                             </div>
-                                            <p className="font-mono text-lg text-slate-200">
-                                                ${formatNumberWithCommas(plan?.minAmount)} - ${formatNumberWithCommas(plan?.maxAmount)}
-                                            </p>
+                                            <div className="flex flex-col md:flex-row md:items-center gap-1">
+                                                <p className="font-mono text-base md:text-lg text-slate-200">
+                                                    ${formatNumberWithCommas(plan?.minAmount)}
+                                                </p>
+                                                <span className="hidden md:inline mx-1">-</span>
+                                                <span className="md:hidden text-xs text-slate-500">to</span>
+                                                <p className="font-mono text-base md:text-lg text-slate-200">
+                                                    ${formatNumberWithCommas(plan?.maxAmount)}
+                                                </p>
+                                            </div>
                                         </div>
 
                                         <div className="space-y-1 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50 hover:border-cyan-400/30 transition-colors">
-                                            <div className="text-sm text-slate-400 flex items-center gap-2">
+                                            <div className="text-sm text-slate-400 flex items-center gap-2 mb-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
                                                 Duration
                                             </div>
-                                            <p className="font-mono text-lg text-slate-200">
+                                            <p className="font-mono text-base md:text-lg text-slate-200">
                                                 {plan?.duration} {plan.durationType}
                                             </p>
                                         </div>
@@ -750,14 +754,14 @@ function Home() {
                                         <h4 className="text-sm font-semibold text-cyan-400 tracking-wide">
                                             ✨ Key Benefits
                                         </h4>
-                                        <ul className="grid grid-cols-1 gap-3">
+                                        <ul className="grid grid-cols-1 gap-2">
                                             {plan.benefits.map((benefit, index) => (
                                                 <li
                                                     key={index}
                                                     className="flex items-start p-3 rounded-lg bg-slate-800/20 hover:bg-slate-800/40 transition-colors cursor-pointer group/benefit"
                                                 >
                                                     <FiCheckCircle className="w-5 h-5 text-cyan-400 mt-0.5 mr-3 flex-shrink-0 transition-transform group-hover/benefit:scale-110" />
-                                                    <span className="text-gray-300 group-hover/benefit:text-slate-50 transition-colors">
+                                                    <span className="text-sm text-gray-300 group-hover/benefit:text-slate-50 transition-colors">
                                                         {benefit}
                                                     </span>
                                                 </li>
@@ -766,13 +770,13 @@ function Home() {
                                     </div>
 
                                     {/* CTA Button */}
-                                    <div className="pt-6">
+                                    <div className="pt-4">
                                         <Link
                                             href={`/personal/explore/invest/${plan._id}`}
-                                            className="w-full inline-flex items-center justify-center px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-semibold rounded-xl transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-cyan-500/30"
+                                            className="w-full inline-flex items-center justify-center px-4 py-3 md:px-6 md:py-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-semibold rounded-xl transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-cyan-500/30 text-sm md:text-base"
                                         >
                                             <span>{getButtonText(plan)}</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 -mr-1 animate-bounce-x" viewBox="0 0 20 20" fill="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 ml-2 -mr-1 animate-bounce-x" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                                             </svg>
                                         </Link>

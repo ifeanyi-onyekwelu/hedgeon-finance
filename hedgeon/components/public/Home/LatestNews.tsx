@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 export default function LatestNews() {
     useEffect(() => {
-        // Dynamically load TradingView script
         const script = document.createElement('script');
         script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-timeline.js';
         script.async = true;
@@ -11,8 +10,8 @@ export default function LatestNews() {
             "colorTheme": "light",
             "isTransparent": true,
             "displayMode": "compact",
-            "width": "1000",
-            "height": "400",
+            "width": "100%",
+            "height": "100%",  // Changed to percentage
             "locale": "en",
             "market": "crypto"
         });
@@ -23,7 +22,6 @@ export default function LatestNews() {
         }
 
         return () => {
-            // Cleanup script on component unmount
             if (container && script.parentNode === container) {
                 container.removeChild(script);
             }
@@ -42,19 +40,21 @@ export default function LatestNews() {
                     </p>
                 </div>
 
-                <div className="mx-auto max-w-6xl">
+                {/* Added responsive wrapper */}
+                <div className="mx-auto max-w-full overflow-hidden px-4">
                     <div className="rounded-xl border bg-card text-card-foreground shadow">
-                        <div className="p-6">
-                            <div
-                                id="tradingview-container"
-                                className="tradingview-widget-container"
-                            >
-                                <div className="tradingview-widget-container__widget" />
+                        <div className="p-2 sm:p-4 md:p-6">
+                            {/* Aspect ratio container */}
+                            <div className="relative w-full" style={{ paddingTop: '40%' }}>
+                                <div
+                                    id="tradingview-container"
+                                    className="tradingview-widget-container absolute inset-0 w-full h-full"
+                                />
                             </div>
 
-                            <div className="flex justify-center mt-8">
+                            <div className="flex justify-center mt-4 md:mt-8">
                                 <svg
-                                    className="w-6 h-6 text-muted-foreground"
+                                    className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground"
                                     fill="none"
                                     stroke="currentColor"
                                     strokeLinecap="round"

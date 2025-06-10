@@ -14,6 +14,16 @@ import { AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 
 export default function Login() {
+    return (
+        <Suspense fallback={
+            <div className="loader"></div>
+        }>
+            <LoginForm />
+        </Suspense>
+    )
+}
+
+function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirect = searchParams.get("redirect");

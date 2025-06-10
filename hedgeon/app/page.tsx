@@ -48,7 +48,7 @@ function Home() {
             case 'Premium Package':
                 return 'Go Premium'
             default:
-                break;
+                return `Go ${plan.name}`;
         }
     }
 
@@ -138,7 +138,7 @@ function Home() {
                                 {/* Description */}
                                 <p className="text-xl text-gray-200 leading-relaxed"
                                     data-aos="fade-up" data-aos-delay="300">
-                                    Harness innovative strategies and AI-powered insights to grow your wealth confidently in today's dynamic markets.
+                                    Hedgeon Finance is a premier fund management and asset investment firm committed to delivering strategic, data-driven, and high-yield investment solutions. With expertise spanning Hedge funds, Mutual funds, Forex, Stocks, Crypto and Real estate, we provide tailored investment opportunities designed to maximize wealth while minimizing risk.
                                 </p>
 
                                 {/* Features List */}
@@ -744,7 +744,7 @@ function Home() {
                                                 Duration
                                             </div>
                                             <p className="font-mono text-base md:text-lg text-slate-200">
-                                                {plan?.duration} {plan.durationType}
+                                                {plan?.minDuration} - {plan?.maxDuration} {plan.durationType}
                                             </p>
                                         </div>
                                     </div>

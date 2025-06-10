@@ -8,7 +8,7 @@ import {
     ChevronUp,
     Users,
     File,
-    User,
+    Globe,
 } from "lucide-react";
 
 import {
@@ -33,6 +33,11 @@ export function AdminSidebar() {
     const { user } = useUser()
 
     const items = [
+        {
+            title: "Back To Site",
+            url: "/",
+            icon: Globe,
+        },
         {
             title: "Home",
             url: "/admin/dashboard",
@@ -103,32 +108,6 @@ export function AdminSidebar() {
                                     </CollapsibleContent>
                                 </SidebarMenuItem>
                             </Collapsible>
-
-                            <Collapsible>
-                                <SidebarMenuItem>
-                                    <CollapsibleTrigger asChild>
-                                        <SidebarMenuButton asChild>
-                                            <Link href="#">
-                                                <User />
-                                                <span>Account</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </CollapsibleTrigger>
-                                    <CollapsibleContent>
-                                        <SidebarMenuSub>
-                                            {[{ url: '/admin/account/profile', title: 'Profile' }, { url: '/admin/account/change-password', title: 'Change Password' }, { url: '/admin/account/settings', title: 'Settings' }].map((item, index) => (
-                                                <SidebarMenuItem key={item.title}>
-                                                    <SidebarMenuButton asChild>
-                                                        <Link href={item.url}>
-                                                            <span>{item.title}</span>
-                                                        </Link>
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuItem>
-                                            ))}
-                                        </SidebarMenuSub>
-                                    </CollapsibleContent>
-                                </SidebarMenuItem>
-                            </Collapsible>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
@@ -149,17 +128,17 @@ export function AdminSidebar() {
                                 className="w-[--radix-popper-anchor-width]"
                             >
                                 <DropdownMenuItem>
-                                    <Link href="/personal/profile">
+                                    <Link href="/admin/account/profile" className="block w-full">
                                         <span>Account</span>
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <Link href="/personal/profile/settings">
-                                        <span>Settings</span>
+                                    <Link href="/admin/account/change-password" className="block w-full">
+                                        <span>Change Password</span>
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <Link href="/auth/logout">
+                                    <Link href="/auth/logout" className="block w-full">
                                         <span>Sign out</span>
                                     </Link>
                                 </DropdownMenuItem>

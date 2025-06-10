@@ -14,10 +14,6 @@ export const signupApi = (credentials: {
     return axiosInstance.post(`/auth/register?role=${credentials.role || "user"}`, credentials);
 };
 
-export const refreshApi = () => {
-    return axiosInstance.get("/auth/refresh")
-}
-
 export const logoutApi = () => {
     return axiosInstance.post("/auth/logout")
 }

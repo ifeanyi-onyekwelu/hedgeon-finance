@@ -103,7 +103,7 @@ function Faqs() {
                     <div className="space-y-6">
                         <Accordion type="single" collapsible className="w-full space-y-5">
                             {faqs.map(({ trigger, content }, index) => (
-                                <AccordionItem value={trigger}>
+                                <AccordionItem value={trigger} key={index}>
                                     <AccordionTrigger className='px-5 bg-primary-fade cursor-pointer rounded py-5 text-lg text-primary font-bold' style={{ textDecoration: 'none' }}>{trigger}</AccordionTrigger>
                                     <AccordionContent className='py-10 px-2 text-white'>
                                         {content}

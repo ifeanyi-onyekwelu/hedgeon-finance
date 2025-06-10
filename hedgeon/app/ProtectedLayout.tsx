@@ -38,17 +38,17 @@ export default function ProtectedLayout({
 
         } catch (error) {
             console.error("Authentication error:", error);
-            // Clear invalid credentials
+
             localStorage.removeItem('access_token');
             localStorage.removeItem('user_role');
-            // Redirect to login with return URL
+
             router.push(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
         }
     }
 
     useEffect(() => {
         verifyAuth();
-    }, []); // Empty dependency array = runs only once on mount
+    }, []);
 
     if (!authorized) {
         return (

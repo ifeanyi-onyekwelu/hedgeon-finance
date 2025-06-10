@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { FiBell, FiChevronDown, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiBell, FiChevronDown } from 'react-icons/fi';
 import { useUser } from '@/context/UserContext';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Key, LogOut, User } from 'lucide-react';
 
 const CurrentDate = () => {
     const currentDate = new Date();
@@ -92,17 +92,17 @@ function AdminHeader() {
                                     Signed in as <span className="font-semibold">{user?.name?.split(' ')[0]}</span>
                                 </span>
                                 <hr className="border-gray-200 my-1" />
-                                <Link href="admin/account/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left focus:outline-none">
-                                    <FiUser className="inline-block mr-2 text-gray-500" />
+                                <Link href="/admin/account/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left focus:outline-none">
+                                    <User className="inline-block mr-2 text-gray-500" />
                                     Profile
                                 </Link>
-                                <Link href="/admin/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left focus:outline-none">
-                                    <FiSettings className="inline-block mr-2 text-gray-500" />
-                                    Settings
+                                <Link href="/admin/account/change-password" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left focus:outline-none">
+                                    <Key className="inline-block mr-2 text-gray-500" />
+                                    Change Password
                                 </Link>
                                 <hr className="border-gray-200 my-1" />
                                 <Link href="/admin/logout" className="block px-4 py-2 text-sm text-red-500 hover:bg-red-50 hover:text-red-700 w-full text-left focus:outline-none">
-                                    <FiLogOut className="inline-block mr-2 text-red-500" />
+                                    <LogOut className="inline-block mr-2 text-red-500" />
                                     Logout
                                 </Link>
                             </div>

@@ -137,7 +137,7 @@ const InvestmentDetails: React.FC<{
             <Card title="Investment Details">
                 <Descriptions bordered>
                     <Descriptions.Item label="User">
-                        {localInvestment.user.name} ({localInvestment.user.email})
+                        {localInvestment.user?.name} ({localInvestment.user?.email})
                     </Descriptions.Item>
                     <Descriptions.Item label="Plan">{localInvestment.plan.name}</Descriptions.Item>
                     <Descriptions.Item label="Amount">

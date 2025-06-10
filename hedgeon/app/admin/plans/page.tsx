@@ -6,13 +6,15 @@ import type { ColumnsType } from 'antd/es/table';
 import { getAllPlansAdminApi, updatePlanAdminApi } from '@/app/api/adminApi'; // Adjust the path as necessary
 import Section from '@/components/admin/Section';
 import { EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
+import formatNumberWithCommas from '@/utils/formatNumbersWithCommas';
 
 interface IPlan {
     _id: string;
     name: string;
     minAmount: number;
     maxAmount: number;
-    durationMonths: number;
+    minDuration: number;
+    maxDuration: number;
     durationType: string;
     estimatedROI: number;
     taxOnProfit: number;
@@ -53,7 +55,8 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
                 name: localPlan.name,
                 minAmount: localPlan.minAmount,
                 maxAmount: localPlan.maxAmount,
-                durationMonths: localPlan.durationMonths,
+                maxDuration: localPlan.maxDuration,
+                minDuration: localPlan.minDuration,
                 durationType: localPlan.durationType,
                 estimatedROI: localPlan.estimatedROI,
                 taxOnProfit: localPlan.taxOnProfit,
@@ -63,14 +66,15 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
                 status: localPlan.status,
             };
 
-            // Call the onUpdate function to update the plan
-            onUpdate(plan._id, updatedPlanData);
+            const response = await updatePlanAdminApi(plan._id, updatedPlanData);
+            console.log("Response from update plan", response);
 
             notification.success({
                 message: 'Success',
                 description: 'Plan details updated successfully!',
             });
-            setEditMode(false); // Exit edit mode after saving
+            setEditMode(false);
+            onUpdate(plan._id, updatedPlanData);
         } catch (error: any) {
             notification.error({
                 message: 'Error',
@@ -102,57 +106,127 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
     ]
 
     return (
-        <Card title={`Plan Details for ${localPlan.name}`}>
-            <Descriptions bordered>
-                <Descriptions.Item label="Name">
+        <Card
+            title={`Plan Details for ${localPlan.name}`}
+            className="w-full max-w-fit mx-auto" // Responsive container
+        >
+            <Descriptions
+                bordered
+                className="w-full"
+                column={{ xs: 1, sm: 2, md: 3 }} // Responsive columns
+            >
+                {/* Name */}
+                <Descriptions.Item label="Name" span={2}>
                     {editMode ? (
-                        <Input value={localPlan.name} onChange={(e) => setLocalPlan({ ...localPlan, name: e.target.value })} />
+                        <Input
+                            value={localPlan.name}
+                            onChange={(e) => setLocalPlan({ ...localPlan, name: e.target.value })}
+                            className="w-full" // Full width on mobile
+                        />
                     ) : (
-                        localPlan.name
+                        <div className="break-words">{localPlan.name}</div>
                     )}
                 </Descriptions.Item>
+
+                {/* Min Amount */}
                 <Descriptions.Item label="Min Amount">
                     {editMode ? (
-                        <Input type="number" value={localPlan.minAmount} onChange={(e) => setLocalPlan({ ...localPlan, minAmount: Number(e.target.value) })} />
+                        <Input
+                            type="number"
+                            value={localPlan.minAmount}
+                            onChange={(e) => setLocalPlan({ ...localPlan, minAmount: Number(e.target.value) })}
+                            className="w-full"
+                        />
                     ) : (
                         localPlan.minAmount
                     )}
                 </Descriptions.Item>
+
+                {/* Max Amount */}
                 <Descriptions.Item label="Max Amount">
                     {editMode ? (
-                        <Input type="number" value={localPlan.maxAmount} onChange={(e) => setLocalPlan({ ...localPlan, maxAmount: Number(e.target.value) })} />
+                        <Input
+                            type="number"
+                            value={localPlan.maxAmount}
+                            onChange={(e) => setLocalPlan({ ...localPlan, maxAmount: Number(e.target.value) })}
+                            className="w-full"
+                        />
                     ) : (
                         localPlan.maxAmount
                     )}
                 </Descriptions.Item>
-                <Descriptions.Item label="Duration (Months)">
+
+                {/* Max Duration */}
+                <Descriptions.Item label="Max Duration">
                     {editMode ? (
-                        <Input type="number" value={localPlan.durationMonths} onChange={(e) => setLocalPlan({ ...localPlan, durationMonths: Number(e.target.value) })} />
+                        <Input
+                            type="number"
+                            value={localPlan.maxDuration}
+                            onChange={(e) => setLocalPlan({ ...localPlan, maxDuration: Number(e.target.value) })}
+                            className="w-full"
+                        />
                     ) : (
-                        localPlan.durationMonths
+                        localPlan.maxDuration
                     )}
                 </Descriptions.Item>
+
+                {/* Min Duration */}
+                <Descriptions.Item label="Min Duration">
+                    {editMode ? (
+                        <Input
+                            type="number"
+                            value={localPlan.minDuration}
+                            onChange={(e) => setLocalPlan({ ...localPlan, minDuration: Number(e.target.value) })}
+                            className="w-full"
+                        />
+                    ) : (
+                        localPlan.minDuration
+                    )}
+                </Descriptions.Item>
+
+                {/* Estimated ROI */}
                 <Descriptions.Item label="Estimated ROI">
                     {editMode ? (
-                        <Input type="number" value={localPlan.estimatedROI} onChange={(e) => setLocalPlan({ ...localPlan, estimatedROI: Number(e.target.value) })} />
+                        <Input
+                            type="number"
+                            value={localPlan.estimatedROI}
+                            onChange={(e) => setLocalPlan({ ...localPlan, estimatedROI: Number(e.target.value) })}
+                            className="w-full"
+                        />
                     ) : (
                         localPlan.estimatedROI
                     )}
                 </Descriptions.Item>
+
+                {/* Tax on Profit */}
                 <Descriptions.Item label="Tax on Profit">
                     {editMode ? (
-                        <Input type="number" value={localPlan.taxOnProfit} onChange={(e) => setLocalPlan({ ...localPlan, taxOnProfit: Number(e.target.value) })} />
+                        <Input
+                            type="number"
+                            value={localPlan.taxOnProfit}
+                            onChange={(e) => setLocalPlan({ ...localPlan, taxOnProfit: Number(e.target.value) })}
+                            className="w-full"
+                        />
                     ) : (
                         localPlan.taxOnProfit
                     )}
                 </Descriptions.Item>
+
+                {/* Referral Bonus */}
                 <Descriptions.Item label="Referral Bonus">
                     {editMode ? (
-                        <Input type="number" value={localPlan.referralBonus} onChange={(e) => setLocalPlan({ ...localPlan, referralBonus: Number(e.target.value) })} />
+                        <Input
+                            type="number"
+                            value={localPlan.referralBonus}
+                            onChange={(e) => setLocalPlan({ ...localPlan, referralBonus: Number(e.target.value) })}
+                            className="w-full"
+                        />
                     ) : (
                         localPlan.referralBonus
                     )}
                 </Descriptions.Item>
+
+                {/* Risk Level */}
                 <Descriptions.Item label="Risk Level">
                     {editMode ? (
                         <Select
@@ -162,12 +236,15 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
                                 label: option,
                                 value: option,
                             }))}
+                            className="w-full"
                         />
                     ) : (
                         localPlan.riskLevel
                     )}
                 </Descriptions.Item>
-                <Descriptions.Item label="Benefits">
+
+                {/* Benefits */}
+                <Descriptions.Item label="Benefits" span={2}>
                     {editMode ? (
                         <Select
                             mode="multiple"
@@ -177,12 +254,24 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
                                 label: option,
                                 value: option,
                             }))}
+                            className="w-full"
                         />
                     ) : (
-                        localPlan.benefits.join(', ')
+                        <div className="flex flex-wrap gap-1">
+                            {localPlan.benefits.map((benefit, index) => (
+                                <span
+                                    key={index}
+                                    className="bg-gray-100 px-2 py-1 rounded text-sm"
+                                >
+                                    {benefit}
+                                </span>
+                            ))}
+                        </div>
                     )}
                 </Descriptions.Item>
-                <Descriptions.Item label="Status" span={3}>
+
+                {/* Status */}
+                <Descriptions.Item label="Status" span={2}>
                     {editMode ? (
                         <Select
                             value={localPlan.status}
@@ -191,34 +280,46 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
                                 { label: 'Active', value: true },
                                 { label: 'Inactive', value: false },
                             ].map(option => ({ label: option.label, value: option.value }))}
+                            className="w-full md:w-auto"
                         />
                     ) : (
-                        <Badge status={localPlan.status ? 'success' : 'error'} text={localPlan.status ? 'Active' : 'Inactive'} />
+                        <Badge
+                            status={localPlan.status ? 'success' : 'error'}
+                            text={localPlan.status ? 'Active' : 'Inactive'}
+                        />
                     )}
                 </Descriptions.Item>
-                <Descriptions.Item label="Created At">
+
+                {/* Created At */}
+                <Descriptions.Item label="Created At" span={2}>
                     {new Date(localPlan.createdAt).toLocaleString()}
                 </Descriptions.Item>
             </Descriptions>
-            <div className="mt-4">
+
+            <div className="mt-4 flex flex-col sm:flex-row gap-2">
                 {editMode ? (
                     <>
                         <Button
                             type="primary"
                             onClick={handleSave}
                             disabled={loading}
+                            className="flex-1 sm:flex-initial"
                         >
                             {loading ? 'Saving...' : <><SaveOutlined /> Save</>}
                         </Button>
                         <Button
                             onClick={handleCancel}
                             disabled={loading}
+                            className="flex-1 sm:flex-initial"
                         >
                             {loading ? 'Cancelling...' : <><CloseOutlined /> Cancel</>}
                         </Button>
                     </>
                 ) : (
-                    <Button onClick={handleEdit}>
+                    <Button
+                        onClick={handleEdit}
+                        className="w-full sm:w-auto"
+                    >
                         <EditOutlined /> Edit
                     </Button>
                 )}
@@ -246,6 +347,8 @@ const PlansManager = () => {
             const responseData = await response.data;
 
             setPLANs(responseData); // Adjust based on your API response structure
+
+            console.log("Response", response);
         } catch (error: any) {
             notification.error({
                 message: 'Error',
@@ -273,30 +376,30 @@ const PlansManager = () => {
         {
             title: 'Min Amount',
             dataIndex: 'minAmount',
-            render: (value) => `$${value.toFixed(2)}`, // Format as currency
+            render: (_, value) => `$${formatNumberWithCommas(value.minAmount)}`, // Format as currency
             sorter: (a, b) => a.minAmount - b.minAmount,
         },
         {
             title: 'Max Amount',
             dataIndex: 'maxAmount',
-            render: (value) => `$${value.toFixed(2)}`, // Format as currency
+            render: (_, value) => `$${formatNumberWithCommas(value.maxAmount)}`, // Format as currency
             sorter: (a, b) => a.maxAmount - b.maxAmount,
         },
         {
-            title: 'Duration (Months)',
-            dataIndex: 'durationMonths',
-            sorter: (a, b) => a.durationMonths - b.durationMonths,
+            title: 'Duration (Min & Max)',
+            render: (_, record) => `${record.minDuration ?? '-'} - ${record.maxDuration ?? '-'} ${record.durationType}`,
+            sorter: (a, b) => (a.minDuration ?? 0) - (b.maxDuration ?? 0),
         },
         {
             title: 'Estimated ROI',
             dataIndex: 'estimatedROI',
-            render: (value) => `${(value * 100).toFixed(2)}%`, // Format as percentage
+            render: (_, value) => `${value.estimatedROI}%`, // Format as percentage
             sorter: (a, b) => a.estimatedROI - b.estimatedROI,
         },
         {
             title: 'Tax on Profit',
             dataIndex: 'taxOnProfit',
-            render: (value) => `${(value * 100).toFixed(2)}%`, // Format as percentage
+            render: (_, value) => `${value.taxOnProfit}%`, // Format as percentage
             sorter: (a, b) => a.taxOnProfit - b.taxOnProfit,
         },
         {

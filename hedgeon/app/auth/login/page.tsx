@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import BreadcrumbsSection from "@/components/public/Breadcrumb";
 import { loginApi } from "@/app/api/authApi"
 import { useUser } from "@/context/UserContext"
@@ -14,7 +14,10 @@ import { AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 
 export default function Login() {
-    const router = useRouter()
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get("redirect");
+
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -42,9 +45,11 @@ export default function Login() {
             setLoginSuccess(true)
             refreshUser();
 
-            await new Promise(resolve => setTimeout(resolve, 2000))
-
-            if (role === 'admin') {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            if (redirect) {
+                router.push(redirect);
+            }
+            else if (role === 'admin') {
                 router.push('/admin/dashboard')
             } else if (role === 'user') {
                 if (isVerified) router.push('/personal/dashboard')

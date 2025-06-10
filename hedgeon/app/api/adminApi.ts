@@ -101,8 +101,8 @@ export const createPlanAdminApi = (planData: any) => { // Adjust 'any' to your P
     return axiosInstance.post("/admin/plans", planData);
 };
 
-export const updatePlanAdminApi = (planId: string, planData: any) => { // Adjust 'any' to your Plan update DTO
-    return axiosInstance.patch(`/admin/plans/${planId}`, planData);
+export const updatePlanAdminApi = (planId: string, planData: any) => {
+    return axiosInstance.put(`/admin/plans/${planId}`, planData);
 };
 
 export const activatePlanAdminApi = (planId: string) => {

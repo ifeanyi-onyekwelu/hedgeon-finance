@@ -10,12 +10,6 @@ import Image from 'next/image';
 
 const navLinks = [
     { name: 'Home', path: '/' },
-    // {
-    //     name: 'About Us', path: '/about', subLinks: [
-    //         { name: 'Our Team', path: '/about/team' },
-    //         { name: 'Company Values', path: '/about/values' },
-    //     ]
-    // },
     { name: 'About Us', path: '/about' },
     { name: 'Services', path: '/services' },
     { name: 'FAQ', path: '/faq' },
@@ -103,30 +97,7 @@ const Header = () => {
                                     }`}
                             >
                                 {link.name}
-                                {/* {link.subLinks && (
-                                    <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${activeSubmenu === link.name ? 'rotate-180' : ''
-                                        }`} />
-                                )} */}
                             </Link>
-
-                            {/* Submenu dropdown */}
-                            {/* {link.subLinks && activeSubmenu === link.name && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="absolute left-0 mt-1 w-56 bg-white rounded-lg shadow-lg py-2 z-50"
-                                >
-                                    {link.subLinks.map((subLink) => (
-                                        <Link
-                                            key={subLink.path}
-                                            href={subLink.path}
-                                            className="block px-6 py-3 text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors"
-                                        >
-                                            {subLink.name}
-                                        </Link>
-                                    ))}
-                                </motion.div>
-                            )} */}
                         </div>
                     ))}
                 </nav>
@@ -147,15 +118,6 @@ const Header = () => {
                             </Link>
                         ))}
                     </div>
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center bg-primary text-white px-5 py-2.5 rounded-lg font-medium transition-all hover:bg-primary-dark"
-                        onClick={() => router.push('/contact-us')}
-                    >
-                        <IconPhone className="mr-2 h-4 w-4" />
-                        Contact Sales
-                    </motion.button>
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -215,27 +177,8 @@ const Header = () => {
                                             >
                                                 <div className="flex justify-between items-center">
                                                     {link.name}
-                                                    {/* {link.subLinks && (
-                                                        <ChevronDown className="h-5 w-5" />
-                                                    )} */}
                                                 </div>
                                             </Link>
-
-                                            {/* Mobile submenu */}
-                                            {/* {link.subLinks && (
-                                                <div className="pl-6 mt-1 space-y-2">
-                                                    {link.subLinks.map((subLink) => (
-                                                        <Link
-                                                            key={subLink.path}
-                                                            href={subLink.path}
-                                                            className="block text-gray-600 hover:text-primary py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-                                                            onClick={() => setMobileMenuOpen(false)}
-                                                        >
-                                                            {subLink.name}
-                                                        </Link>
-                                                    ))}
-                                                </div>
-                                            )} */}
                                         </div>
                                     ))}
                                 </div>
@@ -252,16 +195,6 @@ const Header = () => {
                                                 {link.name}
                                             </Link>
                                         ))}
-                                        <button
-                                            className="flex items-center justify-center bg-primary text-white font-medium py-3 px-6 rounded-lg hover:bg-primary-dark transition-colors mt-2"
-                                            onClick={() => {
-                                                router.push('/contact-us');
-                                                setMobileMenuOpen(false);
-                                            }}
-                                        >
-                                            <IconPhone className="mr-2 h-4 w-4" />
-                                            Contact Sales
-                                        </button>
                                     </div>
                                 </div>
 
@@ -275,8 +208,8 @@ const Header = () => {
                                         </button>
                                     </div>
                                     <p className="text-center text-gray-500 mt-4">
-                                        support@hedgeon.com<br />
-                                        +1 (555) 123-4567
+                                        support@hedgeonfinance.com<br />
+                                        1 (580) 304-2990
                                     </p>
                                 </div>
                             </motion.nav>

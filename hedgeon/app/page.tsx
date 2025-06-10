@@ -1,10 +1,9 @@
 'use client'
 
-import { ArrowRight, Check, DollarSign, Download, PlayCircle } from 'lucide-react'
+import { ArrowRight, Check, Download } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button';
 import { getPlansApi } from './api/planApi';
 import formatNumberWithCommas from '@/utils/formatNumbersWithCommas'
 import { FiCheckCircle } from 'react-icons/fi'
@@ -810,7 +809,7 @@ function Home() {
                                 title: "White Paper",
                                 fileType: "PDF",
                                 image: "/images/terms-of-sale.png",
-                                link: "documents/whitepaper.pdf",
+                                link: "The terms of sales governing Hedgeon Finance.pdf",
                                 fade: 'right',
                                 delay: 200
                             },
@@ -818,7 +817,7 @@ function Home() {
                                 title: "Terms of Sales",
                                 fileType: "PDF",
                                 image: "/images/white-paper.png",
-                                link: "documents/terms_of_sales.pdf",
+                                link: "Hedgeon Finance white paper.pdf",
                                 fade: 'down',
                                 delay: 400
                             },
@@ -826,7 +825,7 @@ function Home() {
                                 title: "Privacy & Policy",
                                 fileType: "PDF",
                                 image: "/images/privacy-policy.png",
-                                link: "documents/privacy_policy.pdf",
+                                link: "Hedgeon Finance privacy policy pg.pdf",
                                 fade: 'left',
                                 delay: 600
                             }
@@ -849,6 +848,7 @@ function Home() {
                                     </div>
                                     <Link
                                         href={doc.link}
+                                        download
                                         className="ml-4 p-3 bg-gray-100 rounded-lg hover:bg-primary-100 transition-colors duration-200"
                                         aria-label={`Download ${doc.title}`}
                                     >

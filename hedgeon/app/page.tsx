@@ -667,7 +667,7 @@ function Home() {
                             Featured investment opportunities
                         </h2>
                         <p className='text-center text-sm md:text-md w-full md:w-3/5 mx-auto'>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                            Explore our curated selection of investment plans designed to suit every financial goal. Whether you're a beginner or a seasoned investor, our flexible packages offer competitive returns, transparent fees, and expert management to help you grow and protect your wealth.
                         </p>
                     </div>
 

@@ -806,7 +806,7 @@ function Home() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[
                             {
-                                title: "White Paper",
+                                title: "Terms of Sale",
                                 fileType: "PDF",
                                 image: "/images/terms-of-sale.png",
                                 link: "The terms of sales governing Hedgeon Finance.pdf",
@@ -814,7 +814,7 @@ function Home() {
                                 delay: 200
                             },
                             {
-                                title: "Terms of Sales",
+                                title: "White Paper",
                                 fileType: "PDF",
                                 image: "/images/white-paper.png",
                                 link: "Hedgeon Finance white paper.pdf",

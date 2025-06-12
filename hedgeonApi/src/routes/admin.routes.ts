@@ -32,7 +32,12 @@ import {
     deleteUserView,
     getAllWithdrawalRequestsView,
     getWithdrawalRequestByIdView,
-    updateWithdrawalStatusView
+    updateWithdrawalStatusView,
+    getAllMerchantApplications,
+    getMerchantApplication,
+    approveMerchantApplication,
+    rejectMerchantApplication,
+    deleteMerchantApplication,
 } from '../controllers/admin.controller';
 
 const router = express.Router();
@@ -63,9 +68,9 @@ router.get('/payout-trackers/investment/:investmentId', isAdmin, getPayoutTracke
 // Plan Routes
 router.get('/plans', isAdmin, getAllPlansView);
 router.get('/plans/:planId', isAdmin, getPlanByIdView);
-router.post("/plans", createPlanView);
-router.put("/plans/:planId", updatePlanView);
-router.delete("/plans/:planId", deletePlanView);
+router.post("/plans", isAdmin, createPlanView);
+router.put("/plans/:planId", isAdmin, updatePlanView);
+router.delete("/plans/:planId", isAdmin, deletePlanView);
 
 // Transaction Routes
 router.get('/transactions', isAdmin, getAllTransactionsView);
@@ -84,5 +89,12 @@ router.put('/users/:userId/', isAdmin, deleteUserView);
 router.get('/withdrawals', isAdmin, getAllWithdrawalRequestsView);
 router.get('/withdrawals/:withdrawalId', isAdmin, getWithdrawalRequestByIdView);
 router.get('/withdrawals/:withdrawalId', isAdmin, updateWithdrawalStatusView);
+
+// Merchant Application Routes
+router.get('/merchant/applications', isAdmin, getAllMerchantApplications);
+router.get('/merchant/applications/:id', isAdmin, getMerchantApplication);
+router.post('/merchant/applications/:id', isAdmin, approveMerchantApplication);
+router.post('/merchant/applications/:id', isAdmin, rejectMerchantApplication);
+router.delete('/merchant/applications/:id', isAdmin, deleteMerchantApplication);
 
 export default router;

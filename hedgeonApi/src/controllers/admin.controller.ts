@@ -6,11 +6,13 @@ import Plan from "../models/plan.model";
 import Transaction from "../models/transaction.model";
 import User from "../models/user.model";
 import Withdrawal from "../models/withdrawal.model";
+import MerchantApplication from "../models/marchant.model";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { BadRequestError, InternalServerError, NotFoundError } from "../utils/errors";
 import { logError } from "../utils/logger";
 import sendEmail from "../utils/mailer";
+import userModel from "../models/user.model";
 
 // -------------------- Investment Views --------------------
 export const getAllInvestmentsView = asyncHandler(async (req: Request, res: Response) => {
@@ -594,4 +596,118 @@ export const updateWithdrawalStatusView = asyncHandler(async (req: Request, res:
     }
 
     res.status(200).json({ message: `Withdrawal ${status.toLowerCase()} successfully`, withdrawal });
+});
+
+
+// -------------------- Withdrawal Views --------------------
+export const getAllMerchantApplications = asyncHandler(async (req, res) => {
+    const applications = await MerchantApplication.find().populate('user', 'name email');
+    res.status(200).json({ applications });
+});
+
+
+export const getMerchantApplication = asyncHandler(async (req, res) => {
+    const application = await MerchantApplication.findById(req.params.id).populate('user', 'name email');
+    if (!application) {
+        throw new BadRequestError("Merchant application not found")
+    }
+    res.status(200).json({ application });
+});
+
+
+export const approveMerchantApplication = asyncHandler(async (req, res) => {
+    const application = await MerchantApplication.findById(req.params.id).populate('user');
+    if (!application) {
+        throw new NotFoundError("Application not found")
+    }
+
+    application.status = 'approved';
+    await application.save();
+
+    const user = await userModel.findById(application?.user);
+    if (!user) throw new NotFoundError("User assocaited with the application not found!")
+
+    user.notifications.unshift({
+        message: 'Your merchant application has been approved!',
+        type: 'merchant_application',
+        date: new Date(),
+        read: false
+    });
+
+    try {
+        await user.save();
+    } catch (dbError) {
+        console.error(`Failed to save user updates for ${user._id}:`, dbError);
+        throw new InternalServerError(`Failed to update user or save notification`);
+    }
+
+    // Send Email Notification
+    try {
+        const emailSubject = `Merchant Application Approved`;
+        const templateData = {
+            userName: user.name || 'User',
+            message: 'Congratulations! Your merchant application has been approved.'
+        };
+        await sendEmail(user.email, emailSubject, 'merchantApplicationApproved', templateData);
+    } catch (emailError) {
+        console.error(`Failed to send approval email to ${user.email}:`, emailError);
+        throw new InternalServerError(`Failed to send merchant application approval email`);
+    }
+
+
+    res.status(200).json({ message: 'Merchant approved successfully', application });
+});
+
+
+export const rejectMerchantApplication = asyncHandler(async (req, res) => {
+    const application = await MerchantApplication.findById(req.params.id).populate('user');
+    if (!application) {
+        throw new NotFoundError("Application not found")
+    }
+
+    application.status = 'rejected';
+    await application.save();
+
+    const user = await userModel.findById(application.user);
+    if (!user) throw new NotFoundError("User associated with the application was not found!");
+
+    user.notifications.unshift({
+        message: 'Your merchant application has been rejected.',
+        type: 'merchant_application',
+        date: new Date(),
+        read: false
+    });
+
+    try {
+        await user.save();
+    } catch (dbError) {
+        console.error(`Failed to save user updates for ${user._id}:`, dbError);
+        throw new InternalServerError(`Failed to update user or save notification`);
+    }
+
+    try {
+        const emailSubject = `Merchant Application Rejected`;
+        const templateData = {
+            userName: user.name || 'User',
+            message: 'Unfortunately, your merchant application has been rejected. You may reapply or contact support for more details.'
+        };
+        await sendEmail(user.email, emailSubject, 'merchantApplicationRejected', templateData);
+    } catch (emailError) {
+        console.error(`Failed to send rejection email to ${user.email}:`, emailError);
+        throw new InternalServerError(`Failed to send merchant application rejection email`);
+    }
+
+    res.status(200).json({ message: 'Merchant application rejected', application });
+});
+
+
+export const deleteMerchantApplication = asyncHandler(async (req, res) => {
+    const application = await MerchantApplication.findById(req.params.id);
+    if (!application) {
+        throw new NotFoundError("Application not found")
+    }
+
+    await application.deleteOne();
+
+    res.status(200).json({ message: 'Merchant application deleted successfully' });
 });

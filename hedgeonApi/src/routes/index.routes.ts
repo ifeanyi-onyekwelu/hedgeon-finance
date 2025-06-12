@@ -10,6 +10,7 @@ import cronRoutes from "./cron.routes";
 import authGuard from "../middlewares/authGuard";
 import adminOnly from "../middlewares/adminOnly";
 import currencyModel from "../models/currency";
+import merchantRoutes from "./merchant.routes";
 import { logData } from "../utils/logger";
 
 
@@ -23,6 +24,7 @@ router.use("/plans", planRoutes);
 router.use("/admin", authGuard, adminOnly, adminRoutes);
 router.use("/transactions", authGuard, transactionRoutes);
 router.use("/cron", cronRoutes);
+router.use("/merchant", authGuard, merchantRoutes);
 
 router.get("/currencies", async (req, res) => {
     const { name } = req.query

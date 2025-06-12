@@ -633,6 +633,8 @@ export const approveMerchantApplication = asyncHandler(async (req, res) => {
         date: new Date(),
         read: false
     });
+    user.isMerchant = true
+    user.isPendingMerchantVerification = false;
 
     try {
         await user.save();
@@ -677,6 +679,7 @@ export const rejectMerchantApplication = asyncHandler(async (req, res) => {
         date: new Date(),
         read: false
     });
+    user.isPendingMerchantVerification = false;
 
     try {
         await user.save();

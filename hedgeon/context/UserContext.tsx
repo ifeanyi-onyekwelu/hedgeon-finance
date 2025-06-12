@@ -10,6 +10,8 @@ type User = {
     phone: string
     password: string
     role: 'user' | 'admin'
+    isMerchant: boolean;
+    isPendingMerchantVerification: boolean;
     kyc: string
     twoFactorSecret: string
     currentPlan?: [{

@@ -65,3 +65,7 @@ export const uploadKycDocuments = async (formData: FormData) => {
         },
     });
 };
+
+export const applyAsMerchant = async (formDate: any) => {
+    return axiosInstance.post("/merchant/apply");
+}

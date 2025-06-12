@@ -8,6 +8,8 @@ interface IUser {
     phone: string,
     password: string,
     role: 'user' | 'admin',
+    isMerchant: boolean;
+    isPendingMerchantVerification: boolean;
     kycVerified: boolean,
     currentPlan?: [{
         planId: mongoose.Types.ObjectId;
@@ -83,6 +85,14 @@ const userSchema = new mongoose.Schema<IUser>({
     role: {
         type: String,
         default: 'user'
+    },
+    isMerchant: {
+        type: Boolean,
+        default: false
+    },
+    isPendingMerchantVerification: {
+        type: Boolean,
+        default: false
     },
     kycVerified: { type: Boolean, default: false },
     currentPlan: [{

@@ -86,6 +86,16 @@ export function DashboardSidebar() {
                                     </CollapsibleContent>
                                 </SidebarMenuItem>
                             </Collapsible>
+
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <a href="/personal/merchant">
+                                        <User2 />
+                                        <span>Merchant</span>
+                                    </a>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

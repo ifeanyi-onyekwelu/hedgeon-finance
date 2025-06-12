@@ -31,7 +31,7 @@ function Footer() {
                             <motion.div
                                 whileHover={{ scale: 1.05 }}
                             >
-                                <Image src="/images/logo.png" width={50} height={300} alt="Hedgeon Finance Logo" />
+                                <Image src="/images/logo.png" width={200} height={300} alt="Hedgeon Finance Logo" />
                             </motion.div>
                         </Link>
 
@@ -39,7 +39,7 @@ function Footer() {
                             Empowering your financial future with innovative solutions and expert guidance.
                         </p>
 
-                        <div className="flex space-x-3">
+                        {/* <div className="flex space-x-3">
                             {[IconBrandFacebook, IconBrandX, IconBrandInstagram, IconBrandYoutube].map((Icon, idx) => (
                                 <Link
                                     key={idx}
@@ -49,7 +49,7 @@ function Footer() {
                                     <Icon className="w-6 h-6" />
                                 </Link>
                             ))}
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Links Sections */}
@@ -81,7 +81,7 @@ function Footer() {
                                     <li key={i}>
                                         <Link
                                             href={link.href}
-                                            className="text-gray-300 hover:text-primary transition-colors"
+                                            className="text-gray-300 hover:text-[#00685E] hover:underline transition-colors"
                                         >
                                             {link.name}
                                         </Link>

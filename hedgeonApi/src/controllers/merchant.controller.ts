@@ -41,6 +41,7 @@ export const applyForMerchant = asyncHandler(async (req: Request, res: Response)
         date: new Date(),
         read: false
     });
+    user.isPendingMerchantVerification = true;
 
     try {
         await user.save();

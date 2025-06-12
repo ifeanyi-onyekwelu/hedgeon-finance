@@ -3,7 +3,6 @@ import React from 'react'
 import {
     PieChart, Check, ArrowRight, Briefcase, Building2,
     DollarSign,
-    UserPlus,
 } from "lucide-react"
 import Link from 'next/link'
 import Image from 'next/image'
@@ -93,8 +92,8 @@ function page() {
                                         </p>
                                     </div>
 
-                                    <Link href="/auth/signup" className="w-full bg-primary text-white">
-                                        <span className="flex items-center justify-center gap-3">
+                                    <Link href="/auth/signup" className="w-full">
+                                        <span className="flex items-center justify-center gap-3 bg-orange-700 text-white w-fit px-4 py-3 rounded-sm">
                                             Open Live Account
                                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                         </span>
@@ -171,6 +170,7 @@ function page() {
                                 will end up making a few mistakes; we help them correct these mistakes.
                                 We help companies turnaround their non-profitable ventures into something that benefits them. Our
                                 specialty lies in understanding what makes a company special and what makes it tick.
+
                             </p>
                             <div className="space-y-8">
                                 {merchantServices.map((service) => (
@@ -180,7 +180,10 @@ function page() {
                                     </div>
                                 ))}
                             </div>
+
+                            <Link href="/auth/login?redirect=/personal/merchant/apply" className='px-5 py-3 font-medium bg-amber-600 rounded-sm w-fit'>Become a Merchant</Link>
                         </div>
+
                     </div>
 
                     <div className="bg-gradient-to-br from-slate-900 to-emerald-900/20  p-5 md:p-12 rounded-3xl border border-emerald-800/30">

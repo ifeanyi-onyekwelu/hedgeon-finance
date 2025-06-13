@@ -80,6 +80,13 @@ export default function ActiveInvestments() {
         );
     }
 
+    const statusColorMap = {
+        active: 'bg-green-50 text-green-700 border-green-100',
+        completed: 'bg-blue-50 text-blue-700 border-blue-100',
+        pending: 'bg-amber-50 text-amber-700 border-amber-100',
+        cancelled: 'bg-red-50 text-red-700 border-red-100',
+    };
+
     return (
         <div className="max-w-full mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-8">
@@ -97,8 +104,11 @@ export default function ActiveInvestments() {
                 {activePlans.map(plan => (
                     <div key={plan._id} className="group relative bg-white rounded-xl border border-gray-100 hover:border-gray-200 transition-all duration-200 ease-out hover:shadow-lg">
                         <div className="absolute top-3 right-3">
-                            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
-                                Active
+                            <span
+                                className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColorMap[plan.status] || 'bg-gray-50 text-gray-700 border-gray-100'
+                                    }`}
+                            >
+                                {plan.status}
                             </span>
                         </div>
 

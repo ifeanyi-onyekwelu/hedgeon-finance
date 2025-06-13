@@ -23,6 +23,7 @@ type User = {
         daysGone: number
         investedAmount: number
         roiAccumulated: number
+        status: string
     }]
     pastPlans: [{
         planId: string;
@@ -32,6 +33,7 @@ type User = {
         endDate: Date;
         investedAmount: number;
         roiAccumulated: number;
+        status: string
     }]
     notifications: [{
         message: string,
@@ -87,8 +89,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const res = await getProfileApi();
             if (!(res.status === 200)) throw new Error('Unauthorized')
-
-            console.log(res.data['user'])
             setUser(res.data['user'])
         } catch (err) {
             console.log(err)

@@ -67,13 +67,6 @@ export const createInvestment = asyncHandler(
         const startDate = new Date();
         const endDate = new Date(startDate);
 
-        console.log(
-            "Date Calculation:",
-            `Current Month: ${endDate.getMonth()}`,
-            `Duration: ${duration} (type: ${typeof duration})`,
-            `Numeric Duration: ${numericDuration}`
-        );
-
 
         // Use the duration passed from frontend (after validation)
         if (plan.durationType === 'months') {
@@ -106,6 +99,7 @@ export const createInvestment = asyncHandler(
             investedAmount: amount,
             daysGone: 0,
             roiAccumulated: 0,
+            status: investment.status
         };
 
         // Ensure currentPlan exists and is an array
@@ -191,7 +185,6 @@ export const reinvestEarnings = asyncHandler(
             isReinvestment: true,
             startDate: new Date(),
             endDate: new Date(Date.now() + plan.duration * 86400000),
-            status: "active",
         });
 
         // Update user's wallet and plan
@@ -203,6 +196,7 @@ export const reinvestEarnings = asyncHandler(
             endDate: investment.endDate,
             investedAmount: amount,
             roiAccumulated: 0,
+            status: investment.status
         };
 
         await user.save();

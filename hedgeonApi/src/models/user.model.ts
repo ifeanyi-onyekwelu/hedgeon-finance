@@ -20,6 +20,7 @@ interface IUser {
         daysGone: number;
         investedAmount: number;
         roiAccumulated: number;
+        status: string;
     }];
     pastPlans: [{
         planId: mongoose.Types.ObjectId;
@@ -29,6 +30,7 @@ interface IUser {
         endDate: Date;
         investedAmount: number;
         roiAccumulated: number;
+        status: string;
     }]
     notifications: [{
         message: string,
@@ -112,6 +114,8 @@ const userSchema = new mongoose.Schema<IUser>({
         daysGone: { type: Number, default: 0 },
         investedAmount: { type: Number, default: 0 },
         roiAccumulated: { type: Number, default: 0 },
+        status: { type: String, default: null },
+
     }],
     pastPlans: [{
         planId: {
@@ -129,6 +133,7 @@ const userSchema = new mongoose.Schema<IUser>({
         endDate: { type: Date, default: null },
         investedAmount: { type: Number, default: 0 },
         roiAccumulated: { type: Number, default: 0 },
+        status: { type: String, default: null },
     }],
     notifications: [{
         message: String,

@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import {
     FiDollarSign, FiActivity, FiTrendingUp, FiList, FiStar, FiArrowUpRight
 } from 'react-icons/fi';
-import dynamic from 'next/dynamic';
 import { useUser } from '@/context/UserContext';
 import TransactionAndWithdrawalSection from './TransactionAndWithdrawSection';
 import { getPlansApi } from '@/app/api/planApi';
@@ -37,9 +36,10 @@ const PersonalDashboard = () => {
         roi: plan.roiAccumulated,
         startDate: plan.startDate,
         endDate: plan.endDate,
+        status: plan.status
     }));
 
-
+    console.log("Transformed Plans", transformedPlans);
 
     return (
         <div className="bg-gray-50  rounded-lg ">

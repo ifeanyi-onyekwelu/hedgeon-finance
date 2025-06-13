@@ -38,15 +38,15 @@ export const getInvestmentsByUserView = asyncHandler(async (req: Request, res: R
 export const updateInvestmentStatus = asyncHandler(
     async (req: Request, res: Response) => {
         const { id, status } = req.params;
-        console.log(id)
+        console.log(id);
 
         if (!['active', 'paused', 'completed', 'cancelled'].includes(status)) {
-            return logError(res, new BadRequestError("Invalid status"))
+            return logError(res, new BadRequestError("Invalid status"));
         }
 
         const investment = await Investment.findById(id);
         if (!investment) {
-            return logError(res, new NotFoundError("Investment not found"))
+            return logError(res, new NotFoundError("Investment not found"));
         }
 
         investment.status = status as 'active' | 'paused' | 'completed' | 'cancelled';
@@ -54,38 +54,56 @@ export const updateInvestmentStatus = asyncHandler(
 
         const user = await User.findById(investment.user);
         if (!user) {
-            return logError(res, new NotFoundError(`User not found for Investment ID: ${id}, User ID: ${investment.user}`))
-        } else {
-            const notificationMessage = `The status of your investment (Plan: ${investment.plan.name || 'N/A'}) has been updated to ${status}.`;
-            const notificationType = 'investment_status';
+            return logError(res, new NotFoundError(`User not found for Investment ID: ${id}, User ID: ${investment.user}`));
+        }
 
-            user.notifications.push({
+        // === 📌 Update currentPlan or move to pastPlans ===
+        const currentPlanIndex = user.currentPlan.findIndex((plan: any) =>
+            plan.investmentId?.toString() === investment._id.toString()
+        );
+
+        if (status === 'active' && currentPlanIndex !== -1) {
+            // Update the current plan's status
+            user.currentPlan[currentPlanIndex].status = 'active';
+        }
+
+        if ((status === 'completed' || status === 'cancelled') && currentPlanIndex !== -1) {
+            const finishedPlan = user.currentPlan.splice(currentPlanIndex, 1)[0];
+            finishedPlan.status = status;
+            user.pastPlans.push(finishedPlan);
+        }
+
+        // === 🛎️ Add Notification ===
+        const notificationMessage = `The status of your investment (Plan: ${investment.plan.name || 'N/A'}) has been updated to ${status}.`;
+        const notificationType = 'investment_status';
+
+        user.notifications.push({
+            message: notificationMessage,
+            type: notificationType,
+            date: new Date(),
+            read: false
+        });
+
+        // === 💾 Save user and handle errors ===
+        try {
+            await user.save();
+        } catch (dbError) {
+            console.log(`Failed to save notification for user ${user._id}: `, dbError);
+            return logError(res, new InternalServerError(`Failed to save notification for user ${user._id}`));
+        }
+
+        // === 📧 Send Email Notification ===
+        try {
+            const emailSubject = `Update Regarding Your Recent Investment`;
+            const templateData = {
+                userName: user.name || 'User',
                 message: notificationMessage,
-                type: notificationType,
-                date: new Date(),
-                read: false
-            });
-
-            try {
-                await user.save();
-            } catch (dbError) {
-                console.log(`Failed to save notification for user ${user._id}: `, dbError);
-                return logError(res, new InternalServerError(`Failed to save notification for user ${user._id}`));
-            }
-
-            // Send Email Notification
-            try {
-                const emailSubject = `Update Regarding Your Recent Investment`;
-                const templateData = {
-                    userName: user.name || 'User',
-                    message: notificationMessage,
-                    status
-                };
-                await sendEmail(user.email, emailSubject, 'investmentStatusUpdate', templateData);
-            } catch (emailError) {
-                console.error(`Failed to send investment status email to ${user.email}:`, emailError);
-                return logError(res, new InternalServerError(`Failed to send investment status email to ${user.email}`));
-            }
+                status
+            };
+            await sendEmail(user.email, emailSubject, 'investmentStatusUpdate', templateData);
+        } catch (emailError) {
+            console.error(`Failed to send investment status email to ${user.email}:`, emailError);
+            return logError(res, new InternalServerError(`Failed to send investment status email to ${user.email}`));
         }
 
         const updatedInvestment = await Investment.findById(id)

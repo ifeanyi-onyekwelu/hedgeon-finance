@@ -14,6 +14,7 @@ interface Plan {
     roi: number;
     startDate: string | Date;
     endDate: string | Date;
+    status: "active" | "completed" | "pending" | "cancelled";
 }
 
 interface Props {
@@ -53,6 +54,13 @@ export default function TopPlans({ plans }: Props) {
         );
     }
 
+    const statusColorMap = {
+        active: 'bg-green-50 text-green-700 border-green-100',
+        completed: 'bg-blue-50 text-blue-700 border-blue-100',
+        pending: 'bg-amber-50 text-amber-700 border-amber-100',
+        cancelled: 'bg-red-50 text-red-700 border-red-100',
+    };
+
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {plans.map((plan) => {
@@ -75,8 +83,11 @@ export default function TopPlans({ plans }: Props) {
                                     {format(new Date(plan.startDate), 'MMM yyyy')} - {format(new Date(plan.endDate), 'MMM yyyy')}
                                 </p>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${isCompleted ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
-                                {isCompleted ? 'Completed' : 'Active'}
+                            <span
+                                className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColorMap[plan.status] || 'bg-gray-50 text-gray-700 border-gray-100'
+                                    }`}
+                            >
+                                {plan.status}
                             </span>
                         </div>
 

@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { useUser } from "@/context/UserContext"
 import Link from "next/link"
+import { Check, X } from "lucide-react";
 
 const transactions = [
     { id: 1, amountRecorded: 5000, amountSent: 0, status: "Pending" },
@@ -22,6 +23,11 @@ const statusColorMap = {
 export default function MerchantDashboard() {
     const { user } = useUser();
 
+    // Check merchant prerequisites
+    const hasKYC = user?.kycVerified ?? false;
+    const hasActiveInvestment = Array.isArray(user?.currentPlan) && user.currentPlan.length > 0;
+    const canApply = hasKYC && hasActiveInvestment;
+
     if (!user?.isMerchant) {
         return (
             <Card className="mt-6 max-w-xl mx-auto">
@@ -30,11 +36,50 @@ export default function MerchantDashboard() {
                 </CardHeader>
                 <CardContent className="text-center space-y-4">
                     <p className="text-muted-foreground">
-                        To qualify for our merchant program, you must have an active investment portfolio with Hedgeon Finance. As a merchant, you'll gain access to exclusive tools to manage payouts, monitor earnings, and grow your business within our ecosystem.
+                        To qualify for our merchant program, you must complete KYC verification and maintain an active investment portfolio. As a merchant, you'll gain access to exclusive tools to manage payouts, monitor earnings, and grow your business.
                     </p>
-                    <Link href="/personal/merchant/apply">
-                        <Button className="w-full">Apply as a Merchant</Button>
-                    </Link>
+
+                    {/* Requirement Status Indicators */}
+                    <div className="space-y-2 text-left">
+                        <div className="flex items-center">
+                            {hasKYC ? (
+                                <Check className="h-5 w-5 text-green-500 mr-2" />
+                            ) : (
+                                <X className="h-5 w-5 text-red-500 mr-2" />
+                            )}
+                            <span>KYC Verification {hasKYC ? 'Completed' : 'Pending'}</span>
+                        </div>
+                        <div className="flex items-center">
+                            {hasActiveInvestment ? (
+                                <Check className="h-5 w-5 text-green-500 mr-2" />
+                            ) : (
+                                <X className="h-5 w-5 text-red-500 mr-2" />
+                            )}
+                            <span>Active Investment Plan {hasActiveInvestment ? 'Detected' : 'Required'}</span>
+                        </div>
+                    </div>
+
+                    {/* Conditionally enabled application button */}
+                    {canApply ? (
+                        <Link href="/personal/merchant/apply">
+                            <Button className="w-full">Apply as a Merchant</Button>
+                        </Link>
+                    ) : (
+                        <Button className="w-full" disabled>
+                            Apply as a Merchant
+                        </Button>
+                    )}
+
+                    {/* Error message if requirements not met */}
+                    {!canApply && (
+                        <p className="text-red-500 text-sm">
+                            {!hasKYC && !hasActiveInvestment
+                                ? "Complete KYC verification and activate an investment plan to apply"
+                                : !hasKYC
+                                    ? "Complete KYC verification to apply"
+                                    : "Activate an investment plan to apply"}
+                        </p>
+                    )}
                 </CardContent>
             </Card>
         );

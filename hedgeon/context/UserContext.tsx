@@ -11,6 +11,7 @@ type User = {
     password: string
     role: 'user' | 'admin'
     isMerchant: boolean;
+    kycVerified: boolean;
     isPendingMerchantVerification: boolean;
     kyc: string
     twoFactorSecret: string

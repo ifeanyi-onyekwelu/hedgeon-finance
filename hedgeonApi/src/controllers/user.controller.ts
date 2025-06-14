@@ -60,7 +60,6 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
     return logData(res, 200, { user });
 });
 
-// Controller to handle KYC document uploads and processing
 export const uploadKYC = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.session.user.id;
     const documentType = req.body.documentType;
@@ -69,10 +68,6 @@ export const uploadKYC = asyncHandler(async (req: Request, res: Response) => {
     const idProofFile = req.files?.['idProof']?.[0];
     const addressProofFile = req.files?.['addressProof']?.[0];
     const selfieFile = req.files?.['selfie']?.[0];
-
-    console.log("ID PROOF:", idProofFile)
-    console.log("ADDRESS PROOF:", addressProofFile)
-    console.log("SELFIE PROOF:", selfieFile)
 
     if (!idProofFile || !addressProofFile || !selfieFile) {
         return res.status(400).json({ message: 'All files are required' });
@@ -107,7 +102,7 @@ export const uploadKYC = asyncHandler(async (req: Request, res: Response) => {
         userId,
         documentType,
         idDocumentUrl,
-        proofOfAddressUrl,
+        proofOfAddress: proofOfAddressUrl,
         selfieUrl,
     });
     await kyc.save();

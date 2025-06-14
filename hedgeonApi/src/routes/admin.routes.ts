@@ -99,7 +99,7 @@ router.patch('/merchant/applications/:id/approve', isAdmin, approveMerchantAppli
 router.patch('/merchant/applications/:id/reject', isAdmin, rejectMerchantApplication);
 router.delete('/merchant/applications/:id/delete', isAdmin, deleteMerchantApplication);
 
-router.get('/admin/merchants', getAllMerchants);
-router.get('/admin/merchants/:id', getMerchantById);
+router.get('/admin/merchants', isAdmin, getAllMerchants);
+router.get('/admin/merchants/:id', isAdmin, getMerchantById);
 
 export default router;

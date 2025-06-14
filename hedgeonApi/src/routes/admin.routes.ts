@@ -38,6 +38,8 @@ import {
     approveMerchantApplication,
     rejectMerchantApplication,
     deleteMerchantApplication,
+    getAllMerchants,
+    getMerchantById
 } from '../controllers/admin.controller';
 
 const router = express.Router();
@@ -93,8 +95,11 @@ router.get('/withdrawals/:withdrawalId', isAdmin, updateWithdrawalStatusView);
 // Merchant Application Routes
 router.get('/merchant/applications', isAdmin, getAllMerchantApplications);
 router.get('/merchant/applications/:id', isAdmin, getMerchantApplication);
-router.post('/merchant/applications/:id', isAdmin, approveMerchantApplication);
-router.post('/merchant/applications/:id', isAdmin, rejectMerchantApplication);
-router.delete('/merchant/applications/:id', isAdmin, deleteMerchantApplication);
+router.patch('/merchant/applications/:id/approve', isAdmin, approveMerchantApplication);
+router.patch('/merchant/applications/:id/reject', isAdmin, rejectMerchantApplication);
+router.delete('/merchant/applications/:id/delete', isAdmin, deleteMerchantApplication);
+
+router.get('/admin/merchants', getAllMerchants);
+router.get('/admin/merchants/:id', getMerchantById);
 
 export default router;

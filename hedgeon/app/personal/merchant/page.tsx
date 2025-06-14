@@ -30,9 +30,9 @@ export default function MerchantDashboard() {
                 </CardHeader>
                 <CardContent className="text-center space-y-4">
                     <p className="text-muted-foreground">
-                        You're currently not a registered merchant. Join our merchant program to track earnings, manage payouts, and grow with Hedgeon.
+                        To qualify for our merchant program, you must have an active investment portfolio with Hedgeon Finance. As a merchant, you'll gain access to exclusive tools to manage payouts, monitor earnings, and grow your business within our ecosystem.
                     </p>
-                    <Link href="merchant/apply">
+                    <Link href="/personal/merchant/apply">
                         <Button className="w-full">Apply as a Merchant</Button>
                     </Link>
                 </CardContent>

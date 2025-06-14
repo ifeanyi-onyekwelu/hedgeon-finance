@@ -63,6 +63,11 @@ export function AdminSidebar() {
             url: "/admin/plans",
             icon: Compass,
         },
+        {
+            title: "Merchants",
+            url: "/admin/merchants",
+            icon: Users,
+        },
     ];
     return (
         <Sidebar>

@@ -732,3 +732,19 @@ export const deleteMerchantApplication = asyncHandler(async (req, res) => {
 
     res.status(200).json({ message: 'Merchant application deleted successfully' });
 });
+
+
+export const getAllMerchants = asyncHandler(async (req, res) => {
+    const merchants = await userModel.find({ isMerchant: true }).select('name email createdAt'); // You can project more fields if needed
+    res.status(200).json({ merchants });
+});
+
+
+export const getMerchantById = asyncHandler(async (req, res) => {
+    const merchant = await userModel.findOne({ _id: req.params.id, isMerchant: true });
+    if (!merchant) {
+        throw new NotFoundError("Merchant not found");
+    }
+
+    res.status(200).json({ merchant });
+});

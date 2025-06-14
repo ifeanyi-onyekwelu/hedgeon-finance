@@ -182,3 +182,33 @@ export const approveWithdrawalRequestAdminApi = (withdrawalId: string) => {
 export const rejectWithdrawalRequestAdminApi = (withdrawalId: string, reason: string) => {
     return axiosInstance.patch(`/admin/withdrawals/${withdrawalId}/reject`, { reason });
 };
+
+
+// -------------------- Mercahant API Calls --------------------
+export const getAllMerchantRequestsAdminApi = () => {
+    return axiosInstance.get("/admin/merchant/applications");
+};
+
+export const getMerchantRequestByIdAdminApi = (applicationId: string) => {
+    return axiosInstance.get(`/admin/merchant/applications/${applicationId}`);
+};
+
+export const approveMerchantRequestAdminApi = (applicationId: string) => {
+    return axiosInstance.patch(`/admin/merchant/applications/${applicationId}/approve`);
+};
+
+export const rejectMerchantRequestAdminApi = (applicationId: string, reason: string) => {
+    return axiosInstance.patch(`/admin/merchant/applications/${applicationId}/reject`, { reason });
+};
+
+export const deleteMerchantApplicationAdminApi = (applicationId: string) => {
+    return axiosInstance.delete(`/admin/merchant/applications/${applicationId}/delete`);
+};
+
+export const getAllMerchantAdminApi = () => {
+    return axiosInstance.get("/admin/merchants");
+};
+
+export const getMerchantByIdAdminApi = (merchantId: string) => {
+    return axiosInstance.get(`/admin/merchants/${merchantId}`);
+};

@@ -14,7 +14,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
                 <main className="flex-1 bg-gray-50 min-h-screen">
                     <AdminHeader />
-                    <SidebarTrigger className="sticky top-16" size={'lg'} />
+                    <SidebarTrigger className="sticky top-16 md:hidden block" size={'lg'} />
                     <div className="p-2">
                         {children}
                     </div>

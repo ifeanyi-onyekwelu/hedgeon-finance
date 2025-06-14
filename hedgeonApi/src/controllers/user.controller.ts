@@ -123,6 +123,8 @@ export const uploadKYC = asyncHandler(async (req: Request, res: Response) => {
         date: new Date(),
         read: false,
     });
+    user.isPendingKYCVerified = true;
+
     try {
         await user.save();
     } catch (error) {
@@ -134,6 +136,7 @@ export const uploadKYC = asyncHandler(async (req: Request, res: Response) => {
         const emailSubject = "KYC Documents Received";
         const templateData = {
             userName: user.name || "User",
+            documentType
         };
         await sendEmail(user.email, emailSubject, "kycSubmission", templateData); //  kycSubmission template.
     } catch (emailError) {

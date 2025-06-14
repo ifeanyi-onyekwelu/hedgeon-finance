@@ -62,7 +62,7 @@ const AdminDashboard = () => {
 
             <DashboardStats totalUsers={users.length} activeInvestments={getActiveInvestments()} pendingKYC={kycs.filter(kyc => kyc.verified == false).length} />
             <UsersManager users={users} setUsers={setUsers} />
-            <KYCApprovals kycs={kycs} />
+            {/* <KYCApprovals kycs={kycs} /> */}
             <WithdrawalRequests withdrawals={withdrawals} fetchData={fetchData} />
         </Section>
     );

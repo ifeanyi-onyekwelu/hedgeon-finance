@@ -13,6 +13,7 @@ type User = {
     isMerchant: boolean;
     kycVerified: boolean;
     isPendingMerchantVerification: boolean;
+    isPendingKYCVerified: boolean;
     kyc: string
     twoFactorSecret: string
     currentPlan?: [{

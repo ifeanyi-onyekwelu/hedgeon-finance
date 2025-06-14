@@ -17,6 +17,7 @@ const InvestmentManager = () => {
     });
     const [selectedInvestment, setSelectedInvestment] =
         useState<any>(null);
+    const [api, contextHolder] = notification.useNotification();
 
     const fetchInvestments = async () => {
         try {
@@ -31,7 +32,7 @@ const InvestmentManager = () => {
 
             console.log("RESPONSE", response)
         } catch (error: any) {
-            notification.error({
+            api.error({
                 message: 'Error',
                 description: `Failed to fetch investments requests: ${error.message}`,
             });
@@ -159,6 +160,7 @@ const InvestmentManager = () => {
             <div className="flex justify-between mb-4">
                 <h2 className="text-xl font-semibold">Investment Management</h2>
             </div>
+            {contextHolder}
             <Table
                 columns={columns}
                 dataSource={filteredInvestments}

@@ -36,6 +36,7 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
     const [localPlan, setLocalPlan] = useState<IPlan>(plan);
     const initialPlan = useRef<IPlan>(plan);
     const [loading, setLoading] = useState(false); // Add loading state
+    const [api, contextHolder] = notification.useNotification();
 
     // Initialize localPlan and initialPlan when the plan prop changes
     useEffect(() => {
@@ -69,14 +70,14 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
             const response = await updatePlanAdminApi(plan._id, updatedPlanData);
             console.log("Response from update plan", response);
 
-            notification.success({
+            api.success({
                 message: 'Success',
                 description: 'Plan details updated successfully!',
             });
             setEditMode(false);
             onUpdate(plan._id, updatedPlanData);
         } catch (error: any) {
-            notification.error({
+            api.error({
                 message: 'Error',
                 description: `Failed to update plan details: ${error.message}`,
             });
@@ -110,6 +111,7 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
             title={`Plan Details for ${localPlan.name}`}
             className="w-full max-w-fit mx-auto" // Responsive container
         >
+            {contextHolder}
             <Descriptions
                 bordered
                 className="w-full"
@@ -330,14 +332,9 @@ const PlanDetails: React.FC<PlanDetailsProps> = ({ plan, onUpdate, onBack }) => 
 
 const PlansManager = () => {
     const [plans, setPLANs] = useState<IPlan[]>([]);
-    const [searchText, setSearchText] = useState('');
     const [loading, setLoading] = useState(false);
-    const [paginationInfo, setPaginationInfo] = useState<any>({
-        pageSize: 10,
-        current: 1,
-    });
     const [selectedPLAN, setSelectedPLAN] = useState<IPlan | null>(null);
-    const [verificationStatus, setVerificationStatus] = useState<boolean | null>(null); // null for all, true, or false
+    const [api, contextHolder] = notification.useNotification();
 
     const fetchPLANs = async () => {
         try {
@@ -350,7 +347,7 @@ const PlansManager = () => {
 
             console.log("Response", response);
         } catch (error: any) {
-            notification.error({
+            api.error({
                 message: 'Error',
                 description: error.message || 'Failed to fetch PLAN submissions',
             });
@@ -363,9 +360,6 @@ const PlansManager = () => {
         fetchPLANs();
     }, [])
 
-    const handleSearch = (value: string) => {
-        setSearchText(value);
-    };
 
     const planColumns: ColumnsType<IPlan> = [
         {
@@ -477,20 +471,13 @@ const PlansManager = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="flex justify-between mb-4">
                     <h2 className="text-xl font-semibold">Plan Management</h2>
-                    <div className='flex gap-4'>
-                        <Input.Search
-                            placeholder="Search PLAN..."
-                            onSearch={handleSearch}
-                            className="w-3/4"
-                        />
-                    </div>
                 </div>
+                {contextHolder}
                 <Table
                     columns={planColumns}
                     dataSource={plans}
                     rowKey="_id"
                     loading={loading}
-                    pagination={paginationInfo}
                 />
             </div>
         </Section>

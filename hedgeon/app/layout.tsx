@@ -7,6 +7,9 @@ import { Analytics } from "@vercel/analytics/react"
 import AOSWrapper from "@/components/public/AOSWrapper";
 import GTranslateWidget from "@/components/Translate";
 import TawkToScript from "@/components/public/TawkScript";
+import 'antd/dist/reset.css'; // For Ant Design v5+
+
+
 
 export const metadata: Metadata = {
     title: "Hedgeon Finance",

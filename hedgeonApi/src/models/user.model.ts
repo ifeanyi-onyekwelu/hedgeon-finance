@@ -11,6 +11,7 @@ interface IUser {
     isMerchant: boolean;
     isPendingMerchantVerification: boolean;
     kycVerified: boolean,
+    isPendingKYCVerified: boolean,
     currentPlan?: [{
         planId: mongoose.Types.ObjectId;
         investmentId: mongoose.Types.ObjectId;
@@ -93,6 +94,10 @@ const userSchema = new mongoose.Schema<IUser>({
         default: false
     },
     isPendingMerchantVerification: {
+        type: Boolean,
+        default: false
+    },
+    isPendingKYCVerified: {
         type: Boolean,
         default: false
     },

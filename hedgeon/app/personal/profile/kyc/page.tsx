@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle, CheckCircle } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 import { uploadKycDocuments } from "@/app/api/userApi";
+import { useUser } from "@/context/UserContext"; // Import user context
 
 interface KYCData {
     documentType: string;
@@ -14,9 +15,24 @@ interface KYCData {
 }
 
 const KYCVerificationForm = () => {
+    const { user } = useUser(); // Get user from context
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState<KYCData>({ documentType: 'passport' });
     const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [kycStatus, setKycStatus] = useState<'unverified' | 'pending' | 'verified'>('unverified');
+
+
+    useEffect(() => {
+        if (!user) return;
+
+        if (user.kycVerified) {
+            setKycStatus('verified');
+        } else if (user.isPendingKYCVerified) {
+            setKycStatus('pending');
+        } else {
+            setKycStatus('unverified');
+        }
+    }, []);
 
     const documentTypes = [
         { value: 'passport', label: 'Passport' },
@@ -77,25 +93,22 @@ const KYCVerificationForm = () => {
 
         try {
             const formPayload = new FormData();
-            formPayload.append('documentType', formData.documentType); // Include documentType
+            formPayload.append('documentType', formData.documentType);
             if (formData.idProof) formPayload.append('idProof', formData.idProof);
             if (formData.addressProof) formPayload.append('addressProof', formData.addressProof);
             if (formData.selfie) formPayload.append('selfie', formData.selfie);
 
-            console.log('Form Data:');
-            for (let [key, value] of formPayload.entries()) {
-                console.log(`${key}:`, value);
-            }
-
             const response = await uploadKycDocuments(formPayload);
-            console.log("Response", response);
+            console.log("Response: ", response);
 
             setSubmissionStatus('success');
             setFormData({ documentType: 'passport' });
-            setCurrentStep(1); // Go back to the first step
+            setCurrentStep(1);
+
+            setKycStatus('pending');
         } catch (error: any) {
             setSubmissionStatus('error');
-            console.error("KYC Upload Error:", error);
+            console.log("Error occurred: ", error)
         }
     };
 
@@ -217,6 +230,50 @@ const KYCVerificationForm = () => {
         : currentStep === 2
             ? !!formData.addressProof && !!formData.selfie
             : true;
+
+    // Show status messages based on KYC status
+    if (kycStatus === 'verified') {
+        return (
+            <div className="bg-white shadow rounded-lg p-6 w-full mt-10">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">KYC Verification</h2>
+                <div className="p-8 text-center">
+                    <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Verification Complete</h3>
+                    <p className="text-gray-600 max-w-md mx-auto">
+                        Your KYC verification has been successfully completed. You now have full access to all platform features.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (kycStatus === 'pending') {
+        return (
+            <div className="bg-white shadow rounded-lg p-6 w-full mt-10">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">KYC Verification</h2>
+                <div className="p-8 text-center">
+                    <Loader2 className="h-16 w-16 text-blue-500 animate-spin mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Verification in Progress</h3>
+                    <p className="text-gray-600 max-w-md mx-auto mb-6">
+                        Your KYC documents are currently under review. This process typically takes 1-3 business days.
+                        You'll receive a notification once your verification is complete.
+                    </p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto text-left">
+                        <h4 className="font-medium text-blue-800 mb-2">What to expect next:</h4>
+                        <ul className="list-disc pl-5 space-y-1 text-blue-700">
+                            <li>Our team is reviewing your documents</li>
+                            <li>We'll verify your identity details</li>
+                            <li>You'll receive an email notification</li>
+                            <li>Account limits will be increased after approval</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+
+    console.log("KYC STATUS", kycStatus);
 
     return (
         <div className="bg-white shadow rounded-lg p-6 w-full mt-10">

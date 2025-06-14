@@ -34,29 +34,7 @@ axiosInstance.interceptors.response.use(
             status: response.status,
         };
     }, (error) => {
-        console.log("Error in response interceptor", error);
-
-        if (error?.response?.status === 401) {
-            const message = error.response.data?.message || '';
-
-            // Check for common JWT issues
-            const jwtErrors = [
-                "jwt expired",
-                "jwt malformed",
-                "invalid token",
-                "invalid signature",
-                "TokenExpiredError",
-                "JsonWebTokenError",
-                "Unauthorized"
-            ];
-
-            const isJwtError = jwtErrors.some(err => message.toLowerCase().includes(err.toLowerCase()));
-            if (isJwtError) {
-                localStorage.removeItem("access_token");
-                window.location.href = "/logged-out"; // or your login page: "/login"
-                return;
-            }
-        }
+        console.log("Error in response interceptor!!!", error?.response?.status);
 
         return Promise.reject(error);
 

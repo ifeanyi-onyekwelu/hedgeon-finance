@@ -5,7 +5,6 @@ import { Table, Button, Space, Input, notification, Badge, Card, Descriptions, T
 import type { ColumnsType } from 'antd/es/table';
 import {
     CheckCircle,
-    PauseCircle,
     BanIcon,
     Check,
     X,
@@ -41,6 +40,8 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
     const [localUser, setLocalUser] = useState<UserType>(user);  // State for editable fields
     const initialUser = React.useRef<UserType>(user);
 
+    const [api, contextHolder] = notification.useNotification();
+
     useEffect(() => {
         setLocalUser(user);
         initialUser.current = user;
@@ -68,7 +69,7 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
                 throw new Error(response.data?.message || `Failed to ${statusField} user`);
             }
 
-            notification.success({
+            api.success({
                 message: 'Success',
                 description: `User ${statusField} status updated to ${newValue ? 'Yes' : 'No'}`,
             });
@@ -77,7 +78,7 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
             onUpdate(); // Refresh user list
 
         } catch (error: any) {
-            notification.error({
+            api.error({
                 message: 'Error',
                 description: error.message || `Failed to ${statusField} user`,
             });
@@ -94,7 +95,7 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
             setLocalUser({ ...localUser, isVerified: !localUser.isVerified });
             onUpdate();
         } catch (error: any) {
-            notification.error({
+            api.error({
                 message: 'Error',
                 description: 'Failed to update user verification status',
             });
@@ -113,14 +114,14 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
             //  API to update user details.
             await updateUserAdminApi(user._id, localUser);
 
-            notification.success({
+            api.success({
                 message: 'Success',
                 description: 'User details updated',
             });
             setEditMode(false);
             onUpdate();
         } catch (error: any) {
-            notification.error({
+            api.error({
                 message: 'Error',
                 description: error.message || 'Failed to update user details',
             });
@@ -143,120 +144,102 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
                     &larr; Back to List
                 </Button>
 
+                {contextHolder}
+
                 <Card title={`User Details: ${localUser.name}`}>
-                    <Tabs defaultActiveKey="general">
-                        <Tabs.TabPane key="general" tab="General">
-                            <Descriptions bordered>
-                                <Descriptions.Item label="Name">
-                                    {editMode ? (
-                                        <Input
-                                            value={localUser.name}
-                                            onChange={(e) => setLocalUser({ ...localUser, name: e.target.value })}
-                                        />
-                                    ) : (
-                                        localUser.name
-                                    )}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Email">
-                                    {editMode ? (
-                                        <Input
-                                            value={localUser.email}
-                                            onChange={(e) => setLocalUser({ ...localUser, email: e.target.value })}
-                                        />
-                                    ) : (
-                                        localUser.email
-                                    )}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Phone">
-                                    {editMode ? (
-                                        <Input
-                                            value={localUser.phone}
-                                            onChange={(e) => setLocalUser({ ...localUser, phone: e.target.value })}
-                                        />
-                                    ) : (
-                                        localUser.phone || 'N/A'
-                                    )}
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Role">{localUser.role}</Descriptions.Item>
-                                <Descriptions.Item label="Verified" span={3}>
-                                    <Badge
-                                        status={localUser.isVerified ? 'success' : 'error'}
-                                        text={localUser.isVerified ? 'Yes' : 'No'}
-                                    />
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Active" span={3}>
-                                    <Badge
-                                        status={localUser.active ? 'success' : 'error'}
-                                        text={localUser.active ? 'Yes' : 'No'}
-                                    />
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Suspended" span={3}>
-                                    <Badge
-                                        status={localUser.suspended ? 'error' : 'success'}
-                                        text={localUser.suspended ? 'Yes' : 'No'}
-                                    />
-                                </Descriptions.Item>
-                                <Descriptions.Item label="Created At">{new Date(localUser.createdAt).toLocaleString()}</Descriptions.Item>
-                                <Descriptions.Item label="Updated At">{new Date(localUser.updatedAt).toLocaleString()}</Descriptions.Item>
-                            </Descriptions>
-                            <div className="mt-4 flex gap-2">
-                                {!editMode && (
-                                    <>
-                                        <Button
-                                            onClick={() => handleStatusChange('active', true)}
-                                            disabled={localUser.active || loading}
-                                        >
-                                            <CheckCircle /> Activate
-                                        </Button>
-                                        <Button
-                                            onClick={() => handleStatusChange('suspended', true)}
-                                            disabled={localUser.suspended || loading}
-                                        >
-                                            <BanIcon /> Suspend
-                                        </Button>
-                                        <Button
-                                            onClick={() => handleStatusChange('suspended', false)}
-                                            disabled={!localUser.suspended || loading}
-                                        >
-                                            <Check /> Unsuspend
-                                        </Button>
-                                        <Button onClick={handleVerifyUser} disabled={loading}>
-                                            {localUser.isVerified ? <div className='flex space-x-2'><X /> Set Unverified</div> : <div className='flex space-x-2'><Check /> Set Verified</div>}
-                                        </Button>
-                                        <Button onClick={handleEdit}>
-                                            <Edit /> Edit
-                                        </Button>
-                                    </>
-                                )}
-                                {editMode && (
-                                    <>
-                                        <Button onClick={handleSave} disabled={loading}>
-                                            <Check /> Save
-                                        </Button>
-                                        <Button onClick={handleCancel} disabled={loading}>
-                                            <X /> Cancel
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key="kyc" tab="KYC Info">
-                            {localUser.kyc ? (
-                                <Descriptions bordered>
-                                    <Descriptions.Item label="Verification Status" span={3}>
-                                        <Badge
-                                            status={localUser.kyc.verified ? 'success' : 'error'}
-                                            text={localUser.kyc.verified ? 'Verified' : 'Not Verified'}
-                                        />
-                                    </Descriptions.Item>
-                                    {/* Add other KYC fields if available  */}
-                                </Descriptions>
+                    <Descriptions bordered>
+                        <Descriptions.Item label="Name">
+                            {editMode ? (
+                                <Input
+                                    value={localUser.name}
+                                    onChange={(e) => setLocalUser({ ...localUser, name: e.target.value })}
+                                />
                             ) : (
-                                <p>No KYC information available for this user.</p>
+                                localUser.name
                             )}
-                        </Tabs.TabPane>
-                        {/* Add other tabs as needed (e.g., for orders, etc.) */}
-                    </Tabs>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Email">
+                            {editMode ? (
+                                <Input
+                                    value={localUser.email}
+                                    onChange={(e) => setLocalUser({ ...localUser, email: e.target.value })}
+                                />
+                            ) : (
+                                localUser.email
+                            )}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Phone">
+                            {editMode ? (
+                                <Input
+                                    value={localUser.phone}
+                                    onChange={(e) => setLocalUser({ ...localUser, phone: e.target.value })}
+                                />
+                            ) : (
+                                localUser.phone || 'N/A'
+                            )}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Role">{localUser.role}</Descriptions.Item>
+                        <Descriptions.Item label="Verified" span={3}>
+                            <Badge
+                                status={localUser.isVerified ? 'success' : 'error'}
+                                text={localUser.isVerified ? 'Yes' : 'No'}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Active" span={3}>
+                            <Badge
+                                status={localUser.active ? 'success' : 'error'}
+                                text={localUser.active ? 'Yes' : 'No'}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Suspended" span={3}>
+                            <Badge
+                                status={localUser.suspended ? 'error' : 'success'}
+                                text={localUser.suspended ? 'Yes' : 'No'}
+                            />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Created At">{new Date(localUser.createdAt).toLocaleString()}</Descriptions.Item>
+                        <Descriptions.Item label="Updated At">{new Date(localUser.updatedAt).toLocaleString()}</Descriptions.Item>
+                    </Descriptions>
+                    <div className="mt-4 flex gap-2">
+                        {!editMode && (
+                            <>
+                                <Button
+                                    onClick={() => handleStatusChange('active', true)}
+                                    disabled={localUser.active || loading}
+                                >
+                                    <CheckCircle /> Activate
+                                </Button>
+                                <Button
+                                    onClick={() => handleStatusChange('suspended', true)}
+                                    disabled={localUser.suspended || loading}
+                                >
+                                    <BanIcon /> Suspend
+                                </Button>
+                                <Button
+                                    onClick={() => handleStatusChange('suspended', false)}
+                                    disabled={!localUser.suspended || loading}
+                                >
+                                    <Check /> Unsuspend
+                                </Button>
+                                <Button onClick={handleVerifyUser} disabled={loading}>
+                                    {localUser.isVerified ? <div className='flex space-x-2'><X /> Set Unverified</div> : <div className='flex space-x-2'><Check /> Set Verified</div>}
+                                </Button>
+                                <Button onClick={handleEdit}>
+                                    <Edit /> Edit
+                                </Button>
+                            </>
+                        )}
+                        {editMode && (
+                            <>
+                                <Button onClick={handleSave} disabled={loading}>
+                                    <Check /> Save
+                                </Button>
+                                <Button onClick={handleCancel} disabled={loading}>
+                                    <X /> Cancel
+                                </Button>
+                            </>
+                        )}
+                    </div>
                 </Card>
             </div>
         </Section>
@@ -269,7 +252,7 @@ const UserManager = () => {
     const [loading, setLoading] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
     const screens = useBreakpoint();
-
+    const [api, contextHolder] = notification.useNotification();
 
 
     const fetchUsers = useCallback(async () => {
@@ -289,12 +272,12 @@ const UserManager = () => {
 
         } catch (error: any) {
             if (error instanceof AxiosError) {
-                notification.error({
+                api.error({
                     message: 'Error',
                     description: error.response?.data?.message || 'Failed to fetch users',
                 });
             } else {
-                notification.error({
+                api.error({
                     message: 'Error',
                     description: error.message || 'Failed to fetch users',
                 });

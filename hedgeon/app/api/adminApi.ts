@@ -135,8 +135,18 @@ export const getUserByIdAdminApi = (userId: string) => {
     return axiosInstance.get(`/admin/users/${userId}`);
 };
 
-export const updateUserAdminApi = (userId: string, userData: any) => { // Adjust 'any' to your User update DTO
+export const updateUserAdminApi = (userId: string, userData: any) => {
     return axiosInstance.put(`/admin/users/${userId}`, userData);
+};
+
+export const updateUserWalletAdminApi = (
+    userId: string,
+    data: {
+        action: 'ADD' | 'SUBTRACT' | 'SET';
+        amount: number;
+    }
+) => {
+    return axiosInstance.put(`/admin/users/${userId}/wallet`, data);
 };
 
 export const deleteUserAdminApi = (userId: string) => {

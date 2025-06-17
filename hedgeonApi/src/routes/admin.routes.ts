@@ -39,7 +39,8 @@ import {
     rejectMerchantApplication,
     deleteMerchantApplication,
     getAllMerchants,
-    getMerchantById
+    getMerchantById,
+    updateUserWallet
 } from '../controllers/admin.controller';
 
 const router = express.Router();
@@ -86,6 +87,7 @@ router.put('/users/:userId/status', isAdmin, updateUserStatus);
 router.put('/users/:userId/verify-email', isAdmin, verifyUserEmail);
 router.put('/users/:userId/', isAdmin, updateUser);
 router.put('/users/:userId/', isAdmin, deleteUserView);
+router.put('/users/:userId/wallet', isAdmin, updateUserWallet);
 
 // Withdrawal Routes
 router.get('/withdrawals', isAdmin, getAllWithdrawalRequestsView);

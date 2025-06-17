@@ -11,7 +11,6 @@ import userModel from "../models/user.model";
 import { logData, logError } from "../utils/logger";
 import {
     generateAccessToken,
-    generatePasswordResetLink,
     generateRefreshToken,
     generateToken,
     verifyToken,
@@ -325,9 +324,11 @@ export const forgotPassword = asyncHandler(
         if (!foundUser)
             return logError(res, new NotFoundError(`Account not found`));
 
-        const passwordResetLink = generatePasswordResetLink(foundUser._id);
-        foundUser.passwordResetToken = passwordResetLink;
+        const token = generateToken(foundUser._id); // or your token generation logic
+        foundUser.passwordResetToken = token;
         await foundUser.save();
+
+        const passwordResetLink = `${process.env.CLIENT_URL}/auth/reset-password?token=${token}`;
 
         // Send password reset email
         try {

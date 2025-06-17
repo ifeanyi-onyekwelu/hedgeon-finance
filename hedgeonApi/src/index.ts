@@ -17,7 +17,7 @@ cloudinaryConfig();
 dbConn().then((r) => console.log("MongoDB Connected"));
 
 const app = express();
-const PORT = process.env.PORT || 3500;
+const PORT = process.env.PORT || 5500;
 const sessionSecret =
     process.env.SESSION_SECRET || "fall-back-secret";
 

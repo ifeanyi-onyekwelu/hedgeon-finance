@@ -748,3 +748,48 @@ export const getMerchantById = asyncHandler(async (req, res) => {
 
     res.status(200).json({ merchant });
 });
+
+
+// Add this to user.controllers.ts
+export const updateUserWallet = asyncHandler(
+    async (req: Request, res: Response) => {
+        const { userId } = req.params;
+        const { action, amount } = req.body;
+
+        // Validate action
+        if (!['ADD', 'SUBTRACT', 'SET'].includes(action)) {
+            throw new BadRequestError('Invalid action. Use ADD/SUBTRACT/SET');
+        }
+
+        // Validate amount
+        if (typeof amount !== 'number' || amount < 0) {
+            throw new BadRequestError('Amount must be a positive number');
+        }
+
+        const user = await User.findById(userId);
+        if (!user) throw new NotFoundError('User not found');
+
+        // Apply wallet change
+        switch (action) {
+            case 'ADD':
+                user.walletBalance += amount;
+                break;
+            case 'SUBTRACT':
+                if (user.walletBalance < amount) {
+                    throw new BadRequestError('Insufficient wallet balance');
+                }
+                user.walletBalance -= amount;
+                break;
+            case 'SET':
+                user.walletBalance = amount;
+                break;
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            message: `Wallet ${action.toLowerCase()} successful`,
+            newBalance: user.walletBalance
+        });
+    }
+);

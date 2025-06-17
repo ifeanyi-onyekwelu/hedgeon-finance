@@ -1,16 +1,19 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { Table, Button, Space, Input, notification, Badge, Card, Descriptions, Tabs } from 'antd';
+import { Table, Button, Space, Input, notification, Badge, Card, Descriptions, Form, Select, InputNumber, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {
     CheckCircle,
     BanIcon,
     Check,
     X,
-    Edit
+    Edit,
+    DollarSign,
+    Plus,
+    Minus
 } from 'lucide-react'; // Import icons
-import { getAllUsersAdminApi, updateUserAdminApi, updateUserStatusAdminApi, verifyUserEmailAdminApi } from '@/app/api/adminApi'; // Adjust the path
+import { getAllUsersAdminApi, updateUserAdminApi, updateUserStatusAdminApi, updateUserWalletAdminApi, verifyUserEmailAdminApi } from '@/app/api/adminApi'; // Adjust the path
 import Section from '@/components/admin/Section';
 import { AxiosError } from 'axios';
 import UserStats from './UsersStats';
@@ -31,13 +34,21 @@ interface UserType {
     kyc?: {      // Optional, adjust based on your actual data structure
         verified: boolean;
     }
+    walletBalance: number
+}
+
+interface WalletUpdateFormValues {
+    action: 'ADD' | 'SUBTRACT' | 'SET';
+    amount: number;
 }
 
 // UserDetails Component
 const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () => void }> = ({ user, onBack, onUpdate }) => {
     const [loading, setLoading] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [localUser, setLocalUser] = useState<UserType>(user);  // State for editable fields
+    const [localUser, setLocalUser] = useState<UserType>(user);
+    const [showWalletModal, setShowWalletModal] = useState(false); // ADDED: Wallet modal state
+    const [walletForm] = Form.useForm(); // ADDED: Wallet form
     const initialUser = React.useRef<UserType>(user);
 
     const [api, contextHolder] = notification.useNotification();
@@ -46,6 +57,38 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
         setLocalUser(user);
         initialUser.current = user;
     }, [user]);
+
+    // ADDED: Wallet update handler
+    const handleWalletUpdate = async (values: WalletUpdateFormValues) => {
+        try {
+            setLoading(true);
+            console.log(user._id)
+            await updateUserWalletAdminApi(user._id, values);
+
+            api.success({
+                message: 'Success',
+                description: 'Wallet updated successfully',
+            });
+
+            // Refresh user data
+            const updatedUser = (await getAllUsersAdminApi()).data;
+            const userData = updatedUser.find((u: UserType) => u._id === user._id);
+            if (userData) {
+                setLocalUser(userData);
+            }
+
+            setShowWalletModal(false);
+            onUpdate();
+        } catch (error: any) {
+            console.log("Error: ", error)
+            api.error({
+                message: 'Error',
+                description: error.message || 'Failed to update wallet',
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Generic function to handle status updates (suspend, pause, activate)
     const handleStatusChange = async (
@@ -146,8 +189,22 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
 
                 {contextHolder}
 
-                <Card title={`User Details: ${localUser.name}`}>
+                <Card title={`User Details: ${localUser.name}`} extra={
+                    <Button
+                        type="primary"
+                        icon={<DollarSign size={16} />}
+                        onClick={() => setShowWalletModal(true)}
+                    >
+                        Update Wallet
+                    </Button>
+                }
+                >
                     <Descriptions bordered>
+                        <Descriptions.Item label="Wallet Balance" span={3}>
+                            <span className="font-bold text-lg">
+                                ${localUser.walletBalance.toFixed(2)}
+                            </span>
+                        </Descriptions.Item>
                         <Descriptions.Item label="Name">
                             {editMode ? (
                                 <Input
@@ -242,6 +299,76 @@ const UserDetails: React.FC<{ user: UserType; onBack: () => void; onUpdate: () =
                     </div>
                 </Card>
             </div>
+
+            {/* ADDED: Wallet Update Modal */}
+            <Modal
+                title={`Update Wallet - ${localUser.name}`}
+                open={showWalletModal}
+                onCancel={() => setShowWalletModal(false)}
+                footer={null}
+                destroyOnClose
+            >
+                <Form
+                    form={walletForm}
+                    layout="vertical"
+                    initialValues={{ action: 'ADD', amount: 0, note: '' }}
+                    onFinish={handleWalletUpdate}
+                >
+                    <Form.Item
+                        name="action"
+                        label="Action"
+                        rules={[{ required: true, message: 'Please select an action' }]}
+                    >
+                        <Select>
+                            <Select.Option value="ADD">
+                                <div className="flex items-center text-green-600">
+                                    <Plus size={16} className="mr-2" /> Add Funds
+                                </div>
+                            </Select.Option>
+                            <Select.Option value="SUBTRACT">
+                                <div className="flex items-center text-red-600">
+                                    <Minus size={16} className="mr-2" /> Subtract Funds
+                                </div>
+                            </Select.Option>
+                            <Select.Option value="SET">
+                                <div className="flex items-center text-blue-600">
+                                    <DollarSign size={16} className="mr-2" /> Set Specific Amount
+                                </div>
+                            </Select.Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="amount"
+                        label="Amount"
+                        rules={[
+                            { required: true, message: 'Please enter amount' },
+                            {
+                                validator: (_, value) =>
+                                    value > 0 ? Promise.resolve() : Promise.reject('Amount must be positive')
+                            }
+                        ]}
+                    >
+                        <InputNumber
+                            min={0.01}
+                            step={0.01}
+                            precision={2}
+                            className="w-full"
+                        />
+                    </Form.Item>
+
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={loading}
+                            className="w-full"
+                        >
+                            Update Wallet
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </Section>
     );
 };
@@ -341,6 +468,16 @@ const UserManager = () => {
                     { text: 'Not Verified', value: false },
                 ],
                 onFilter: (value, record) => record.isVerified === (value === true),
+            },
+            {
+                title: 'Wallet',
+                dataIndex: 'walletBalance',
+                render: (balance) => (
+                    <span className="font-medium">
+                        ${balance.toFixed(2)}
+                    </span>
+                ),
+                sorter: (a, b) => a.walletBalance - b.walletBalance,
             },
             {
                 title: 'Active',
